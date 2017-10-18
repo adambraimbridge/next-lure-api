@@ -26,4 +26,4 @@ JSON response with the following properties. Those with * are required
   - a json to generate a teaser
   - a json to generate an n-concept card
   - ...
-  In addition, each item must contain a property, `recommendationType`, detailing what kind of thing it is the data for. Some kind of styling hint may also be useful
+  In addition, each item must contain a property, `recommendationType`, detailing what kind of thing it is the data for. Some kind of styling hint may also be useful. Each item may contain a `adviceText` property to explain to the user why it is being recommended
