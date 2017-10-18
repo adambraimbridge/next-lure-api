@@ -8,13 +8,15 @@ Suggests articles and other content for a user to engage with based on context, 
 ## Contract
 
 ### Request
-- All requests must send a content uuid for contextual targeting
+- All requests must send a content uuid or concept for contextual targeting
 - Requests should include feature flags and any ab tests/cohorts the user is in
 - Requests may include the user uuid for more personalised targeting
+- Request may specify things to exclude from the space of possible recommendations
 
 e.g.
 - /content/{uuid} 
 - /content/{uuid}?user={uuid}
+- /concept/{uuid}?exclude[]={uuid},exclude[]={uuid}
 
 ### Response
 JSON response with the following properties. Those with * are required
@@ -26,4 +28,4 @@ JSON response with the following properties. Those with * are required
   - a json to generate a teaser
   - a json to generate an n-concept card
   - ...
-  In addition, each item must contain a property, `recommendationType`, detailing what kind of thing it is the data for. Some kind of styling hint may also be useful. Each item may contain a `adviceText` property to explain to the user why it is being recommended
+  In addition, each item must contain a property, `recommendationType`, detailing what kind of thing it is the data for. Some kind of styling hint may also be useful. Each item may contain a `adviceText` property to explain to the user why it is being recommended. Each item must send data for use in tracking the reason[s] a recommendation has been shown
