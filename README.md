@@ -8,7 +8,7 @@ Suggests articles and other content for a user to engage with based on context, 
 ## Contract
 
 ### Request
-- All requests must send a content uuid or concept for contextual targeting
+- All requests may send a content uuid or concept for contextual targeting
 - Requests should include feature flags and any ab tests/cohorts the user is in
 - Requests may include the user uuid for more personalised targeting
 - Request may specify things to exclude from the space of possible recommendations
