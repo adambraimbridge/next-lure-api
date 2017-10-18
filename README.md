@@ -1,6 +1,6 @@
-<img src="https://user-images.githubusercontent.com/447559/31725675-d5226430-b41c-11e7-9db4-221b8794261b.png" align="right" width="400">
+
 # next-lure-api
-Suggests articles and other content for a user to engage with based on context, user behaviour and other signals e.g. editorial curation
+<img src="https://user-images.githubusercontent.com/447559/31725675-d5226430-b41c-11e7-9db4-221b8794261b.png" align="right" width="400">Suggests articles and other content for a user to engage with based on context, user behaviour and other signals e.g. editorial curation
 
 > "The great charm of fly-fishing is that we are always learning." ~ Theodore Gordon
 
