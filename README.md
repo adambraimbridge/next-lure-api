@@ -24,6 +24,7 @@ JSON response with the following properties. Those with * are required
 - titleHref
 - concept (possibly with additional data to enable features related to the concept)
 - positionHint
+- styling/emphasisHint
 - *recommendations: array, Each item may be:
   - a json to generate a teaser
   - a json to generate an n-concept card
