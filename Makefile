@@ -25,7 +25,7 @@ else
 endif
 
 run:
-	nht run --https
+	nht run --local
 
 deploy:
 	nht configure --vault

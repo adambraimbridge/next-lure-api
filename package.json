@@ -2,7 +2,6 @@
   "name": "ft-next-lure-api",
   "private": true,
   "description": "<img src=\"https://user-images.githubusercontent.com/447559/31726275-658368f2-b41e-11e7-82e7-100554b68858.png\" align=\"right\" width=\"400\">Suggests articles and other content for a user to engage with based on context, user behaviour and other signals e.g. editorial curation",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "precommit": "node_modules/.bin/secret-squirrel",
@@ -23,10 +22,13 @@
   },
   "homepage": "https://github.com/Financial-Times/next-lure-api#readme",
   "dependencies": {
-    "@financial-times/n-express": "^19.3.1"
+    "@financial-times/n-es-client": "^1.4.0",
+    "@financial-times/n-express": "^19.3.1",
+    "@financial-times/n-logger": "^5.5.7"
   },
   "devDependencies": {
     "@financial-times/n-gage": "^1.14.0",
+    "@financial-times/n-heroku-tools": "^6.30.0",
     "eslint": "^4.9.0",
     "lintspaces-cli": "^0.6.0"
   }

@@ -1,30 +1,28 @@
 const es = require('@financial-times/n-es-client');
-const fetchres = require('fetchres');
 const logger = require('@financial-times/n-logger').default;
 const { TEASER_PROPS } = require('../../constants');
 
 function getMoreOnConcepts (content) {
-	const moreOns = [
+	const moreOnConcepts = [
 		content.annotations.find(annotation => annotation.predicate === 'http://www.ft.com/ontology/annotation/about'),
 		content.annotations.find(annotation => annotation.predicate === 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy')
 	]
 		.filter(concept => !!concept)
 
-	if (moreOns.length < 2) {
-		if(content.brandConcept && !moreOns.find(concept => concept.id === content.brandConcept.id)) {
-			moreOns.push(content.brandConcept);
+	if (moreOnConcepts.length < 2) {
+		if(content.brandConcept && !moreOnConcepts.find(concept => concept.id === content.brandConcept.id)) {
+			moreOnConcepts.push(content.brandConcept);
 		}
 	}
-
-	return moreOns.length ? moreOns : undefined;
+	return moreOnConcepts.length ? moreOnConcepts : undefined;
 };
 
 function getTrackableProperty (concept) {
-	const predicate === concept.predicate.split('/').pop();
+	const predicate = concept.predicate.split('/').pop();
 	return ['about', 'isPrimarilyClassifiedBy'].includes(predicate) ? predicate : 'brand';
 }
 
-function getRelatedArticles (concept, count, parentContentId) => {
+function getRelatedArticles (concept, count, parentContentId) {
 	return es.search({
 		_source: TEASER_PROPS,
 		query: {
@@ -55,7 +53,7 @@ function dedupeArticles (haystack, needles) {
 }
 
 module.exports = function (req, res, next) {
-	const contentId = req.params.id;
+	const contentId = req.params.contentId;
 
 	return es.get(contentId)
 		.then(getMoreOnConcepts)
@@ -76,11 +74,11 @@ module.exports = function (req, res, next) {
 					if (moreOns2) {
 						moreOns.push({
 							concept: moreOns2.concept,
-							teasers: dedupeArticles(moreOns2.teasers, moreOns1.teasers)
+							teasers: dedupeArticles(moreOns2.teasers, moreOns1.teasers).slice(0, 3)
 						});
 					}
 					return moreOns;
-				});
+				})
 				.then(moreOns => {
 					return moreOns.map(({concept, teasers}) => {
 						return {
@@ -94,18 +92,19 @@ module.exports = function (req, res, next) {
 						}
 					})
 				})
+				.then(data => res.json(data))
 				.catch(function (err) {
 					logger.error(err);
 
-					if(err.name === NoRelatedResultsException.NAME) {
-						res.status(200).end();
-					} else if (err instanceof fetchres.ReadTimeoutError) {
-						res.status(500).end();
-					} else if (fetchres.originatedError(err)) {
-						res.status(404).end();
-					} else {
+					// if(err.name === NoRelatedResultsException.NAME) {
+					// 	res.status(200).end();
+					// } else if (err instanceof fetchres.ReadTimeoutError) {
+					// 	res.status(500).end();
+					// } else if (fetchres.originatedError(err)) {
+					// 	res.status(404).end();
+					// } else {
 						next(err);
-					}
+					// }
 				});
 		})
 };
