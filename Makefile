@@ -34,7 +34,7 @@ deploy:
 
 provision:
 	nht provision ${TEST_HOST}
-	nht configure ft-next-search-api ${TEST_HOST} --vault --overrides "NODE_ENV=branch"
+	nht configure ft-next-lure-api ${TEST_HOST} --vault --overrides "NODE_ENV=branch"
 	nht deploy ${TEST_HOST}
 
 tidy:
