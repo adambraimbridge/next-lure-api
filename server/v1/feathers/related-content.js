@@ -31,7 +31,7 @@ const getRelatedContent = (concept, count, parentContentId) => {
 					{term: { 'annotations.id': concept.id }}
 				],
 				must_not: [
-					{term: {id: parentContentId}}
+					{term: { id: parentContentId }}
 				]
 			}
 		},
@@ -72,15 +72,21 @@ module.exports = async content => {
 			return relatedContent;
 		});
 
-	return relatedContent.map(({concept, teasers}) => ({
-		title: `Latest ${concept.preposition} ${concept.prefLabel}`,
-		titleHref: concept.relativeUrl,
-		// TODO: think about how we track how often we _show_ recommendations with a particular signal
-		// and also what are the rival signals on the page at the same time
-		tracking: getTrackableProperty(concept),
-		concept,
-		recommendations: teasers.map(teaser => Object.assign(teaser, {
-			recommendationType: 'content'
+	const recommendations = relatedContent.map(({concept, teasers}) => ({
+			title: `Latest ${concept.preposition} ${concept.prefLabel}`,
+			titleHref: concept.relativeUrl,
+			// TODO: think about how we track how often we _show_ recommendations with a particular signal
+			// and also what are the rival signals on the page at the same time
+			tracking: getTrackableProperty(concept),
+			concept,
+			recommendations: teasers.map(teaser => Object.assign(teaser, {
+				recommendationType: 'content'
+			}))
 		}))
-	}));
+	return {
+		rhr: Object.assign({}, recommendations[0], {
+			tracking: 'rhr'
+		}),
+		onward: recommendations
+	};
 }

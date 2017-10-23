@@ -20,7 +20,7 @@ e.g.
 - /concept/{uuid}?exclude[]={uuid},exclude[]={uuid}
 
 ### Response
-JSON response with the following properties. Those with * are required
+JSON response on which one or more of the following keys - `rhr`, `onward`, `interstitial`, `banner` - contain an object with the following properties. Those with * are required
 - *title
 - titleHref
 - concept (possibly with additional data to enable features related to the concept)
