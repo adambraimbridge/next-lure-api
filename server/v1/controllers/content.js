@@ -1,6 +1,6 @@
 const es = require('@financial-times/n-es-client');
 const logger = require('@financial-times/n-logger').default;
-const { relatedContent } = require('../feathers');
+const { relatedContent } = require('../plumes');
 
 module.exports = async function (req, res, next) {
 

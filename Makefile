@@ -25,7 +25,7 @@ else
 endif
 
 run:
-	nht run --local
+	nht run --local --inspect
 
 deploy:
 	nht configure --vault
