@@ -7,12 +7,12 @@ module.exports = async function (req, res, next) {
 	try {
 		const content = await es.get(req.params.contentId);
 		let recommendations;
-		if (false) {
-				recommendations = await topStories(content);
-				res.vary('ft-edition');
+		if (true && ['uk', 'intl'].includes(req.get('ft-edition'))) {
+			recommendations = await topStories(content, req.get('ft-edition'));
 		} else {
 			recommendations = await relatedContent(content);
 		}
+		res.vary('ft-edition');
 		res.json(recommendations);
 	} catch (err) {
 		logger.error(err);

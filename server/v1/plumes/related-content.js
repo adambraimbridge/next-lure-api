@@ -2,12 +2,7 @@ const getMostRelatedConcepts = require('../../lib/get-most-related-concepts');
 const getRelatedContent = require('../../lib/get-related-content');
 const toViewModel = require('../../lib/teasers-to-view-model');
 
-const { dedupeById } = require('../../lib/utils');
-
-const getTrackableProperty = concept => {
-	const predicate = concept.predicate.split('/').pop();
-	return ['about', 'isPrimarilyClassifiedBy'].includes(predicate) ? predicate : 'brand';
-}
+const { dedupeById, getTrackablePredicate } = require('../../lib/utils');
 
 module.exports = async content => {
 	const concepts = getMostRelatedConcepts(content);
@@ -40,6 +35,6 @@ module.exports = async content => {
 
 	return {
 		rhr: toViewModel(relatedContent.rhr, () => 'rhr'),
-		onward: relatedContent.onward.map(data => toViewModel(data, getTrackableProperty))
+		onward: relatedContent.onward.map(data => toViewModel(data, getTrackablePredicate))
 	};
 }

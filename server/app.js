@@ -1,5 +1,8 @@
 const express = require('@financial-times/n-express');
 
+const topStoriesPoller = require('./data-sources/top-stories-poller');
+topStoriesPoller.init();
+
 const app = express({
 	systemCode: 'next-lure-api'
 })
