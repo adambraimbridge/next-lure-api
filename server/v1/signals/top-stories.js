@@ -3,10 +3,10 @@ const logger = require('@financial-times/n-logger').default;
 
 const getMostRelatedConcepts = require('../../lib/get-most-related-concepts');
 const getRelatedContent = require('../../lib/get-related-content');
-const toViewModel = require('../../lib/teasers-to-view-model');
+const toViewModel = require('../../lib/related-teasers-to-view-model');
 const topStoriesPoller = require('../../data-sources/top-stories-poller');
 
-const { dedupeById, getTrackablePredicate } = require('../../lib/utils');
+const { dedupeById } = require('../../lib/utils');
 
 module.exports = async (content, edition) => {
 	const concepts = getMostRelatedConcepts(content);
@@ -33,7 +33,7 @@ module.exports = async (content, edition) => {
 			toViewModel({
 				concept:secondaryOnward.concept,
 				teasers: dedupeById(secondaryOnward.teasers, topStories.slice(0, 3)).slice(0, 3)
-			}, getTrackablePredicate)
+			})
 		]
 	}
 

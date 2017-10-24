@@ -1,8 +1,8 @@
 const getMostRelatedConcepts = require('../../lib/get-most-related-concepts');
 const getRelatedContent = require('../../lib/get-related-content');
-const toViewModel = require('../../lib/teasers-to-view-model');
+const toViewModel = require('../../lib/related-teasers-to-view-model');
 
-const { dedupeById, getTrackablePredicate } = require('../../lib/utils');
+const { dedupeById } = require('../../lib/utils');
 
 module.exports = async content => {
 	const concepts = getMostRelatedConcepts(content);
@@ -34,7 +34,7 @@ module.exports = async content => {
 		});
 
 	return {
-		rhr: toViewModel(relatedContent.rhr, () => 'rhr'),
-		onward: relatedContent.onward.map(data => toViewModel(data, getTrackablePredicate))
+		rhr: toViewModel(relatedContent.rhr),
+		onward: relatedContent.onward.map(data => toViewModel(data))
 	};
 }
