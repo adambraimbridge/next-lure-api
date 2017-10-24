@@ -1,12 +1,18 @@
 const es = require('@financial-times/n-es-client');
 const logger = require('@financial-times/n-logger').default;
-const { relatedContent } = require('../plumes');
+const { relatedContent, topStories } = require('../plumes');
 
 module.exports = async function (req, res, next) {
 
 	try {
 		const content = await es.get(req.params.contentId);
-		const recommendations = await relatedContent(content);
+		let recommendations;
+		if (false) {
+				recommendations = await topStories(content);
+				res.vary('ft-edition');
+		} else {
+			recommendations = await relatedContent(content);
+		}
 		res.json(recommendations);
 	} catch (err) {
 		logger.error(err);
