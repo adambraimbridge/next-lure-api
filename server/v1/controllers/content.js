@@ -7,7 +7,8 @@ module.exports = async function (req, res, next) {
 	try {
 		const content = await es.get(req.params.contentId);
 		let recommendations;
-		if (true && ['uk', 'intl'].includes(req.get('ft-edition'))) {
+		// TODO - true should be replaced by a flag
+		if (false && ['uk', 'international'].includes(req.get('ft-edition'))) {
 			recommendations = await topStories(content, req.get('ft-edition'));
 		} else {
 			recommendations = await relatedContent(content);

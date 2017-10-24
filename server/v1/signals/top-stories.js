@@ -12,7 +12,8 @@ module.exports = async (content, edition) => {
 	const concepts = getMostRelatedConcepts(content);
 	const secondaryOnward = await getRelatedContent(concepts[0], 6, content.id);
 
-	const topStories = topStoriesPoller.get(edition).slice(0, 3);
+	const topStories = topStoriesPoller.get(edition)
+		.filter(teaser => teaser.id !== content.id)
 
 	const topStoriesModel = {
 		title: `More from the front page`,
@@ -21,7 +22,7 @@ module.exports = async (content, edition) => {
 		// and also what are the rival signals on the page at the same time
 		tracking: 'top-stories'
 	}
-	console.log(secondaryOnward, topStories);
+
 	return {
 		rhr: Object.assign({
 			recommendations: topStories.slice(0, 5)

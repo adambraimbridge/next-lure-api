@@ -39,6 +39,3 @@ provision:
 
 tidy:
 	nht destroy ${TEST_HOST}
-
-um:
-	node ./server/data-sources/top-stories-poller
