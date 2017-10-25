@@ -34,4 +34,4 @@ provision:
 	nht float -md --testapp ${TEST_HOST} --vault
 
 tidy:
-	nht destroy ${TEST_HOST}
+	# nht destroy ${TEST_HOST}
