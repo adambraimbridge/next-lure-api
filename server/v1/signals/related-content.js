@@ -4,8 +4,8 @@ const toViewModel = require('../../lib/related-teasers-to-view-model');
 
 const { dedupeById } = require('../../lib/utils');
 
-module.exports = async content => {
-	const concepts = getMostRelatedConcepts(content, {slots});
+module.exports = async (content, {slots}) => {
+	const concepts = getMostRelatedConcepts(content);
 
 	const [related1, related2] = await Promise.all([
 		getRelatedContent(concepts[0], 5, content.id), // get enough for the right hand rail

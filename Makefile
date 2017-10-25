@@ -18,11 +18,11 @@ smoke-test-local:
 test:
 	make verify
 
-ifeq ($(CIRCLE_BRANCH),master)
-	make coverage-report && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
-else
-	make unit-test
-endif
+# ifeq ($(CIRCLE_BRANCH),master)
+# 	make coverage-report && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+# else
+# 	make unit-test
+# endif
 
 run:
 	nht run --local --inspect
