@@ -5,13 +5,17 @@ const { relatedContent, topStories } = require('../signals');
 module.exports = async function (req, res, next) {
 
 	try {
+		const slots = req.query.slots ? req.query.slots.split(',') : ['rhr', 'onward']
 		const content = await es.get(req.params.contentId);
 		let recommendations;
 		// TODO - true should be replaced by a flag
 		if (res.locals.flags.lureTopStories && ['uk', 'international'].includes(req.get('ft-edition'))) {
-			recommendations = await topStories(content, req.get('ft-edition'));
+			recommendations = await topStories(content, {
+				edition: req.get('ft-edition'),
+				slots
+			});
 		} else {
-			recommendations = await relatedContent(content);
+			recommendations = await relatedContent(content, {slots});
 		}
 		res.vary('ft-edition');
 		res.json(recommendations);

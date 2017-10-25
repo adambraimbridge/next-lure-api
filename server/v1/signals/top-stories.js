@@ -5,9 +5,8 @@ const topStoriesPoller = require('../../data-sources/top-stories-poller');
 
 const { dedupeById } = require('../../lib/utils');
 
-module.exports = async (content, edition) => {
+module.exports = async (content, {edition, slots}) => {
 	const concepts = getMostRelatedConcepts(content);
-	const secondaryOnward = await getRelatedContent(concepts[0], 6, content.id);
 
 	const topStories = topStoriesPoller.get(edition)
 		.filter(teaser => teaser.id !== content.id)
@@ -20,11 +19,18 @@ module.exports = async (content, edition) => {
 		tracking: 'top-stories'
 	}
 
-	return {
-		rhr: Object.assign({
+	const response = {};
+
+	if (slots.includes['rhr']) {
+		response.rhr = Object.assign({
 			recommendations: topStories.slice(0, 5)
-		}, topStoriesModel),
-		onward: [
+		}, topStoriesModel);
+	}
+
+	if (slots.includes('onward')) {
+		const secondaryOnward = await getRelatedContent(concepts[0], 6, content.id);
+
+		response.onward = [
 			Object.assign({
 				recommendations: topStories.slice(0, 3)
 			}, topStoriesModel),
@@ -32,7 +38,9 @@ module.exports = async (content, edition) => {
 				concept:secondaryOnward.concept,
 				teasers: dedupeById(secondaryOnward.teasers, topStories.slice(0, 3)).slice(0, 3)
 			})
-		]
+		];
 	}
+
+	return response;
 
 }
