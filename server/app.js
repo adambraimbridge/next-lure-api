@@ -4,7 +4,9 @@ const topStoriesPoller = require('./data-sources/top-stories-poller');
 topStoriesPoller.init();
 
 const app = express({
-	systemCode: 'next-lure-api'
+	systemCode: 'next-lure-api',
+	withFlags: true,
+	healthChecks: []
 })
 
 const lure = express.Router();

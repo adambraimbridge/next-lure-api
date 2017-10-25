@@ -21,7 +21,7 @@ module.exports = async (content, {edition, slots}) => {
 
 	const response = {};
 
-	if (slots.includes['rhr']) {
+	if (slots.includes('rhr')) {
 		response.rhr = Object.assign({
 			recommendations: topStories.slice(0, 5)
 		}, topStoriesModel);
