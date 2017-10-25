@@ -28,14 +28,10 @@ run:
 	nht run --local --inspect
 
 deploy:
-	nht configure --vault
-	nht deploy
-	nht scale
+	nht ship -m --vault
 
 provision:
-	nht provision ${TEST_HOST}
-	nht configure ft-next-lure-api ${TEST_HOST} --vault --overrides "NODE_ENV=branch"
-	nht deploy ${TEST_HOST}
+	nht float -md --testapp ${TEST_HOST} --vault
 
 tidy:
 	nht destroy ${TEST_HOST}
