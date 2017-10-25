@@ -6,7 +6,6 @@ const { dedupeById } = require('../../lib/utils');
 
 module.exports = async content => {
 	const concepts = getMostRelatedConcepts(content);
-	const teasersPerSection = 3
 
 	const relatedContent = await Promise.all([
 		getRelatedContent(concepts[0], 5, content.id), // get enough for the right hand rail

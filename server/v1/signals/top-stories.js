@@ -1,6 +1,3 @@
-const es = require('@financial-times/n-es-client');
-const logger = require('@financial-times/n-logger').default;
-
 const getMostRelatedConcepts = require('../../lib/get-most-related-concepts');
 const getRelatedContent = require('../../lib/get-related-content');
 const toViewModel = require('../../lib/related-teasers-to-view-model');
@@ -16,7 +13,7 @@ module.exports = async (content, edition) => {
 		.filter(teaser => teaser.id !== content.id)
 
 	const topStoriesModel = {
-		title: `More from the front page`,
+		title: 'More from the front page',
 		titleHref: '/',
 		// TODO: think about how we track how often we _show_ recommendations with a particular signal
 		// and also what are the rival signals on the page at the same time
