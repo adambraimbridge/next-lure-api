@@ -18,24 +18,20 @@ smoke-test-local:
 test:
 	make verify
 
-ifeq ($(CIRCLE_BRANCH),master)
-	make coverage-report && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
-else
-	make unit-test
-endif
+# ifeq ($(CIRCLE_BRANCH),master)
+# 	make coverage-report && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+# else
+# 	make unit-test
+# endif
 
 run:
-	nht run --local
+	nht run --local --inspect
 
 deploy:
-	nht configure --vault
-	nht deploy
-	nht scale
+	nht ship -m --vault
 
 provision:
-	nht provision ${TEST_HOST}
-	nht configure ft-next-lure-api ${TEST_HOST} --vault --overrides "NODE_ENV=branch"
-	nht deploy ${TEST_HOST}
+	nht float -md --testapp ${TEST_HOST} --vault
 
 tidy:
-	nht destroy ${TEST_HOST}
+	# nht destroy ${TEST_HOST}

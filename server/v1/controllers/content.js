@@ -1,12 +1,23 @@
 const es = require('@financial-times/n-es-client');
 const logger = require('@financial-times/n-logger').default;
-const { relatedContent } = require('../feathers');
+const { relatedContent, topStories } = require('../signals');
 
 module.exports = async function (req, res, next) {
 
 	try {
+		const slots = req.query.slots ? req.query.slots.split(',') : ['rhr', 'onward']
 		const content = await es.get(req.params.contentId);
-		const recommendations = await relatedContent(content);
+		let recommendations;
+		// TODO - true should be replaced by a flag
+		if (res.locals.flags.lureTopStories && ['uk', 'international'].includes(req.get('ft-edition'))) {
+			recommendations = await topStories(content, {
+				edition: req.get('ft-edition'),
+				slots
+			});
+		} else {
+			recommendations = await relatedContent(content, {slots});
+		}
+		res.vary('ft-edition');
 		res.json(recommendations);
 	} catch (err) {
 		logger.error(err);

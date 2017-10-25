@@ -6,6 +6,12 @@
 
 > "There’s always a hot new fly. Precious few of these patterns are genuine breakthroughs destined to last for a hundred years, but more often they’re idle comments on existing traditions, explorations of half-baked theories, attempts to use new and interesting materials, to impress other tiers, or excuses to rename old patterns." ~ John Gierach
 
+## Architecture
+
+- heroku in 2 regions
+- fronted by fastly instance, lure-api.ft.com, generally only used for non-personalised, server <-> server communication
+- in addition, served directly on www.ft.com/lure for personalised responses
+
 ## Contract
 
 ### Request
@@ -20,7 +26,7 @@ e.g.
 - /concept/{uuid}?exclude[]={uuid},exclude[]={uuid}
 
 ### Response
-JSON response with the following properties. Those with * are required
+JSON response on which one or more of the following keys - `rhr`, `onward`, `interstitial`, `banner` - contain an object with the following properties. Those with * are required
 - *title
 - titleHref
 - concept (possibly with additional data to enable features related to the concept)
