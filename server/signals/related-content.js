@@ -42,7 +42,9 @@ module.exports = async (content, {slots}) => {
 				teasers: dedupeById(related2.teasers, related1.teasers.slice(0, 3)).slice(0, 3)
 			});
 		}
-		response.onward = onward.map(data => toViewModel(data));
+		if (onward.length) {
+			response.onward = onward.map(data => toViewModel(data));
+		}
 	}
 
 	if (slots.rhr) {

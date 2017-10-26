@@ -99,34 +99,166 @@ describe('related-content signal', () => {
 
 		describe('content', () => {
 			it('avoid recommending the current article!', () => {
-
+				sinon.stub(es, 'search').returns(Promise.resolve([{id: 1}]));
+				return subject({
+					id: 'parent-id',
+					curatedRelatedContent: [],
+					annotations: [{
+						predicate: 'http://www.ft.com/ontology/annotation/about',
+						id: 0
+					}]
+				}, {slots: {onward: true}})
+					.then(() => {
+						expect(es.search.args[0][0].query.bool.must_not[0].term.id).to.equal('parent-id');
+						es.search.restore();
+					})
 			});
 
 			it('maximum of 3 teasers per concept', () => {
-
+				let calls = 0;
+				sinon.stub(es, 'search').callsFake(() => {
+					return Promise.resolve(
+						[...Array(6)]
+							.map((v, i) => ({id: i + (6 * calls)}))
+					)
+				});
+				return subject({
+					id: 'parent-id',
+					curatedRelatedContent: [],
+					annotations: [{
+						predicate: 'http://www.ft.com/ontology/annotation/about',
+						id: 0
+					},{
+						predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
+						id: 1
+					}]
+				}, {slots: {onward: true}})
+					.then(result => {
+						expect(result.onward[0].recommendations.length).to.equal(3);
+						expect(result.onward[1].recommendations.length).to.equal(3);
+						es.search.restore();
+					})
 			});
 
 			it('dedupe teasers in second onward section', () => {
-
+				let calls = 0;
+				sinon.stub(es, 'search').callsFake(() => {
+					return Promise.resolve(
+						[...Array(6)]
+							.map((v, i) => ({id: i + (1 * calls)}))
+					)
+				});
+				return subject({
+					id: 'parent-id',
+					curatedRelatedContent: [],
+					annotations: [{
+						predicate: 'http://www.ft.com/ontology/annotation/about',
+						id: 0
+					},{
+						predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
+						id: 1
+					}]
+				}, {slots: {onward: true}})
+					.then(({onward: [onward1, onward2]}) => {
+						expect(onward1.recommendations).to.eql([ { id: 0 }, { id: 1 }, { id: 2 } ]);
+						expect(onward2.recommendations).to.eql([ { id: 3 }, { id: 4 }, { id: 5 } ]);
+						es.search.restore();
+					})
 			});
 
-			// don't show if no teasers
+			it('don\'t show if no teasers', () => {
+				sinon.stub(es, 'search').returns(Promise.resolve([]));
+				return subject({
+					id: 'parent-id',
+					curatedRelatedContent: [],
+					annotations: [{
+						predicate: 'http://www.ft.com/ontology/annotation/about',
+						id: 0
+					},{
+						predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
+						id: 1
+					}]
+				}, {slots: {onward: true}})
+					.then(result => {
+						expect(result).to.eql({});
+						es.search.restore();
+					})
+			});
 
-			it('output heading href for concepts', () => {
-
+			it('output heading & href for concepts', () => {
+				sinon.stub(es, 'search').returns(Promise.resolve([{id: 1}]));
+				return subject({
+					id: 'parent-id',
+					curatedRelatedContent: [],
+					annotations: [{
+						predicate: 'http://www.ft.com/ontology/annotation/about',
+						prefLabel: 'aboot',
+						preposition: 'on',
+						relativeUrl: '/aboot',
+						id: 0
+					},{
+						predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
+						prefLabel: 'primarily',
+						preposition: 'in',
+						relativeUrl: '/primarily',
+						id: 1
+					}]
+				}, {slots: {onward: true}})
+					.then(({onward: [onward1, onward2]}) => {
+						expect(onward1.title).to.equal('Latest on aboot');
+						expect(onward2.title).to.equal('Latest in primarily');
+						expect(onward1.titleHref).to.equal('/aboot');
+						expect(onward2.titleHref).to.equal('/primarily');
+						es.search.restore();
+					})
 			})
 
 			describe('tracking', () => {
+				before(() => sinon.stub(es, 'search').returns(Promise.resolve([{id: 1}])))
+				after(() => es.search.restore());
+
 				it('output correct tracking for about', () => {
+					return subject({
+						id: 'parent-id',
+						curatedRelatedContent: [],
+						annotations: [{
+							predicate: 'http://www.ft.com/ontology/annotation/about',
+							id: 0
+						}]
+					}, {slots: {onward: true}})
+						.then(({onward: [onward1]}) => {
+							expect(onward1.tracking).to.equal('about')
+						});
 
 				});
 
 				it('output correct tracking for isPrimarilyClassifiedBy', () => {
-
+					return subject({
+						id: 'parent-id',
+						curatedRelatedContent: [],
+						annotations: [{
+							predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
+							id: 1
+						}]
+					}, {slots: {onward: true}})
+						.then(({onward: [onward1]}) => {
+							expect(onward1.tracking).to.equal('isPrimarilyClassifiedBy')
+						});
 				});
 
 				it('output correct tracking for brand', () => {
-
+					return subject({
+						id: 'parent-id',
+						curatedRelatedContent: [],
+						annotations: [],
+						brandConcept: {
+							predicate: 'whatevs',
+							id: 1
+						}
+					}, {slots: {onward: true}})
+						.then(({onward: [onward1]}) => {
+							expect(onward1.tracking).to.equal('brand')
+						});
 				});
 
 			})
