@@ -3,6 +3,7 @@ const logger = require('@financial-times/n-logger').default;
 const { TEASER_PROPS } = require('../constants');
 
 module.exports = (concept, count, parentContentId) => {
+
 	return es.search({
 		_source: TEASER_PROPS,
 		query: {
