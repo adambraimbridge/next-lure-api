@@ -1,10 +1,10 @@
-const getMostRelatedConcepts = require('../../lib/get-most-related-concepts');
-const getRelatedContent = require('../../lib/get-related-content');
-const toViewModel = require('../../lib/related-teasers-to-view-model');
+const getMostRelatedConcepts = require('../lib/get-most-related-concepts');
+const getRelatedContent = require('../lib/get-related-content');
+const toViewModel = require('../lib/related-teasers-to-view-model');
 const es = require('@financial-times/n-es-client');
-const { TEASER_PROPS } = require('../../constants');
+const { TEASER_PROPS } = require('../constants');
 
-const { dedupeById } = require('../../lib/utils');
+const { dedupeById } = require('../lib/utils');
 
 const getCuratedContent = ids => ids.length ? es.mget({
 	docs: ids.map(id => ({
