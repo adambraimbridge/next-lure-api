@@ -21,13 +21,13 @@ module.exports = async (content, {edition, slots}) => {
 
 	const response = {};
 
-	if (slots.includes('rhr')) {
+	if (slots.rhr) {
 		response.rhr = Object.assign({
 			recommendations: topStories.slice(0, 5)
 		}, topStoriesModel);
 	}
 
-	if (slots.includes('onward')) {
+	if (slots.onward) {
 		const secondaryOnward = await getRelatedContent(concepts[0], 6, content.id);
 
 		response.onward = [

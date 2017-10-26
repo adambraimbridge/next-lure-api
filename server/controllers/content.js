@@ -6,7 +6,11 @@ module.exports = transformer => {
 	return async function (req, res, next) {
 
 		try {
-			const slots = req.query.slots ? req.query.slots.split(',') : ['rhr', 'onward']
+			const slots = req.query.slots ? req.query.slots.split(',')
+				.reduce((map, key) => {
+					map[key] = true;
+					return map;
+				}, {}) : {'rhr': true, 'onward': true};
 			const content = await es.get(req.params.contentId);
 			let recommendations;
 			// TODO - true should be replaced by a flag

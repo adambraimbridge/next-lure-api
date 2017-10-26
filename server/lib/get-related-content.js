@@ -19,6 +19,7 @@ module.exports = (concept, count, parentContentId) => {
 		size: count
 	})
 		.catch(err => {
+			console.log('EEEEEEEEEEE', err)
 			logger.error(err);
 			return [];
 		})
