@@ -1,10 +1,10 @@
-const getMostRelatedConcepts = require('../../lib/get-most-related-concepts');
-const getRelatedContent = require('../../lib/get-related-content');
-const toViewModel = require('../../lib/related-teasers-to-view-model');
+const getMostRelatedConcepts = require('../lib/get-most-related-concepts');
+const getRelatedContent = require('../lib/get-related-content');
+const toViewModel = require('../lib/related-teasers-to-view-model');
 const es = require('@financial-times/n-es-client');
-const { TEASER_PROPS } = require('../../constants');
+const { TEASER_PROPS } = require('../constants');
 
-const { dedupeById } = require('../../lib/utils');
+const { dedupeById } = require('../lib/utils');
 
 const getCuratedContent = ids => ids.length ? es.mget({
 	docs: ids.map(id => ({
@@ -15,6 +15,9 @@ const getCuratedContent = ids => ids.length ? es.mget({
 
 module.exports = async (content, {slots}) => {
 	const concepts = getMostRelatedConcepts(content);
+	if (!concepts) {
+		return
+	}
 	const [curated, related1, related2] = await Promise.all([
 		getCuratedContent(content.curatedRelatedContent.map(content => content.id)),
 		getRelatedContent(concepts[0], 5, content.id), // get enough for the right hand rail
