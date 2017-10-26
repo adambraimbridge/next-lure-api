@@ -15,6 +15,9 @@ const getCuratedContent = ids => ids.length ? es.mget({
 
 module.exports = async (content, {slots}) => {
 	const concepts = getMostRelatedConcepts(content);
+	if (!concepts) {
+		return
+	}
 	const [curated, related1, related2] = await Promise.all([
 		getCuratedContent(content.curatedRelatedContent.map(content => content.id)),
 		getRelatedContent(concepts[0], 5, content.id), // get enough for the right hand rail

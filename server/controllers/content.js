@@ -19,6 +19,9 @@ module.exports = transformer => {
 				recommendations = await relatedContent(content, {slots});
 			}
 			res.vary('ft-edition');
+			if (!recommendations) {
+				return res.status(404).end();
+			}
 			res.json(transformer(recommendations));
 		} catch (err) {
 			logger.error(err);
