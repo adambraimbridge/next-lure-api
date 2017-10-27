@@ -6,7 +6,6 @@ const dedupeById = require('../lib/dedupe-by-id');
 
 module.exports = async (content, {edition, slots}) => {
 	const concepts = getMostRelatedConcepts(content);
-
 	const topStories = topStoriesPoller.get(edition)
 		.filter(teaser => teaser.id !== content.id)
 
