@@ -181,7 +181,6 @@ describe('related-content signal', () => {
 			results.esSearch = [ { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 } ];
 			return subject({
 				id: 'parent-id',
-				curatedRelatedContent: [],
 				annotations: [{
 					predicate: 'http://www.ft.com/ontology/annotation/about',
 					id: 0

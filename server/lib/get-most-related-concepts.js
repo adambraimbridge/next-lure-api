@@ -1,4 +1,7 @@
 module.exports = content => {
+	if (!content.annotations) {
+		return undefined;
+	}
 	const mostRelatedConcepts = [
 		content.annotations.find(annotation => annotation.predicate === 'http://www.ft.com/ontology/annotation/about'),
 		content.annotations.find(annotation => annotation.predicate === 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy')

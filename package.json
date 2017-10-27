@@ -33,6 +33,7 @@
     "@financial-times/n-heroku-tools": "^6.30.0",
     "chai": "^4.1.2",
     "eslint": "^4.9.0",
+    "istanbul": "^0.4.5",
     "lintspaces-cli": "^0.6.0",
     "mocha": "^4.0.1",
     "proxyquire": "^1.8.0",

@@ -63,4 +63,9 @@ describe('get most related concepts', () => {
 		expect(result[0].id).to.equal(1);
 		expect(result.length).to.equal(1);
 	});
+
+	it('handle case where content has no annotations', () => {
+		const result = subject({});
+		expect(result).to.be.undefined;
+	})
 });
