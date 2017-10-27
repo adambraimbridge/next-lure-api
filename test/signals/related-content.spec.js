@@ -61,16 +61,17 @@ describe('related-content signal', () => {
 		});
 
 		it('avoid recommending the current article!', () => {
+			results.esSearch = [{id: 1}, {id: 2}];
 			return subject({
-				id: 'parent-id',
+				id: 1,
 				curatedRelatedContent: [],
 				annotations: [{
 					predicate: 'http://www.ft.com/ontology/annotation/about',
 					id: 0
 				}]
 			}, {slots: {onward: true}})
-				.then(() => {
-					expect(es.search.args[0][0].query.bool.must_not[0].term.id).to.equal('parent-id');
+				.then(result => {
+					expect(result.onward[0].recommendations).to.eql([{id: 2}]);
 				});
 		});
 

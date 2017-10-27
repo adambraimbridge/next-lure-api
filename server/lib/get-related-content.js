@@ -10,13 +10,10 @@ module.exports = (concept, count, parentContentId) => {
 			bool: {
 				must: [
 					{ term: { 'annotations.id': concept.id } }
-				],
-				must_not: [
-					{ term: { id: parentContentId } }
 				]
 			}
 		},
-		size: count
+		size: count + 1
 	}, {}, 500)
 		.catch(err => {
 			logger.error(err);
@@ -24,6 +21,6 @@ module.exports = (concept, count, parentContentId) => {
 		})
 		.then(teasers => ({
 			concept,
-			teasers
+			teasers: teasers.filter(teaser => teaser.id !== parentContentId).slice(0, count)
 		}));
 };
