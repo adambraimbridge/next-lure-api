@@ -267,25 +267,83 @@ describe('related-content signal', () => {
 	});
 
 	context('rhr slot', () => {
-		it('use about by default', () => {
+		before(() => sinon.stub(es, 'search').returns(Promise.resolve([{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}])))
+		after(() => es.search.restore());
 
+		it('use about by default', () => {
+			return subject({
+				id: 'parent-id',
+				curatedRelatedContent: [],
+				annotations: [{
+					predicate: 'http://www.ft.com/ontology/annotation/about',
+					id: 0
+				}, {
+					predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
+					id: 1
+				}]
+			}, {slots: {rhr: true}})
+				.then(result => {
+					expect(result.rhr.concept.id).to.equal(0);
+				})
 		});
 
 		it('fallback to isPrimarilyClassifiedBy ', () => {
-
+			return subject({
+				id: 'parent-id',
+				curatedRelatedContent: [],
+				annotations: [{
+					predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
+					id: 1
+				}]
+			}, {slots: {rhr: true}})
+				.then(result => {
+					expect(result.rhr.concept.id).to.equal(1);
+				})
 		});
 
 		it('fallback to brand ', () => {
-
+			return subject({
+				id: 'parent-id',
+				curatedRelatedContent: [],
+				annotations: [],
+				brandConcept: {
+					id: 2,
+					predicate: 'whatevs'
+				}
+			}, {slots: {rhr: true}})
+				.then(result => {
+					expect(result.rhr.concept.id).to.equal(2);
+				})
 		});
 
 		it('prefer curated related content and dedupe', () => {
-
+			sinon.stub(es, 'mget').returns([{id: 3}, {id: 6}])
+			return subject({
+				id: 'parent-id',
+				curatedRelatedContent: [{id: '3'}, {id: '6'}],
+				annotations: [{
+					predicate: 'http://www.ft.com/ontology/annotation/about',
+					id: 0
+				}]
+			}, {slots: {rhr: true}})
+				.then(result => {
+					expect(result.rhr.recommendations).to.eql([ { id: 3 }, { id: 6 }, { id: 1 }, { id: 2 }, { id: 4 } ]);
+					es.mget.restore();
+				})
 		});
 
 		it('handle case where no curatedRelatedContent', () => {
-
+			return subject({
+				id: 'parent-id',
+				curatedRelatedContent: [],
+				annotations: [{
+					predicate: 'http://www.ft.com/ontology/annotation/about',
+					id: 0
+				}]
+			}, {slots: {rhr: true}})
+				.then(result => {
+					expect(result.rhr.recommendations).to.eql([ { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 } ]);
+				})
 		});
-
 	});
 });
