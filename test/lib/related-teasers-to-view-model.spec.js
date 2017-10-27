@@ -1,78 +1,64 @@
+const {expect} = require('chai');
+const subject = require('../../server/lib/related-teasers-to-view-model');
+const fetchMock = require('fetch-mock');
+const sinon = require('sinon');
+const es = require('@financial-times/n-es-client');
 
-			// it('output heading & href for concepts', () => {
-			// 	sinon.stub(es, 'search').returns(Promise.resolve([{id: 1}]));
-			// 	return subject({
-			// 		id: 'parent-id',
-			// 		curatedRelatedContent: [],
-			// 		annotations: [{
-			// 			predicate: 'http://www.ft.com/ontology/annotation/about',
-			// 			prefLabel: 'aboot',
-			// 			preposition: 'on',
-			// 			relativeUrl: '/aboot',
-			// 			id: 0
-			// 		},{
-			// 			predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
-			// 			prefLabel: 'primarily',
-			// 			preposition: 'in',
-			// 			relativeUrl: '/primarily',
-			// 			id: 1
-			// 		}]
-			// 	}, {slots: {onward: true}})
-			// 		.then(({onward: [onward1, onward2]}) => {
-			// 			expect(onward1.title).to.equal('Latest on aboot');
-			// 			expect(onward2.title).to.equal('Latest in primarily');
-			// 			expect(onward1.titleHref).to.equal('/aboot');
-			// 			expect(onward2.titleHref).to.equal('/primarily');
-			// 			es.search.restore();
-			// 		})
-			// })
+describe('related teasers to view model', () => {
+	it('expose concept and recommendations concept', () => {
+		const concept = {
+			predicate: 'http://www.ft.com/ontology/annotation/about',
+			prefLabel: 'aboot',
+			preposition: 'on',
+			relativeUrl: '/aboot',
+			id: 0
+		};
+		const result = subject({
+			concept,
+			teasers: [{id: 1}]
+		});
+		expect(result.title).to.equal('Latest on aboot');
+		expect(result.titleHref).to.equal('/aboot');
+		expect(result.concept).to.eql(concept);
+		expect(result.tracking).to.exist;
+		expect(result.recommendations).to.eql([{id: 1}]);
+	})
 
-			// describe('tracking', () => {
-			// 	before(() => sinon.stub(es, 'search').returns(Promise.resolve([{id: 1}])))
-			// 	after(() => es.search.restore());
+	describe('tracking', () => {
 
-			// 	it('output correct tracking for about', () => {
-			// 		return subject({
-			// 			id: 'parent-id',
-			// 			curatedRelatedContent: [],
-			// 			annotations: [{
-			// 				predicate: 'http://www.ft.com/ontology/annotation/about',
-			// 				id: 0
-			// 			}]
-			// 		}, {slots: {onward: true}})
-			// 			.then(({onward: [onward1]}) => {
-			// 				expect(onward1.tracking).to.equal('about')
-			// 			});
+		it('output correct tracking for about', () => {
+			const result = subject({
+				concept: {
+					predicate: 'http://www.ft.com/ontology/annotation/about',
+					id: 0
+				},
+				teasers: [{id: 1}]
+			});
+			expect(result.tracking).to.equal('about')
+		});
 
-			// 	});
+		it('output correct tracking for isPrimarilyClassifiedBy', () => {
+			const result = subject({
+				concept: {
+					predicate: 'http://www.ft.com/ontology/annotation/isPrimarilyClassifiedBy',
+					id: 0
+				},
+				teasers: [{id: 1}]
+			});
+			expect(result.tracking).to.equal('isPrimarilyClassifiedBy')
+		});
 
-			// 	it('output correct tracking for isPrimarilyClassifiedBy', () => {
-			// 		return subject({
-			// 			id: 'parent-id',
-			// 			curatedRelatedContent: [],
-			// 			annotations: [{
-			// 				predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
-			// 				id: 1
-			// 			}]
-			// 		}, {slots: {onward: true}})
-			// 			.then(({onward: [onward1]}) => {
-			// 				expect(onward1.tracking).to.equal('isPrimarilyClassifiedBy')
-			// 			});
-			// 	});
+		it('output correct tracking for brand', () => {
+			const result = subject({
+				concept: {
+					predicate: 'whatevs',
+					id: 0
+				},
+				teasers: [{id: 1}]
+			});
+			expect(result.tracking).to.equal('brand')
+		});
 
-			// 	it('output correct tracking for brand', () => {
-			// 		return subject({
-			// 			id: 'parent-id',
-			// 			curatedRelatedContent: [],
-			// 			annotations: [],
-			// 			brandConcept: {
-			// 				predicate: 'whatevs',
-			// 				id: 1
-			// 			}
-			// 		}, {slots: {onward: true}})
-			// 			.then(({onward: [onward1]}) => {
-			// 				expect(onward1.tracking).to.equal('brand')
-			// 			});
-			// 	});
+	})
+})
 
-			// })
