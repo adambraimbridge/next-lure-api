@@ -1,9 +1,8 @@
+const topStoriesPoller = require('../data-sources/top-stories-poller');
 const getMostRelatedConcepts = require('../lib/get-most-related-concepts');
 const getRelatedContent = require('../lib/get-related-content');
 const toViewModel = require('../lib/related-teasers-to-view-model');
-const topStoriesPoller = require('../data-sources/top-stories-poller');
-
-const { dedupeById } = require('../lib/utils');
+const dedupeById = require('../lib/dedupe-by-id');
 
 module.exports = async (content, {edition, slots}) => {
 	const concepts = getMostRelatedConcepts(content);

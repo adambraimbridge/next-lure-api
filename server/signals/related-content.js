@@ -3,8 +3,7 @@ const getRelatedContent = require('../lib/get-related-content');
 const toViewModel = require('../lib/related-teasers-to-view-model');
 const es = require('@financial-times/n-es-client');
 const { TEASER_PROPS } = require('../constants');
-
-const { dedupeById } = require('../lib/utils');
+const dedupeById = require('../lib/dedupe-by-id');
 
 const getCuratedContent = ids => ids.length ? es.mget({
 	docs: ids.map(id => ({
@@ -48,6 +47,8 @@ module.exports = async (content, {slots}) => {
 	}
 
 	if (slots.rhr) {
+		// TODO differentiate in the tracking when there are curated links as well
+		// as related
 		response.rhr = toViewModel({
 			concept: related1.concept,
 			teasers: dedupeById(curated.concat(related1.teasers)).slice(0, 5)
