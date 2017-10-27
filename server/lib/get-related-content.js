@@ -17,9 +17,7 @@ module.exports = (concept, count, parentContentId) => {
 			}
 		},
 		size: count
-	}, {
-		timeout: 500
-	})
+	}, {}, 500)
 		.catch(err => {
 			logger.error(err);
 			return [];
