@@ -12,7 +12,7 @@ module.exports = transformer => {
 					return map;
 				}, {}) : {'rhr': true, 'onward': true};
 
-			const content = await es.get(req.params.contentId);
+			const content = await es.get(req.params.contentId, {timeout: 500});
 			let recommendations;
 			// TODO - true should be replaced by a flag
 			if (res.locals.flags.lureTopStories && ['uk', 'international'].includes(req.get('ft-edition'))) {
