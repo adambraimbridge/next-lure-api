@@ -27,5 +27,5 @@ module.exports = (concept, count, parentContentId) => {
 		.then(teasers => ({
 			concept,
 			teasers
-		}))
+		}));
 };

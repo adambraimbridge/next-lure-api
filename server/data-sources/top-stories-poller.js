@@ -21,13 +21,13 @@ const pollList = uuid => {
 				}))
 			});
 		}
-	})
-}
+	});
+};
 
 const pollers = {
 	uk: pollList('520ddb76-e43d-11e4-9e89-00144feab7de'),
 	international: pollList('b0d8e4fe-10ff-11e5-8413-00144feabdc0')
-}
+};
 
 
 module.exports = {
@@ -36,4 +36,4 @@ module.exports = {
 		pollers.international.start({ initialRequest: true });
 	},
 	get: region => pollers[region].getData()
-}
+};

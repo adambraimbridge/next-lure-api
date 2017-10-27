@@ -1,8 +1,5 @@
 const {expect} = require('chai');
 const subject = require('../../server/lib/get-most-related-concepts');
-const fetchMock = require('fetch-mock');
-const sinon = require('sinon');
-const es = require('@financial-times/n-es-client');
 
 describe('get most related concepts', () => {
 	it('use about and isPrimarilyClassifiedBy by default', () => {

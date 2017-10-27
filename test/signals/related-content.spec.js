@@ -3,7 +3,6 @@ const expect = chai.expect;
 chai.use(require('sinon-chai'));
 const proxyquire = require('proxyquire');
 
-const fetchMock = require('fetch-mock');
 const sinon = require('sinon');
 const es = require('@financial-times/n-es-client');
 
@@ -19,7 +18,7 @@ describe('related-content signal', () => {
 			predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
 			id: 1
 		}]
-	}
+	};
 	let results;
 
 	beforeEach(() => {
@@ -33,7 +32,7 @@ describe('related-content signal', () => {
 		});
 	});
 
-	afterEach(() => es.search.restore())
+	afterEach(() => es.search.restore());
 
 	context('onward slot', () => {
 
@@ -42,12 +41,12 @@ describe('related-content signal', () => {
 				id: 'parent-id',
 				curatedRelatedContent: []
 			}, {slots: {onward: true}})
-				.then(result => {
+				.then(() => {
 					expect(stubs.getMostRelatedConcepts).calledWith({
 						id: 'parent-id',
 						curatedRelatedContent: []
 					});
-				})
+				});
 		});
 
 		it('return empty object if no concepts available', () => {
@@ -58,7 +57,7 @@ describe('related-content signal', () => {
 			}, {slots: {onward: true}})
 				.then(result => {
 					expect(result).to.eql({});
-				})
+				});
 		});
 
 		it('avoid recommending the current article!', () => {
@@ -72,7 +71,7 @@ describe('related-content signal', () => {
 			}, {slots: {onward: true}})
 				.then(() => {
 					expect(es.search.args[0][0].query.bool.must_not[0].term.id).to.equal('parent-id');
-				})
+				});
 		});
 
 		it('maximum of 3 teasers per concept', () => {
@@ -82,7 +81,7 @@ describe('related-content signal', () => {
 				return Promise.resolve(
 					[...Array(6)]
 						.map((v, i) => ({id: i + (6 * calls)}))
-				)
+				);
 			});
 			return subject({
 				id: 'parent-id',
@@ -98,7 +97,7 @@ describe('related-content signal', () => {
 				.then(result => {
 					expect(result.onward[0].recommendations.length).to.equal(3);
 					expect(result.onward[1].recommendations.length).to.equal(3);
-				})
+				});
 		});
 
 		it('dedupe teasers in second onward section', () => {
@@ -108,7 +107,7 @@ describe('related-content signal', () => {
 				return Promise.resolve(
 					[...Array(6)]
 						.map((v, i) => ({id: i + (1 * calls)}))
-				)
+				);
 			});
 			return subject({
 				id: 'parent-id',
@@ -124,7 +123,7 @@ describe('related-content signal', () => {
 				.then(({onward: [onward1, onward2]}) => {
 					expect(onward1.recommendations).to.eql([ { id: 0 }, { id: 1 }, { id: 2 } ]);
 					expect(onward2.recommendations).to.eql([ { id: 3 }, { id: 4 }, { id: 5 } ]);
-				})
+				});
 		});
 
 		it('don\'t show if no teasers', () => {
@@ -142,7 +141,7 @@ describe('related-content signal', () => {
 			}, {slots: {onward: true}})
 				.then(result => {
 					expect(result).to.eql({});
-				})
+				});
 		});
 	});
 
@@ -153,12 +152,12 @@ describe('related-content signal', () => {
 				id: 'parent-id',
 				curatedRelatedContent: []
 			}, {slots: {onward: true}})
-				.then(result => {
+				.then(() => {
 					expect(stubs.getMostRelatedConcepts).calledWith({
 						id: 'parent-id',
 						curatedRelatedContent: []
 					});
-				})
+				});
 		});
 
 		it('prefer curated related content and dedupe', () => {
@@ -175,7 +174,7 @@ describe('related-content signal', () => {
 				.then(result => {
 					expect(result.rhr.recommendations).to.eql([ { id: 3 }, { id: 6 }, { id: 1 }, { id: 2 }, { id: 4 } ]);
 					es.mget.restore();
-				})
+				});
 		});
 
 		it('handle case where no curatedRelatedContent', () => {
@@ -190,7 +189,7 @@ describe('related-content signal', () => {
 			}, {slots: {rhr: true}})
 				.then(result => {
 					expect(result.rhr.recommendations).to.eql([ { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 } ]);
-				})
+				});
 		});
 	});
 });

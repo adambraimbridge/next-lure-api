@@ -10,4 +10,4 @@ module.exports = [{
 		'ft-flags': 'lureTopStories',
 		'ft-edition': 'international'
 	}
-}]
+}];

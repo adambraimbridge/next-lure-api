@@ -3,7 +3,6 @@ const expect = chai.expect;
 chai.use(require('sinon-chai'));
 const proxyquire = require('proxyquire');
 
-const fetchMock = require('fetch-mock');
 const sinon = require('sinon');
 const es = require('@financial-times/n-es-client');
 
@@ -21,14 +20,14 @@ const getMockArgs = (sandbox, headers = {}) => {
 		vary: sandbox.stub(),
 		status: sandbox.stub().returns({end: () => null}),
 		json: sandbox.stub()
-	}]
-}
+	}];
+};
 
-describe.only('content controller', () => {
+describe('content controller', () => {
 	let controller;
 	let transform;
 	let sandbox;
-	let signals;
+	let signalStubs;
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
 		transform = sandbox.stub().callsFake(data => data);
@@ -44,7 +43,7 @@ describe.only('content controller', () => {
 		})(transform);
 	});
 
-	afterEach(() => sandbox.restore())
+	afterEach(() => sandbox.restore());
 
 	it('fetch content', async () => {
 		const mocks = getMockArgs(sandbox);
@@ -75,7 +74,7 @@ describe.only('content controller', () => {
 	it('respond with 404 if no recommendations found', async () => {
 		const mocks = getMockArgs(sandbox);
 		signalStubs = {
-			relatedContent: sandbox.stub().callsFake(async (content, {slots}) => undefined)
+			relatedContent: sandbox.stub().callsFake(async () => undefined)
 		};
 		controller = proxyquire('../../server/controllers/content', {
 			'../signals': signalStubs

@@ -1,7 +1,7 @@
 const getTrackablePredicate = concept => {
 	const predicate = concept.predicate.split('/').pop();
 	return ['about', 'isPrimarilyClassifiedBy'].includes(predicate) ? predicate : 'brand';
-}
+};
 
 module.exports = ({concept, teasers}) => ({
 	title: `Latest ${concept.preposition} ${concept.prefLabel}`,

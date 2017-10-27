@@ -1,8 +1,5 @@
 const {expect} = require('chai');
 const subject = require('../../server/lib/related-teasers-to-view-model');
-const fetchMock = require('fetch-mock');
-const sinon = require('sinon');
-const es = require('@financial-times/n-es-client');
 
 describe('related teasers to view model', () => {
 	it('expose concept and recommendations concept', () => {
@@ -22,7 +19,7 @@ describe('related teasers to view model', () => {
 		expect(result.concept).to.eql(concept);
 		expect(result.tracking).to.exist;
 		expect(result.recommendations).to.eql([{id: 1}]);
-	})
+	});
 
 	describe('tracking', () => {
 
@@ -34,7 +31,7 @@ describe('related teasers to view model', () => {
 				},
 				teasers: [{id: 1}]
 			});
-			expect(result.tracking).to.equal('about')
+			expect(result.tracking).to.equal('about');
 		});
 
 		it('output correct tracking for isPrimarilyClassifiedBy', () => {
@@ -45,7 +42,7 @@ describe('related teasers to view model', () => {
 				},
 				teasers: [{id: 1}]
 			});
-			expect(result.tracking).to.equal('isPrimarilyClassifiedBy')
+			expect(result.tracking).to.equal('isPrimarilyClassifiedBy');
 		});
 
 		it('output correct tracking for brand', () => {
@@ -56,9 +53,8 @@ describe('related teasers to view model', () => {
 				},
 				teasers: [{id: 1}]
 			});
-			expect(result.tracking).to.equal('brand')
+			expect(result.tracking).to.equal('brand');
 		});
 
-	})
-})
-
+	});
+});

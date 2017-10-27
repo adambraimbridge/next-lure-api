@@ -7,7 +7,7 @@ const app = express({
 	systemCode: 'next-lure-api',
 	withFlags: true,
 	healthChecks: []
-})
+});
 
 app.get('/__gtg', (req, res) => res.sendStatus(200));
 

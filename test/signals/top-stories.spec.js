@@ -3,7 +3,6 @@ const expect = chai.expect;
 chai.use(require('sinon-chai'));
 const proxyquire = require('proxyquire');
 
-const fetchMock = require('fetch-mock');
 const sinon = require('sinon');
 const es = require('@financial-times/n-es-client');
 const topStoriesPoller = require('../../server/data-sources/top-stories-poller');
@@ -18,7 +17,7 @@ describe('top-stories signal', () => {
 			predicate: 'http://www.ft.com/ontology/annotation/about',
 			id: 0
 		}]
-	}
+	};
 	let results;
 
 	beforeEach(() => {
@@ -36,30 +35,26 @@ describe('top-stories signal', () => {
 	afterEach(() => {
 		es.search.restore();
 		topStoriesPoller.get.restore();
-	})
-
-	it('can get top stories data for uk edition', () => {
-		return subject({
-			id: 'parent-id',
-			curatedRelatedContent: []
-		}, {slots: {onward: true}, edition: 'uk'})
-			.then(result => {
-				expect(topStoriesPoller.get).calledWith('uk');
-			})
 	});
 
-	it('can get top stories data for international edition', () => {
-		return subject({
+	it('can get top stories data for uk edition', async () => {
+		await subject({
 			id: 'parent-id',
 			curatedRelatedContent: []
-		}, {slots: {onward: true}, edition: 'international'})
-			.then(result => {
-				expect(topStoriesPoller.get).calledWith('international');
-			})
+		}, {slots: {onward: true}, edition: 'uk'});
+		expect(topStoriesPoller.get).calledWith('uk');
+	});
+
+	it('can get top stories data for international edition', async () => {
+		await subject({
+			id: 'parent-id',
+			curatedRelatedContent: []
+		}, {slots: {onward: true}, edition: 'international'});
+		expect(topStoriesPoller.get).calledWith('international');
 	});
 
 	context('onward slot', () => {
-		let result
+		let result;
 		beforeEach(() => {
 			return subject({
 				id: 'parent-id',
@@ -83,7 +78,7 @@ describe('top-stories signal', () => {
 	});
 
 	context('rhr slot', () => {
-		let result
+		let result;
 		beforeEach(() => {
 			return subject({
 				id: 'parent-id',

@@ -23,7 +23,7 @@ module.exports = async (content, {slots}) => {
 		slots.rhr ? getCuratedContent(content.curatedRelatedContent.map(content => content.id)) : Promise.resolve([]),
 		getRelatedContent(concepts[0], 5, content.id), // get enough for the right hand rail
 		( slots.onward && concepts[1] ) ? getRelatedContent(concepts[1], 6, content.id) : Promise.resolve({teasers: []}) // get enough so that if there is an overlap pf 3 with concepts[0], there will still be some left
-	])
+	]);
 
 	const response = {};
 
@@ -57,4 +57,4 @@ module.exports = async (content, {slots}) => {
 
 	return response;
 
-}
+};
