@@ -17,7 +17,7 @@ module.exports = (concept, count, parentContentId) => {
 			}
 		},
 		size: count
-	})
+	}, {}, 500)
 		.catch(err => {
 			logger.error(err);
 			return [];
@@ -25,5 +25,5 @@ module.exports = (concept, count, parentContentId) => {
 		.then(teasers => ({
 			concept,
 			teasers
-		}))
+		}));
 };

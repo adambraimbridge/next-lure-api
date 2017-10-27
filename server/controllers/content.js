@@ -6,8 +6,13 @@ module.exports = transformer => {
 	return async function (req, res, next) {
 
 		try {
-			const slots = req.query.slots ? req.query.slots.split(',') : ['rhr', 'onward']
-			const content = await es.get(req.params.contentId);
+			const slots = req.query.slots ? req.query.slots.split(',')
+				.reduce((map, key) => {
+					map[key] = true;
+					return map;
+				}, {}) : {'rhr': true, 'onward': true};
+
+			const content = await es.get(req.params.contentId, {}, 500);
 			let recommendations;
 			// TODO - true should be replaced by a flag
 			if (res.locals.flags.lureTopStories && ['uk', 'international'].includes(req.get('ft-edition'))) {
@@ -26,16 +31,11 @@ module.exports = transformer => {
 		} catch (err) {
 			logger.error(err);
 
-			// if(err.name === NoRelatedResultsException.NAME) {
-			// 	res.status(200).end();
-			// } else if (err instanceof fetchres.ReadTimeoutError) {
-			// 	res.status(500).end();
-			// } else if (fetchres.originatedError(err)) {
-			// 	res.status(404).end();
-			// } else {
-				next(err);
-			// }
+			if (/network timeout at: https:\/\/search-next-elasticsearch/.test(err.message)) {
+				res.status(504).end();
+			}
+			next(err);
 		}
 
 	};
-}
+};

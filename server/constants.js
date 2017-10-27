@@ -44,4 +44,4 @@ module.exports = {
 		'genreConcept.relativeUrl',
 		'genreConcept.directType'
 	]
-}
+};
