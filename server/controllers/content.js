@@ -11,6 +11,7 @@ module.exports = transformer => {
 					map[key] = true;
 					return map;
 				}, {}) : {'rhr': true, 'onward': true};
+
 			const content = await es.get(req.params.contentId);
 			let recommendations;
 			// TODO - true should be replaced by a flag
