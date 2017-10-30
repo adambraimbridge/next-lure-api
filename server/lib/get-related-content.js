@@ -6,13 +6,7 @@ module.exports = (concept, count, parentContentId) => {
 
 	return es.search({
 		_source: TEASER_PROPS,
-		query: {
-			bool: {
-				must: [
-					{ term: { 'annotations.id': concept.id } }
-				]
-			}
-		},
+		query: { term: { 'annotations.id': concept.id } },
 		size: count + 1
 	}, {}, 500)
 		.catch(err => {
