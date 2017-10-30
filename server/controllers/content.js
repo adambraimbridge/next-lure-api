@@ -32,7 +32,7 @@ module.exports = transformer => {
 			logger.error(err);
 
 			if (/network timeout at: https:\/\/search-next-elasticsearch/.test(err.message)) {
-				res.status(504).end();
+				return res.status(504).end();
 			}
 			next(err);
 		}
