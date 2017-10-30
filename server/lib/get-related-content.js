@@ -8,7 +8,7 @@ module.exports = (concept, count, parentContentId) => {
 		_source: TEASER_PROPS,
 		query: { term: { 'annotations.id': concept.id } },
 		size: count + 1
-	}, {}, 500)
+	}, 500)
 		.catch(err => {
 			logger.error(err);
 			return [];

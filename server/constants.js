@@ -4,7 +4,7 @@ module.exports = {
 
 		'relativeUrl',
 		'title',
-		'promotionalTitle',
+		'alternativeTitles.promotionalTitle',
 
 		'publishedDate',
 		'firstPublishedDate',
