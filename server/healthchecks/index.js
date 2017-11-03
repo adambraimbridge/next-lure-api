@@ -34,7 +34,7 @@ function pingServices () {
 				throw new Error(`api.ft.com/lists returned a ${response.statusCode}`);
 			}
 		})
-		.then((json) => { statuses.lists = true })
+		.then((json) => { statuses.lists = true; })
 		.catch(() => { statuses.lists = false; });
 }
 

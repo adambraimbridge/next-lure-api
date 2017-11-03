@@ -1,6 +1,6 @@
 const es = require('@financial-times/n-es-client');
 const logger = require('@financial-times/n-logger').default;
-const { TEASER_PROPS } = require('../constants');
+const TEASER_PROPS = require('@financial-times/n-teaser').esQuery;
 
 module.exports = (concept, count, parentContentId) => {
 
