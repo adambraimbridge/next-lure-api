@@ -1,12 +1,15 @@
-	const express = require('@financial-times/n-express');
+const express = require('@financial-times/n-express');
 
 const topStoriesPoller = require('./data-sources/top-stories-poller');
 topStoriesPoller.init();
 
+const healthchecks = require('./healthchecks');
+healthchecks.init();
+
 const app = express({
 	systemCode: 'next-lure-api',
 	withFlags: true,
-	healthChecks: []
+	healthChecks: healthchecks.checks
 });
 
 app.get('/__gtg', (req, res) => res.sendStatus(200));
