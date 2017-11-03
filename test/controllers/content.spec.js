@@ -17,6 +17,9 @@ const getMockArgs = (sandbox, headers = {}) => {
 		locals: {
 			flags: {}
 		},
+		FT_NO_CACHE: 'no cache',
+		FT_HOUR_CACHE: 'hour cache',
+		set: sandbox.stub(),
 		vary: sandbox.stub(),
 		status: sandbox.stub().returns({end: () => null}),
 		json: sandbox.stub()

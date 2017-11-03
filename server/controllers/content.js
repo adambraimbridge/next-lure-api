@@ -27,6 +27,8 @@ module.exports = transformer => {
 			if (!recommendations) {
 				return res.status(404).end();
 			}
+			res.set('Cache-Control', res.FT_NO_CACHE);
+			res.set('Surrrogate-Control', res.FT_HOUR_CACHE);
 			res.json(transformer(recommendations));
 		} catch (err) {
 			logger.error(err);
