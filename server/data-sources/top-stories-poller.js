@@ -1,6 +1,6 @@
 const es = require('@financial-times/n-es-client');
 const Poller = require('ft-poller');
-const { TEASER_PROPS } = require('../constants');
+const TEASER_PROPS = require('@financial-times/n-teaser').esQuery;
 
 const pollList = uuid => {
 	return new Poller({
