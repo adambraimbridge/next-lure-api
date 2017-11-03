@@ -11,7 +11,7 @@ const statuses = {
 };
 
 function pingServices () {
-	signedFetch('https://next-elastic.ft.com/contet/item/_search?size=0')
+	signedFetch('https://next-elastic.ft.com/content/item/_search?size=0')
 		.then((response) => {
 			if (response.ok) {
 				return response.json();
@@ -44,7 +44,7 @@ function elasticStatus () {
 			name: 'elasticsearch responded successfully.',
 			ok: statuses.elastic,
 			businessImpact: 'Users may not see related content recommendations.',
-			severity: 2,
+			severity: 1,
 			technicalSummary: 'Runs a search against the content index in elastic search',
 			panicGuide: 'Info on what to do in case of elastic search failure is in the next-article runbook'
 		})
