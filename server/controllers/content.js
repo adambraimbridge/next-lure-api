@@ -24,11 +24,14 @@ module.exports = transformer => {
 				recommendations = await relatedContent(content, {slots});
 			}
 			res.vary('ft-edition');
+			res.set('Cache-Control', res.FT_NO_CACHE);
+
 			if (!recommendations) {
+				res.set('Surrogate-Control', res.FT_SHORT_CACHE);
 				return res.status(404).end();
 			}
-			res.set('Cache-Control', res.FT_NO_CACHE);
-			res.set('Surrrogate-Control', res.FT_HOUR_CACHE);
+
+			res.set('Surrogate-Control', res.FT_HOUR_CACHE);
 			res.json(transformer(recommendations));
 		} catch (err) {
 			logger.error({event: 'RECOMMENDATION_FAILURE', contentId: req.params.contentId}, err);
