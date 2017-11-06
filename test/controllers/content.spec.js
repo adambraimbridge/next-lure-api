@@ -54,6 +54,13 @@ describe('content controller', () => {
 		expect(es.get).calledWith('content-id');
 	});
 
+	it('respond with 404 if no content found', async () => {
+		const mocks = getMockArgs(sandbox);
+		es.get.throws({status: 404});
+		await controller(...mocks);
+		expect(mocks[1].status).calledWith(404);
+	});
+
 	it('vary on ft-edition header', async () => {
 		const mocks = getMockArgs(sandbox);
 		await controller(...mocks);
