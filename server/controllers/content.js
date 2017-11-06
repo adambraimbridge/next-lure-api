@@ -31,9 +31,9 @@ module.exports = transformer => {
 			res.set('Surrrogate-Control', res.FT_HOUR_CACHE);
 			res.json(transformer(recommendations));
 		} catch (err) {
-			logger.error(err);
+			logger.error({event: 'RECOMMENDATION_FAILURE', contentId: req.params.contentId}, err);
 
-			if (/network timeout at: https:\/\/search-next-elasticsearch/.test(err.message)) {
+			if (/(network|response) timeout at: https:\/\/search-next-elasticsearch/.test(err.message)) {
 				return res.status(504).end();
 			}
 			next(err);
