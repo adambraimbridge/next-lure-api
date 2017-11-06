@@ -24,6 +24,7 @@ module.exports = transformer => {
 				if (err.status === 404) {
 					return fourOhFour(res);
 				}
+				throw err;
 			}
 
 			let recommendations;
