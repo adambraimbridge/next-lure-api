@@ -10,7 +10,7 @@ module.exports = async (content, {edition, slots}) => {
 		.filter(teaser => teaser.id !== content.id);
 
 	const topStoriesModel = {
-		title: 'More from the front page',
+		title: 'Top stories',
 		titleHref: '/',
 		// TODO: think about how we track how often we _show_ recommendations with a particular signal
 		// and also what are the rival signals on the page at the same time
