@@ -1,4 +1,5 @@
 module.exports = {
 	relatedContent: require('./related-content'),
-	topStories: require('./top-stories')
+	topStories: require('./top-stories'),
+	timeRelevantRecommendations: require('./time-relevant-recommendations')
 };
