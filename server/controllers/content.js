@@ -1,21 +1,27 @@
 const es = require('@financial-times/n-es-client');
 const logger = require('@financial-times/n-logger').default;
-const { relatedContent, topStories } = require('../signals');
+const { relatedContent, topStories, timeRelevantRecommendations } = require('../signals');
 
 const fourOhFour = res => {
 	res.set('Surrogate-Control', res.FT_SHORT_CACHE);
 	return res.status(404).end();
 }
 
+const convertToDate = accessTimeString => {
+	const milliseconds = parseFloat(accessTimeString);
+	return new Date(milliseconds);
+}
+
 module.exports = transformer => {
 	return async function (req, res, next) {
-
 		try {
 			const slots = req.query.slots ? req.query.slots.split(',')
 				.reduce((map, key) => {
 					map[key] = true;
 					return map;
 				}, {}) : {'rhr': true, 'onward': true};
+
+			const accessTime = req.query.accessTime ? convertToDate(req.query.accessTime) : undefined;
 
 			let content;
 			try {
@@ -34,6 +40,8 @@ module.exports = transformer => {
 					edition: req.get('ft-edition'),
 					slots
 				});
+			} else if (res.locals.flags.lureTimeRelevantRecommendations && accessTime) {
+				recommendations = await timeRelevantRecommendations(content, {slots}, accessTime);
 			} else {
 				recommendations = await relatedContent(content, {slots});
 			}
