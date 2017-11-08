@@ -7,10 +7,6 @@ const fourOhFour = res => {
 	return res.status(404).end();
 };
 
-const convertToDate = accessTimeString => {
-	const milliseconds = parseFloat(accessTimeString);
-	return new Date(milliseconds);
-};
 
 module.exports = transformer => {
 	return async function (req, res, next) {
@@ -21,7 +17,7 @@ module.exports = transformer => {
 					return map;
 				}, {}) : {'rhr': true, 'onward': true};
 
-			const accessTime = req.query.accessTime ? convertToDate(req.query.accessTime) : undefined;
+			const accessTimeHr = req.query.accessTimeHr ? req.query.accessTimeHr : undefined;
 
 			let content;
 			try {
@@ -40,8 +36,8 @@ module.exports = transformer => {
 					edition: req.get('ft-edition'),
 					slots
 				});
-			} else if (res.locals.flags.lureTimeRelevantRecommendations && accessTime) {
-				recommendations = await timeRelevantRecommendations(content, {slots}, accessTime);
+			} else if (res.locals.flags.lureTimeRelevantRecommendations && accessTimeHr) {
+				recommendations = await timeRelevantRecommendations(content, {slots}, accessTimeHr);
 			} else {
 				recommendations = await relatedContent(content, {slots});
 			}

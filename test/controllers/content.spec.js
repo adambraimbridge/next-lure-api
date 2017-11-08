@@ -132,9 +132,9 @@ describe('content controller', () => {
 
 
 	context('Time relevant recommendations', () => {
-		it('call time relevant recommendations when lureTimeRelevantRecommendations flag is on and accessTime set', async () => {
+		it('call time relevant recommendations when lureTimeRelevantRecommendations flag is on and accessTimeHr set', async () => {
 			const mocks = getMockArgs(sandbox);
-			mocks[0].query.accessTime = '1510152400924';
+			mocks[0].query.accessTimeHr = '12';
 			mocks[1].locals.flags.lureTimeRelevantRecommendations = true;
 			await controller(...mocks);
 			expect(signalStubs.relatedContent.notCalled).to.be.true;
