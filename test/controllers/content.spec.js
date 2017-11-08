@@ -40,7 +40,7 @@ describe('content controller', () => {
 		signalStubs = {
 			topStories: sandbox.stub().callsFake(async (content, {slots}) => slots),
 			relatedContent: sandbox.stub().callsFake(async (content, {slots}) => slots),
-			timeRelevantRecommendations: sandbox.stub().callsFake(async (content, {slots}) => slots)
+			timeRelevantRecommendations: sandbox.stub().callsFake(async (content, {slots}, accessTimeHr) => slots)
 		};
 		controller = proxyquire('../../server/controllers/content', {
 			'../signals': signalStubs
