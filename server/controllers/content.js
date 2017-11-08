@@ -5,12 +5,12 @@ const { relatedContent, topStories, timeRelevantRecommendations } = require('../
 const fourOhFour = res => {
 	res.set('Surrogate-Control', res.FT_SHORT_CACHE);
 	return res.status(404).end();
-}
+};
 
 const convertToDate = accessTimeString => {
 	const milliseconds = parseFloat(accessTimeString);
 	return new Date(milliseconds);
-}
+};
 
 module.exports = transformer => {
 	return async function (req, res, next) {
