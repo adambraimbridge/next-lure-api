@@ -15,7 +15,7 @@ module.exports = async (content, {slots}, accessTimeHr) => {
 			if (slots.rhr) {
 			}
 
-			if (slots.rhr) {
+			if (slots.onward) {
 			}
 			break;
 
@@ -30,7 +30,7 @@ module.exports = async (content, {slots}, accessTimeHr) => {
 			if (slots.rhr) {
 			}
 
-			if (slots.rhr) {
+			if (slots.onward) {
 			}
 			break;
 		default:
