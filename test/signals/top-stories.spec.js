@@ -66,7 +66,7 @@ describe('top-stories signal', () => {
 		it('use top stories data, excluding parent id, for first slot', () => {
 			const onward = result.onward[0];
 			expect(onward.recommendations).to.eql([{id: 1}, {id: 2}, {id: 3}]);
-			expect(onward.title).to.equal('Top stories');
+			expect(onward.title).to.equal('More from the homepage');
 			expect(onward.titleHref).to.equal('/');
 			expect(onward.tracking).to.equal('top-stories');
 		});
@@ -89,7 +89,7 @@ describe('top-stories signal', () => {
 
 		it('use top stories data, excluding parent id', () => {
 			expect(result.rhr.recommendations).to.eql([{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}]);
-			expect(result.rhr.title).to.equal('Top stories');
+			expect(result.rhr.title).to.equal('More from the homepage');
 			expect(result.rhr.titleHref).to.equal('/');
 			expect(result.rhr.tracking).to.equal('top-stories');
 		});

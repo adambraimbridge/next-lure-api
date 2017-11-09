@@ -33,10 +33,10 @@ JSON response on which one or more of the following keys - `rhr`, `onward`, `int
 - positionHint
 - styling/emphasisHint
 - *recommendations: array, Each item may be:
-  - a json to generate a teaser
-  - a json to generate an n-concept card
-  - ...
-  In addition, each item must contain a property, `recommendationType`, detailing what kind of thing it is the data for. Some kind of styling hint may also be useful. Each item may contain a `adviceText` property to explain to the user why it is being recommended. Each item must send data for use in tracking the reason[s] a recommendation has been shown
+	- a json to generate a teaser
+	- a json to generate an n-concept card
+	- ...
+	In addition, each item must contain a property, `recommendationType`, detailing what kind of thing it is the data for. Some kind of styling hint may also be useful. Each item may contain a `adviceText` property to explain to the user why it is being recommended. Each item must send data for use in tracking the reason[s] a recommendation has been shown
 
 
 May (in v1, for backwards compatibility) return an array of objects like the above
