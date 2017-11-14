@@ -17,7 +17,7 @@ module.exports = transformer => {
 					return map;
 				}, {}) : {'rhr': true, 'onward': true};
 
-			const localTimeHr = req.query.localTimeHr ? req.query.localTimeHr : undefined;
+			const localTimeHour = req.query.localTimeHour ? req.query.localTimeHour : undefined;
 
 			let content;
 			try {
@@ -30,14 +30,20 @@ module.exports = transformer => {
 			}
 
 			let recommendations;
+			const ftEdition = ['uk', 'international'].includes(req.get('ft-edition')) ? req.get('ft-edition') : undefined;
+
 			// TODO - true should be replaced by a flag
-			if (res.locals.flags.lureTopStories && ['uk', 'international'].includes(req.get('ft-edition'))) {
+			if (res.locals.flags.lureTopStories && ftEdition) {
 				recommendations = await topStories(content, {
-					edition: req.get('ft-edition'),
+					edition: ftEdition,
 					slots
 				});
-			} else if (res.locals.flags.lureTimeRelevantRecommendations && localTimeHr) {
-				recommendations = await timeRelevantRecommendations(content, localTimeHr, {slots});
+			} else if (res.locals.flags.lureTimeRelevantRecommendations && localTimeHour && ftEdition) {
+				recommendations = await timeRelevantRecommendations(content, {
+					edition: ftEdition,
+					localTimeHour: localTimeHour,
+					slots
+				});
 			} else {
 				recommendations = await relatedContent(content, {slots});
 			}

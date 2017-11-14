@@ -1,6 +1,8 @@
-module.exports = async (content, localTimeHr, {slots}) => {
+// TODO add edition as an argument like below, I couldn't do that before acutually using the edition because it causes a eslint error... X-(
+// module.exports = async (content, {edition, localTimeHour, slots}) => {
+module.exports = async (content, {localTimeHour, slots}) => {
 
-	const ampm = parseFloat(localTimeHr) > 12 ? 'pm' : 'am';
+	const ampm = parseFloat(localTimeHour) > 12 ? 'pm' : 'am';
 	const response = {};
 
 	switch (ampm) {
