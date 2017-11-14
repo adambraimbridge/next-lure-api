@@ -17,7 +17,7 @@ module.exports = transformer => {
 					return map;
 				}, {}) : {'rhr': true, 'onward': true};
 
-			const accessTimeHr = req.query.accessTimeHr ? req.query.accessTimeHr : undefined;
+			const localTimeHr = req.query.localTimeHr ? req.query.localTimeHr : undefined;
 
 			let content;
 			try {
@@ -36,8 +36,8 @@ module.exports = transformer => {
 					edition: req.get('ft-edition'),
 					slots
 				});
-			} else if (res.locals.flags.lureTimeRelevantRecommendations && accessTimeHr) {
-				recommendations = await timeRelevantRecommendations(content, {slots}, accessTimeHr);
+			} else if (res.locals.flags.lureTimeRelevantRecommendations && localTimeHr) {
+				recommendations = await timeRelevantRecommendations(content, localTimeHr, {slots});
 			} else {
 				recommendations = await relatedContent(content, {slots});
 			}

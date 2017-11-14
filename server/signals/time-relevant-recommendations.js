@@ -1,6 +1,6 @@
-module.exports = async (content, {slots}, accessTimeHr) => {
+module.exports = async (content, localTimeHr, {slots}) => {
 
-	const ampm = parseFloat(accessTimeHr) > 12 ? 'pm' : 'am';
+	const ampm = parseFloat(localTimeHr) > 12 ? 'pm' : 'am';
 	const response = {};
 
 	switch (ampm) {

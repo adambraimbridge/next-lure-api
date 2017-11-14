@@ -40,7 +40,7 @@ describe('content controller', () => {
 		signalStubs = {
 			topStories: sandbox.stub().callsFake(async (content, {slots}) => slots),
 			relatedContent: sandbox.stub().callsFake(async (content, {slots}) => slots),
-			timeRelevantRecommendations: sandbox.stub().callsFake(async (content, {slots}, accessTimeHr) => slots)
+			timeRelevantRecommendations: sandbox.stub().callsFake(async (content, localTimeHr, {slots}) => slots)
 		};
 		controller = proxyquire('../../server/controllers/content', {
 			'../signals': signalStubs
@@ -127,19 +127,27 @@ describe('content controller', () => {
 			expect(signalStubs.relatedContent.calledOnce).to.be.true;
 			expect(signalStubs.topStories.notCalled).to.be.true;
 		});
-
 	});
 
 
 	context('Time relevant recommendations', () => {
-		it('call time relevant recommendations when lureTimeRelevantRecommendations flag is on and accessTimeHr set', async () => {
+		it('call time relevant recommendations when lureTimeRelevantRecommendations flag is on and localTimeHr set', async () => {
 			const mocks = getMockArgs(sandbox);
-			mocks[0].query.accessTimeHr = '12';
+			mocks[0].query.localTimeHr = '12';
 			mocks[1].locals.flags.lureTimeRelevantRecommendations = true;
 			await controller(...mocks);
 			expect(signalStubs.relatedContent.notCalled).to.be.true;
 			expect(signalStubs.topStories.notCalled).to.be.true;
 			expect(signalStubs.timeRelevantRecommendations.calledOnce).to.be.true;
+		});
+
+		it('don\'t call time relevant recommendations when localTimeHr unset', async () => {
+			const mocks = getMockArgs(sandbox);
+			mocks[1].locals.flags.lureTimeRelevantRecommendations = true;
+			await controller(...mocks);
+			expect(signalStubs.relatedContent.calledOnce).to.be.true;
+			expect(signalStubs.topStories.notCalled).to.be.true;
+			expect(signalStubs.timeRelevantRecommendations.notCalled).to.be.true;
 		});
 	});
 
