@@ -53,6 +53,14 @@ describe('top-stories signal', () => {
 		expect(topStoriesPoller.get).calledWith('international');
 	});
 
+	it('abort when no edition', async () => {
+		const result = await subject({
+			id: 'parent-id',
+			curatedRelatedContent: []
+		}, {slots: {onward: true}});
+		expect(result).to.be.undefined;
+	});
+
 	context('onward slot', () => {
 		let result;
 		beforeEach(() => {

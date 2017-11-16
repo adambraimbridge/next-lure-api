@@ -3,16 +3,18 @@ const logger = require('@financial-times/n-logger').default;
 const TEASER_PROPS = require('@financial-times/n-teaser').esQuery;
 const { NEWS_CONCEPT_ID } = require('../constants');
 
-module.exports = (concept, count, parentContentId, includeNews) => {
+module.exports = (concept, count, parentContentId, news) => {
 
 	let query;
 
-	if (typeof includeNews === 'boolean') {
-		if (includeNews) {
+	if (typeof news === 'boolean') {
+		if (news) {
 			query = {
 				boolean: {
 					must: [{
-						term: { 'annotations.id': concept.id },
+						term: { 'annotations.id': concept.id }
+					},
+					{
 						term: { 'genreConcept.id': NEWS_CONCEPT_ID }
 					}]
 				}

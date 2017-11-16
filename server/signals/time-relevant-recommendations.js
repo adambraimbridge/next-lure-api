@@ -1,5 +1,9 @@
+const topStoriesPoller = require('../data-sources/top-stories-poller');
+const getMostRelatedConcepts = require('../lib/get-most-related-concepts');
+const getRelatedContent = require('../lib/get-related-content');
+const toViewModel = require('../lib/related-teasers-to-view-model');
+const dedupeById = require('../lib/dedupe-by-id');
 const { NEWS_CONCEPT_ID } = require('../constants');
-
 
 const constructRHR = (stories, model) => Object.assign({
 	recommendations: stories.slice(0, 5)

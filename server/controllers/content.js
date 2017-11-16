@@ -54,7 +54,6 @@ module.exports = transformer => {
 				}
 			}
 
-
 			res.vary('ft-edition');
 			res.set('Cache-Control', res.FT_NO_CACHE);
 
