@@ -23,8 +23,7 @@ const constructOnward = (primary, secondary, model) => {
 	];
 }
 
-// TODO add edition as an argument like below, I couldn't do that before acutually using the edition because it causes a eslint error... X-(
-// module.exports = async (content, {edition, localTimeHour, slots}) => {
+
 module.exports = async (content, {localTimeHour, edition, slots}) => {
 
 	if (!(edition && localTimeHour)) {

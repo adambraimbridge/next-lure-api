@@ -131,9 +131,25 @@ describe('content controller', () => {
 			expect(signalStubs.timeRelevantRecommendations.calledOnce).to.be.true;
 		});
 
-		it.skip('fallback to top stories when lureTopStories flag also on and no time specific results', async () => {});
+		it('fallback to top stories when lureTopStories flag also on and no time specific results', async () => {
+			const mocks = getMockArgs(sandbox, {'ft-edition': 'uk'});
+			mocks[1].locals.flags.lureTimeRelevantRecommendations = true;
+			mocks[1].locals.flags.lureTopStories = true;
+			signalStubs.timeRelevantRecommendations.callsFake(async () => null);
+			await controller(...mocks);
+			expect(signalStubs.relatedContent.notCalled).to.be.true;
+			expect(signalStubs.topStories.calledOnce).to.be.true;
+			expect(signalStubs.timeRelevantRecommendations.calledOnce).to.be.true;
+		});
 
-		it.skip('fallback to top stories when no time specific results', async () => {});
+		it('fallback to top stories when no time specific results', async () => {
+			const mocks = getMockArgs(sandbox, {'ft-edition': 'uk'});
+			mocks[1].locals.flags.lureTimeRelevantRecommendations = true;
+			signalStubs.timeRelevantRecommendations.callsFake(async () => null);
+			await controller(...mocks);
+			expect(signalStubs.relatedContent.calledOnce).to.be.true;
+			expect(signalStubs.timeRelevantRecommendations.calledOnce).to.be.true;
+		});
 	});
 
 });
