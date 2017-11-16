@@ -5,6 +5,11 @@ const toViewModel = require('../lib/related-teasers-to-view-model');
 const dedupeById = require('../lib/dedupe-by-id');
 
 module.exports = async (content, {edition, slots}) => {
+
+	if (!edition) {
+		return;
+	}
+
 	const concepts = getMostRelatedConcepts(content);
 	const topStories = topStoriesPoller.get(edition)
 		.filter(teaser => teaser.id !== content.id);
