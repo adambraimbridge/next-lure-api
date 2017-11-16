@@ -39,6 +39,6 @@ module.exports = async (content, {edition, slots}) => {
 		];
 	}
 
-	return response;
+	return Object.keys(response).length ? response : undefined;
 
 };

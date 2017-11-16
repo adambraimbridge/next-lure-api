@@ -30,23 +30,31 @@ module.exports = transformer => {
 			}
 
 			let recommendations;
-			const ftEdition = ['uk', 'international'].includes(req.get('ft-edition')) ? req.get('ft-edition') : undefined;
+			const edition = ['uk', 'international'].includes(req.get('ft-edition')) ? req.get('ft-edition') : undefined;
+
+
+			const signalStack = [relatedContent];
+
 
 			// TODO - true should be replaced by a flag
-			if (res.locals.flags.lureTopStories && ftEdition) {
-				recommendations = await topStories(content, {
-					edition: ftEdition,
-					slots
-				});
-			} else if (res.locals.flags.lureTimeRelevantRecommendations && localTimeHour && ftEdition) {
-				recommendations = await timeRelevantRecommendations(content, {
-					edition: ftEdition,
-					localTimeHour: localTimeHour,
-					slots
-				});
-			} else {
-				recommendations = await relatedContent(content, {slots});
+			if (res.locals.flags.lureTopStories) {
+				signalStack.unshift(topStories);
 			}
+
+			if (res.locals.flags.lureTimeRelevantRecommendations) {
+				signalStack.unshift(timeRelevantRecommendations);
+			}
+
+			let signal;
+
+			while (signal = signalStack.shift()) {
+				recommendations = await signal (content, { edition, localTimeHour, slots })
+				if (recommendations) {
+					break;
+				}
+			}
+
+
 			res.vary('ft-edition');
 			res.set('Cache-Control', res.FT_NO_CACHE);
 
