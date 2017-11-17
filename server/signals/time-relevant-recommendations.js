@@ -24,6 +24,24 @@ const constructOnward = (primary, secondary, model, onwardRowItemCount) => {
 }
 
 
+// get a slice of stories which excludes the current story, but also (to some degree)
+// avoids looping through the same small number of stories
+const topStoriesSlice = (stories, thisId) => {
+	const thisStoryIndex = stories.indexOf(stories.find(teaser => teaser.id === thisId));
+	let newStories;
+	if (thisStoryIndex) {
+		// avoid cycling through the top few stories
+		if (thisStoryIndex < 9) {
+			newStories = stories.slice(thisStoryIndex + 1)
+		} else {
+			newStories = stories
+				.filter(teaser => teaser.id !== thisId);
+		}
+	}
+	return (newStories.length >= 5) ? newStories : stories;
+}
+
+
 module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCount = 3}) => {
 
 	if (!(edition && localTimeHour)) {
@@ -33,8 +51,7 @@ module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCo
 	const response = {};
 
 	const concepts = getMostRelatedConcepts(content);
-	const topStories = topStoriesPoller.get(edition)
-		.filter(teaser => teaser.id !== content.id);
+	let topStories = topStoriesPoller.get(edition);
 
 	// am slant towards news
 	if (localTimeHour > 5 && localTimeHour < 11) {
@@ -44,16 +61,18 @@ module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCo
 			tracking: 'morning-reads'
 		};
 
-		const newsStories = topStories
+		topStories = topStories
 			.filter(teaser => teaser.genreConcept && teaser.genreConcept.id === NEWS_CONCEPT_ID );
 
+		topStories = topStoriesSlice(topStories, content.id);
+
 		if (slots.rhr) {
-			response.rhr = constructRHR(newsStories, model);
+			response.rhr = constructRHR(topStories, model);
 		}
 
 		if (slots.onward) {
 			const secondaryOnward = await getRelatedContent(concepts[0], onwardRowItemCount * 2, content.id, true);
-			response.onward = constructOnward(newsStories, secondaryOnward, model, onwardRowItemCount);
+			response.onward = constructOnward(topStories, secondaryOnward, model, onwardRowItemCount);
 		}
 
 		return response;
@@ -68,16 +87,18 @@ module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCo
 			tracking: 'evening-reads'
 		};
 
-		const nonNewsStories = topStories
+		topStories = topStories
 			.filter(teaser => teaser.genreConcept && teaser.genreConcept.id !== NEWS_CONCEPT_ID);
 
+		topStories = topStoriesSlice(topStories, content.id);
+
 		if (slots.rhr) {
-			response.rhr = constructRHR(nonNewsStories, model);
+			response.rhr = constructRHR(topStories, model);
 		}
 
 		if (slots.onward) {
 			const secondaryOnward = await getRelatedContent(concepts[0], onwardRowItemCount * 2, content.id, false);
-			response.onward = constructOnward(nonNewsStories, secondaryOnward, model, onwardRowItemCount);
+			response.onward = constructOnward(topStories, secondaryOnward, model, onwardRowItemCount);
 		}
 
 		return response;
