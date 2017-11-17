@@ -12,7 +12,7 @@ const getCuratedContent = ids => ids.length ? es.mget({
 	}))
 }) : Promise.resolve([]);
 
-module.exports = async (content, {slots}) => {
+module.exports = async (content, {slots, onwardRowItemCount = 3}) => {
 	const concepts = getMostRelatedConcepts(content);
 
 	if (!concepts) {
@@ -21,8 +21,8 @@ module.exports = async (content, {slots}) => {
 
 	const [curated, related1, related2] = await Promise.all([
 		( slots.rhr && content.curatedRelatedContent ) ? getCuratedContent(content.curatedRelatedContent.map(content => content.id)) : Promise.resolve([]),
-		getRelatedContent(concepts[0], 5, content.id), // get enough for the right hand rail
-		( slots.onward && concepts[1] ) ? getRelatedContent(concepts[1], 6, content.id) : Promise.resolve({teasers: []}) // get enough so that if there is an overlap pf 3 with concepts[0], there will still be some left
+		getRelatedContent(concepts[0], Math.max(5, onwardRowItemCount), content.id), // get enough for the right hand rail
+		( slots.onward && concepts[1] ) ? getRelatedContent(concepts[1], onwardRowItemCount * 2, content.id) : Promise.resolve({teasers: []}) // get enough so that if there is an overlap pf 3 with concepts[0], there will still be some left
 	]);
 
 	const response = {};
@@ -32,13 +32,13 @@ module.exports = async (content, {slots}) => {
 		if (related1.teasers.length) {
 			onward.push({
 				concept: related1.concept,
-				teasers: related1.teasers.slice(0, 3)
+				teasers: related1.teasers.slice(0, onwardRowItemCount)
 			});
 		}
 		if (related2.teasers.length) {
 			onward.push({
 				concept: related2.concept,
-				teasers: dedupeById(related2.teasers, related1.teasers.slice(0, 3)).slice(0, 3)
+				teasers: dedupeById(related2.teasers, related1.teasers.slice(0, onwardRowItemCount)).slice(0, onwardRowItemCount)
 			});
 		}
 		if (onward.length) {

@@ -4,7 +4,7 @@ const getRelatedContent = require('../lib/get-related-content');
 const toViewModel = require('../lib/related-teasers-to-view-model');
 const dedupeById = require('../lib/dedupe-by-id');
 
-module.exports = async (content, {edition, slots}) => {
+module.exports = async (content, {edition, slots, onwardRowItemCount = 3}) => {
 
 	if (!edition) {
 		return;
@@ -31,15 +31,15 @@ module.exports = async (content, {edition, slots}) => {
 	}
 
 	if (slots.onward) {
-		const secondaryOnward = await getRelatedContent(concepts[0], 6, content.id);
+		const secondaryOnward = await getRelatedContent(concepts[0], onwardRowItemCount * 2, content.id);
 
 		response.onward = [
 			Object.assign({
-				recommendations: topStories.slice(0, 3)
+				recommendations: topStories.slice(0, onwardRowItemCount)
 			}, topStoriesModel),
 			toViewModel({
 				concept:secondaryOnward.concept,
-				teasers: dedupeById(secondaryOnward.teasers, topStories.slice(0, 3)).slice(0, 3)
+				teasers: dedupeById(secondaryOnward.teasers, topStories.slice(0, onwardRowItemCount)).slice(0, onwardRowItemCount)
 			})
 		];
 	}
