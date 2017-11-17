@@ -15,15 +15,13 @@
 ## Contract
 
 ### Request
-- All requests may send a content uuid or concept for contextual targeting
-- Requests should include feature flags and any ab tests/cohorts the user is in
-- Requests may include the user uuid for more personalised targeting
-- Request may specify things to exclude from the space of possible recommendations
-
-e.g.
 - /content/{uuid}
-- /content/{uuid}?user={uuid}
-- /concept/{uuid}?exclude[]={uuid},exclude[]={uuid}
+
+Query strings
+- slots = rhr or onward, defaults to both
+- localTimeHour = local time hour, in 24h format
+- onwardRowItemCount = number of items in each row, defaults to 3
+
 
 ### Response
 JSON response on which one or more of the following keys - `rhr`, `onward`, `interstitial`, `banner` - contain an object with the following properties. Those with * are required
@@ -40,3 +38,10 @@ JSON response on which one or more of the following keys - `rhr`, `onward`, `int
 
 
 May (in v1, for backwards compatibility) return an array of objects like the above
+
+
+### Plans
+- All requests may send a content uuid or concept for contextual targeting
+- Requests should include feature flags and any ab tests/cohorts the user is in
+- Requests may include the user uuid for more personalised targeting
+- Request may specify things to exclude from the space of possible recommendations

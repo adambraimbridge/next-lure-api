@@ -9,22 +9,22 @@ const constructRHR = (stories, model) => Object.assign({
 	recommendations: stories.slice(0, 5)
 }, model);
 
-const constructOnward = (primary, secondary, model) => {
-	const primaryThree = primary.slice(0, 3);
+const constructOnward = (primary, secondary, model, onwardRowItemCount) => {
+	const primaryItems = primary.slice(0, onwardRowItemCount);
 
 	return [
 		Object.assign({
-			recommendations: primaryThree
+			recommendations: primaryItems
 		}, model),
 		toViewModel({
 			concept:secondary.concept,
-			teasers: dedupeById(secondary.teasers, primaryThree).slice(0, 3)
+			teasers: dedupeById(secondary.teasers, primaryItems).slice(0, onwardRowItemCount)
 		})
 	];
 }
 
 
-module.exports = async (content, {localTimeHour, edition, slots}) => {
+module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCount}) => {
 
 	if (!(edition && localTimeHour)) {
 		return
@@ -52,8 +52,8 @@ module.exports = async (content, {localTimeHour, edition, slots}) => {
 		}
 
 		if (slots.onward) {
-			const secondaryOnward = await getRelatedContent(concepts[0], 6, content.id, true);
-			response.onward = constructOnward(newsStories, secondaryOnward, model);
+			const secondaryOnward = await getRelatedContent(concepts[0], onwardRowItemCount * 2, content.id, true);
+			response.onward = constructOnward(newsStories, secondaryOnward, model, onwardRowItemCount);
 		}
 
 		return response;
@@ -76,8 +76,8 @@ module.exports = async (content, {localTimeHour, edition, slots}) => {
 		}
 
 		if (slots.onward) {
-			const secondaryOnward = await getRelatedContent(concepts[0], 6, content.id, false);
-			response.onward = constructOnward(nonNewsStories, secondaryOnward, model);
+			const secondaryOnward = await getRelatedContent(concepts[0], onwardRowItemCount * 2, content.id, false);
+			response.onward = constructOnward(nonNewsStories, secondaryOnward, model, onwardRowItemCount);
 		}
 
 		return response;

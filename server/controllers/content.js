@@ -18,7 +18,7 @@ module.exports = transformer => {
 				}, {}) : {'rhr': true, 'onward': true};
 
 			const localTimeHour = req.query.localTimeHour ? req.query.localTimeHour : undefined;
-
+			const onwardRowItemCount = req.query.onwardRowItemCount || 3
 			let content;
 			try {
 				content = await es.get(req.params.contentId, {}, 500);
@@ -48,7 +48,7 @@ module.exports = transformer => {
 			let signal;
 
 			while (signal = signalStack.shift()) {
-				recommendations = await signal (content, { edition, localTimeHour, slots })
+				recommendations = await signal (content, { edition, localTimeHour, slots, onwardRowItemCount })
 				if (recommendations) {
 					break;
 				}
