@@ -24,7 +24,7 @@ const constructOnward = (primary, secondary, model, onwardRowItemCount) => {
 }
 
 
-module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCount}) => {
+module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCount = 3}) => {
 
 	if (!(edition && localTimeHour)) {
 		return

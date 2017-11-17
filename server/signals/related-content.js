@@ -12,7 +12,7 @@ const getCuratedContent = ids => ids.length ? es.mget({
 	}))
 }) : Promise.resolve([]);
 
-module.exports = async (content, {slots, onwardRowItemCount}) => {
+module.exports = async (content, {slots, onwardRowItemCount = 3}) => {
 	const concepts = getMostRelatedConcepts(content);
 
 	if (!concepts) {

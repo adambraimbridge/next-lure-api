@@ -4,7 +4,7 @@ const getRelatedContent = require('../lib/get-related-content');
 const toViewModel = require('../lib/related-teasers-to-view-model');
 const dedupeById = require('../lib/dedupe-by-id');
 
-module.exports = async (content, {edition, slots, onwardRowItemCount}) => {
+module.exports = async (content, {edition, slots, onwardRowItemCount = 3}) => {
 
 	if (!edition) {
 		return;
