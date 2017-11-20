@@ -54,7 +54,7 @@ module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCo
 	let topStories = topStoriesPoller.get(edition);
 
 	// am slant towards news
-	if (localTimeHour > 5 && localTimeHour < 11) {
+	if (localTimeHour > 4 && localTimeHour < 10) {
 		const model = {
 			title: 'This morning\'s news',
 			titleHref: '/',
@@ -97,7 +97,9 @@ module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCo
 		}
 
 		if (slots.onward) {
+
 			const secondaryOnward = await getRelatedContent(concepts[0], onwardRowItemCount * 2, content.id, false);
+
 			response.onward = constructOnward(topStories, secondaryOnward, model, onwardRowItemCount);
 		}
 
