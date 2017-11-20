@@ -38,7 +38,7 @@ const topStoriesSlice = (stories, thisId) => {
 				.filter(teaser => teaser.id !== thisId);
 		}
 	}
-	return (newStories.length >= 5) ? newStories : stories;
+	return (newStories && newStories.length >= 5) ? newStories : stories;
 }
 
 
