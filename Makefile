@@ -25,7 +25,7 @@ else
 endif
 
 run:
-	nht run --local --inspect
+	nht run --https --inspect
 
 deploy:
 	nht ship -m --vault

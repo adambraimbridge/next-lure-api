@@ -10,7 +10,7 @@ module.exports = (concept, count, parentContentId, news) => {
 	if (typeof news === 'boolean') {
 		if (news) {
 			query = {
-				boolean: {
+				bool: {
 					must: [{
 						term: { 'annotations.id': concept.id }
 					},
@@ -21,7 +21,7 @@ module.exports = (concept, count, parentContentId, news) => {
 			};
 		} else {
 			query = {
-				boolean: {
+				bool: {
 					must: [{
 						term: { 'annotations.id': concept.id }
 					}],
