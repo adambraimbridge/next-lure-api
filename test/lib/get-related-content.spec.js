@@ -28,7 +28,7 @@ describe('get related content', () => {
 	it('can exclude news', async () => {
 		await subject({id: 'concept-id'}, 3, 'parent-id', false);
 		expect(es.search.args[0][0].query).to.eql({
-			'boolean': {
+			'bool': {
 				'must': [
 					{
 						'term': {
@@ -50,7 +50,7 @@ describe('get related content', () => {
 	it('can exclude non news', async () => {
 		await subject({id: 'concept-id'}, 3, 'parent-id', true);
 		expect(es.search.args[0][0].query).to.eql({
-			'boolean': {
+			'bool': {
 				'must': [
 					{
 						'term': {
