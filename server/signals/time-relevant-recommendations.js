@@ -88,8 +88,10 @@ module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCo
 		};
 
 		topStories = topStories
+			.concat(topStoriesPoller.get(`${edition}Opinion`))
 			.filter(teaser => teaser.genreConcept && teaser.genreConcept.id !== NEWS_CONCEPT_ID);
 
+		topStories = dedupeById(topStories);
 		topStories = topStoriesSlice(topStories, content.id);
 
 		if (slots.rhr) {
