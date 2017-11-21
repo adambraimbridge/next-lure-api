@@ -43,13 +43,18 @@ const v2Transformer = data => {
 	if (data.onward) {
 		result.onward = Object.assign({}, data.onward[0], {
 			items: v2ifyItems(data.onward[0]).concat(v2ifyItems(data.onward[1]))
-		})
+		});
 		delete result.onward.recommendations;
 	}
 	return result;
 }
 
 v1.get('/content/:contentId', require('./controllers/content')(v1Transformer));
+
+v2.use((req, res, next) => {
+	req.query.onwardRowItemCount = req.query.onwardRowItemCount || 4;
+	next();
+});
 v2.get('/content/:contentId', require('./controllers/content')(v2Transformer));
 
 lure.use('/v1', v1);
