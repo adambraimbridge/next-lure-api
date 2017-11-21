@@ -54,9 +54,9 @@ module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCo
 	let topStories = topStoriesPoller.get(edition);
 
 	// am slant towards news
-	if (localTimeHour > 4 && localTimeHour < 10) {
+	if (localTimeHour > 4 && localTimeHour < 12) {
 		const model = {
-			title: 'This morning\'s news',
+			title: 'Top stories this morning',
 			titleHref: '/',
 			tracking: 'morning-reads'
 		};
@@ -82,7 +82,7 @@ module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCo
 	if (localTimeHour > 14 && localTimeHour < 20) {
 
 		const model = {
-			title: 'Looking back on the day',
+			title: 'In-depth insight for the evening',
 			titleHref: '/',
 			tracking: 'evening-reads'
 		};

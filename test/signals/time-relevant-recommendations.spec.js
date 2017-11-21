@@ -95,7 +95,7 @@ describe('time relevant recommendations signal', () => {
 		it('use top stories news, excluding parent id, for first slot', () => {
 			const onward = result.onward[0];
 			expect(onward.recommendations).to.eql([{id: 1, genreConcept: {id: NEWS_CONCEPT_ID}}]);
-			expect(onward.title).to.equal('This morning\'s news');
+			expect(onward.title).to.equal('Top stories this morning');
 			expect(onward.titleHref).to.equal('/');
 			expect(onward.tracking).to.equal('morning-reads');
 		});
@@ -107,7 +107,7 @@ describe('time relevant recommendations signal', () => {
 
 		it('use top stories news, excluding parent id for rhr', () => {
 			expect(result.rhr.recommendations).to.eql([{id: 1, genreConcept: {id: NEWS_CONCEPT_ID}}]);
-			expect(result.rhr.title).to.equal('This morning\'s news');
+			expect(result.rhr.title).to.equal('Top stories this morning');
 			expect(result.rhr.titleHref).to.equal('/');
 			expect(result.rhr.tracking).to.equal('morning-reads');
 		});
@@ -131,7 +131,7 @@ describe('time relevant recommendations signal', () => {
 		it('use top stories news, excluding parent id, for first slot', () => {
 			const onward = result.onward[0];
 			expect(onward.recommendations).to.eql([{id: 2, genreConcept: {id: 'not news'}}]);
-			expect(onward.title).to.equal('Looking back on the day');
+			expect(onward.title).to.equal('In-depth insight for the evening');
 			expect(onward.titleHref).to.equal('/');
 			expect(onward.tracking).to.equal('evening-reads');
 		});
@@ -143,7 +143,7 @@ describe('time relevant recommendations signal', () => {
 
 		it('use top stories news, excluding parent id for rhr', () => {
 			expect(result.rhr.recommendations).to.eql([{id: 2, genreConcept: {id: 'not news'}}]);
-			expect(result.rhr.title).to.equal('Looking back on the day');
+			expect(result.rhr.title).to.equal('In-depth insight for the evening');
 			expect(result.rhr.titleHref).to.equal('/');
 			expect(result.rhr.tracking).to.equal('evening-reads');
 		});
