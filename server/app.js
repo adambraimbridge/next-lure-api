@@ -34,14 +34,14 @@ const v2ifyItems = obj => {
 const v2Transformer = data => {
 	const result = {};
 	if (data.rhr) {
-		result.rhr = Object.assign(data.rhr, {
+		result.rhr = Object.assign({}, data.rhr, {
 			items: v2ifyItems(data.rhr)
 		});
 		delete result.rhr.recommendations;
 	}
 
 	if (data.onward) {
-		result.onward = Object.assign(data.onward[0], {
+		result.onward = Object.assign({}, data.onward[0], {
 			items: v2ifyItems(data.onward[0]).concat(v2ifyItems(data.onward[1]))
 		})
 		delete result.onward.recommendations;
