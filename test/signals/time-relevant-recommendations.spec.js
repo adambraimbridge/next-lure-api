@@ -124,6 +124,10 @@ describe('time relevant recommendations signal', () => {
 				.then(res => result = res);
 		});
 
+		it('includes opinion list', () => {
+			expect(topStoriesPoller.get).calledWith('ukOpinion');
+		});
+
 		it('use top stories news, excluding parent id, for first slot', () => {
 			const onward = result.onward[0];
 			expect(onward.recommendations).to.eql([{id: 2, genreConcept: {id: 'not news'}}]);

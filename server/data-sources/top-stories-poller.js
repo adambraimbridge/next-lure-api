@@ -26,7 +26,9 @@ const pollList = uuid => {
 
 const pollers = {
 	uk: pollList('520ddb76-e43d-11e4-9e89-00144feab7de'),
-	international: pollList('b0d8e4fe-10ff-11e5-8413-00144feabdc0')
+	international: pollList('b0d8e4fe-10ff-11e5-8413-00144feabdc0'),
+	ukOpinion: pollList('bc81b5bc-1995-11e5-a130-2e7db721f996'),
+	internationalOpinion: pollList('cd4a2e0a-91f9-11e6-a72e-b428cb934b78')
 };
 
 
@@ -35,5 +37,5 @@ module.exports = {
 		pollers.uk.start({ initialRequest: true });
 		pollers.international.start({ initialRequest: true });
 	},
-	get: region => pollers[region].getData()
+	get: list => pollers[list].getData()
 };
