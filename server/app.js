@@ -20,13 +20,13 @@ const v2 = express.Router();
 
 // probably most of the differences between v1 and v2, v3 ... will be small at first
 // so can hopefully be encapsulated by some last minute data transformations performed
-// before resonding with the data
+// before responding with the data
 const v1Transformer = data => data;
 
 const v2ifyItems = obj => {
 	return obj.recommendations
 		.map(item => {
-			item.tracking = obj.tracking;
+			item.originator = obj.tracking;
 			return item;
 		})
 }
