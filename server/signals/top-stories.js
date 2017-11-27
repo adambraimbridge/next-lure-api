@@ -4,7 +4,7 @@ const getRelatedContent = require('../lib/get-related-content');
 const toViewModel = require('../lib/related-teasers-to-view-model');
 const dedupeById = require('../lib/dedupe-by-id');
 
-module.exports = async (content, {edition, slots, onwardRowItemCount = 3}) => {
+module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}}) => {
 
 	if (!edition) {
 		return;
@@ -12,38 +12,33 @@ module.exports = async (content, {edition, slots, onwardRowItemCount = 3}) => {
 
 	const concepts = getMostRelatedConcepts(content);
 	const topStories = topStoriesPoller.get(edition)
+		.map(item => {
+			item.originator = 'top-stories';
+			return item;
+		})
 		.filter(teaser => teaser.id !== content.id);
 
 	const topStoriesModel = {
 		title: 'More from the homepage',
-		titleHref: '/',
+		titleHref: '/'
 		// TODO: think about how we track how often we _show_ recommendations with a particular signal
 		// and also what are the rival signals on the page at the same time
-		tracking: 'top-stories'
 	};
 
 	const response = {};
 
-	if (slots.rhr) {
-		response.rhr = Object.assign({
-			recommendations: topStories.slice(0, 5)
-		}, topStoriesModel);
-	}
+	response.rhr = Object.assign({
+		recommendations: topStories.slice(0, q1Length)
+	}, topStoriesModel);
 
-	if (slots.onward) {
-		const secondaryOnward = await getRelatedContent(concepts[0], onwardRowItemCount * 2, content.id);
+	const secondaryOnward = await getRelatedContent(concepts[0], q2Length, content.id);
 
-		response.onward = [
-			Object.assign({
-				recommendations: topStories.slice(0, onwardRowItemCount)
-			}, topStoriesModel),
-			toViewModel({
-				concept:secondaryOnward.concept,
-				teasers: dedupeById(secondaryOnward.teasers, topStories.slice(0, onwardRowItemCount)).slice(0, onwardRowItemCount)
-			})
-		];
-	}
+	response.onward = [
+		Object.assign({
+			recommendations: topStories.slice(0, q1Length)
+		}, topStoriesModel),
+		secondaryOnward
+	];
 
-	return Object.keys(response).length ? response : undefined;
-
+	return response;
 };
