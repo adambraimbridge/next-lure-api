@@ -3,6 +3,11 @@ const logger = require('@financial-times/n-logger').default;
 const TEASER_PROPS = require('@financial-times/n-teaser').esQuery;
 const { NEWS_CONCEPT_ID } = require('../constants');
 
+const getTrackablePredicate = concept => {
+	const predicate = concept.predicate.split('/').pop();
+	return ['about', 'isPrimarilyClassifiedBy'].includes(predicate) ? predicate : 'brand';
+};
+
 module.exports = (concept, count, parentContentId, news) => {
 
 	let query;
@@ -44,8 +49,14 @@ module.exports = (concept, count, parentContentId, news) => {
 			logger.error(err);
 			return [];
 		})
-		.then(teasers => ({
+		.then(items => ({
 			concept,
-			teasers: teasers.filter(teaser => teaser.id !== parentContentId).slice(0, count)
+			items: items
+				.filter(item => item.id !== parentContentId)
+				.map(item => {
+					item.originator = getTrackablePredicate(concept)
+					return item;
+				})
+				.slice(0, count)
 		}));
 };

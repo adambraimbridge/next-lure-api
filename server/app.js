@@ -18,55 +18,29 @@ const lure = express.Router();
 const v1 = express.Router();
 const v2 = express.Router();
 
-const trackifyItems = obj => {
-	return obj.recommendations
-		.map(item => {
-			item.originator = obj.tracking;
-			return item;
-		})
-}
+const middlewareStack = [
+	require('./middleware/handle-options'),
+	require('./middleware/construct-query-lengths'),
+	require('./middleware/cache'),
+	require('./middleware/get-content'),
+	require('./middleware/get-recommendations'),
+	require('./middleware/build-response'),
+	require('./middleware/respond')
+];
 
-const v1Transformer = data => {
-	const result = {};
-	if (data.rhr) {
-		result.rhr = Object.assign(data.rhr, {recommendations: trackifyItems(data.rhr)});
-	}
+v1.get('/content/:contentId', (req, res, next) => {
+	res.locals.modelTemplate = {
+		rhr: 5,
+		onward: [3, 3]
+	};
+}, middlewareStack);
 
-	if (data.onward) {
-		result.onward = data.onward.map(item => {
-			item.recommendations = trackifyItems(item);
-			return item;
-		});
-	}
-	return result;
-}
-
-const v2Transformer = data => {
-	const result = {};
-	if (data.rhr) {
-		result.rhr = Object.assign({}, data.rhr, {
-			items: trackifyItems(data.rhr)
-		});
-		delete result.rhr.recommendations;
-	}
-
-	if (data.onward) {
-		result.onward = Object.assign({}, data.onward[0], {
-			items: trackifyItems(data.onward[0]).concat(trackifyItems(data.onward[1]))
-		});
-		delete result.onward.recommendations;
-	}
-	return result;
-}
-
-v1.get('/content/:contentId', require('./controllers/content')(v1Transformer));
-
-v2.use((req, res, next) => {
-	req.query.onwardRowItemCount = req.query.onwardRowItemCount || 4;
-	next();
-});
-
-v2.get('/content/:contentId', require('./controllers/content')(v2Transformer));
+v2.get('/content/:contentId', (req, res, next) => {
+	res.locals.modelTemplate = {
+		ribbon: 5,
+		onward: 8
+	};
+}, middlewareStack);
 
 lure.use('/v1', v1);
 lure.use('/v2', v2);
