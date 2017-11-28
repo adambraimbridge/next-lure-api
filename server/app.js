@@ -30,7 +30,8 @@ const middlewareStack = [
 v1.get('/content/:contentId', (req, res, next) => {
 	res.locals.modelTemplate = {
 		rhr: 5,
-		onward: [3, 3]
+		onward: [3, 3],
+		listName: 'recommendations'
 	};
 	next();
 }, middlewareStack);
@@ -38,7 +39,8 @@ v1.get('/content/:contentId', (req, res, next) => {
 v2.get('/content/:contentId', (req, res, next) => {
 	res.locals.modelTemplate = {
 		ribbon: 5,
-		onward: 8
+		onward: 8,
+		listName: 'items'
 	};
 	next();
 }, middlewareStack);
