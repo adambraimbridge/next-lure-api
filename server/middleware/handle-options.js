@@ -8,6 +8,4 @@ module.exports = (req, res, next) => {
 	res.locals.edition = ['uk', 'international'].includes(req.get('ft-edition')) ? req.get('ft-edition') : undefined;
 
 	next();
-}
-
-
+};

@@ -1,7 +1,6 @@
 const topStoriesPoller = require('../data-sources/top-stories-poller');
 const getMostRelatedConcepts = require('../lib/get-most-related-concepts');
 const getRelatedContent = require('../lib/get-related-content');
-const dedupeById = require('../lib/dedupe-by-id');
 
 module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}}) => {
 

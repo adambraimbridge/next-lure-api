@@ -1,4 +1,5 @@
 const dedupeById = require('../lib/dedupe-by-id');
+const send404 = require('../lib/send-404');
 
 const finishModel = (model, listName, count) => {
 	if (!model.concept) {
@@ -16,7 +17,7 @@ const finishModel = (model, listName, count) => {
 	}, listObj);
 };
 
-module.exports = (req, res, next) => {
+module.exports = (req, res) => {
 	if (!res.locals.recommendations) {
 		return send404(res);
 	}
