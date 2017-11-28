@@ -1,3 +1,5 @@
+const logger = require('@financial-times/n-logger').default;
+const { relatedContent, topStories, timeRelevantRecommendations } = require('../signals');
 const send404 = require('../lib/send-404');
 
 module.exports = async (req, res, next) => {

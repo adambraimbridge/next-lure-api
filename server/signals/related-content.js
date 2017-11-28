@@ -11,10 +11,10 @@ const getCuratedContent = ids => ids.length ? es.mget({
 		_source: TEASER_PROPS
 	}))
 }) : Promise.resolve([])
-	.map(item => {
+	.then(items => items.map(item => {
 		item.originator = 'curated-related';
 		return item;
-	});
+	}));
 
 module.exports = async (content, {locals: {slots, q1Length, q2Length}}) => {
 	const concepts = getMostRelatedConcepts(content);
@@ -26,27 +26,29 @@ module.exports = async (content, {locals: {slots, q1Length, q2Length}}) => {
 	const [curated, related1, related2] = await Promise.all([
 		getCuratedContent(content.curatedRelatedContent.map(content => content.id)),
 		getRelatedContent(concepts[0], q1Length, content.id), // get enough for the right hand rail
-		getRelatedContent(concepts[1], q2Length, content.id)
+		slots.onward ? getRelatedContent(concepts[1], q2Length, content.id) : Promise.resolve({})
 	])
 
 	const response = {};
 
-	const onward = [];
-	if (related1.items.length) {
-		onward.push(related1);
-	}
-	if (related2.items.length) {
-		onward.push(related2);
-	}
-	if (onward.length) {
-		response.onward = onward.map(data => toViewModel(data));
-	}
-
 	response.rhr = {
 		concept: related1.concept,
-		items: dedupeById(curated.concat(related1.teasers)).slice(0, q1Length)
+		items: dedupeById(curated.concat(related1.items)).slice(0, q1Length)
 	};
 
-	return response;
+	if (slots.onward) {
+		const onward = [];
 
+		if (related1.items.length) {
+			onward.push(related1);
+		}
+		if (related2.items.length) {
+			onward.push(related2);
+		}
+		if (onward.length) {
+			response.onward = onward;
+		}
+	}
+
+	return response;
 };

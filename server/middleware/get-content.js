@@ -1,3 +1,4 @@
+const es = require('@financial-times/n-es-client');
 const send404 = require('../lib/send-404');
 
 module.exports = async (req, res, next) => {

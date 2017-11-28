@@ -13,8 +13,7 @@ module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}})
 	const concepts = getMostRelatedConcepts(content);
 	const topStories = topStoriesPoller.get(edition)
 		.map(item => {
-			item.originator = 'top-stories';
-			return item;
+			return Object.assign({}, item, {originator: 'top-stories'});
 		})
 		.filter(teaser => teaser.id !== content.id);
 
@@ -28,17 +27,17 @@ module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}})
 	const response = {};
 
 	response.rhr = Object.assign({
-		recommendations: topStories.slice(0, q1Length)
+		items: topStories.slice(0, q1Length)
 	}, topStoriesModel);
 
-	const secondaryOnward = await getRelatedContent(concepts[0], q2Length, content.id);
+	if (slots.onward) {
+		const secondaryOnward = await getRelatedContent(concepts[0], q2Length, content.id);
 
-	response.onward = [
-		Object.assign({
-			recommendations: topStories.slice(0, q1Length)
-		}, topStoriesModel),
-		secondaryOnward
-	];
+		response.onward = [
+			Object.assign({}, response.rhr),
+			secondaryOnward
+		];
+	}
 
 	return response;
 };

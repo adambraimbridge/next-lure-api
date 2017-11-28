@@ -24,7 +24,6 @@ const middlewareStack = [
 	require('./middleware/cache'),
 	require('./middleware/get-content'),
 	require('./middleware/get-recommendations'),
-	require('./middleware/build-response'),
 	require('./middleware/respond')
 ];
 
