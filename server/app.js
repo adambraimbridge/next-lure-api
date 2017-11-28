@@ -38,10 +38,10 @@ v1.get('/content/:contentId', (req, res, next) => {
 
 v2.get('/content/:contentId', (req, res, next) => {
 	res.locals.modelTemplate = {
-		ribbon: 5,
-		onward: 8,
-		listName: 'items'
+		listName: 'items',
+		ribbon: 5
 	};
+	res.locals.modelTemplate.onward = res.locals.flags.cleanOnwardJourney ? 8 : [3, 3];
 	next();
 }, middlewareStack);
 

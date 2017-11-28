@@ -18,7 +18,7 @@ module.exports = async (req, res, next) => {
 		let signal;
 
 		while (signal = signalStack.shift()) {
-			recommendations = await signal (res.locals.content, { locals: res.locals, query: req.query})
+			recommendations = await signal(res.locals.content, { locals: res.locals, query: req.query});
 			if (recommendations) {
 				break;
 			}
