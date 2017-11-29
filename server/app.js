@@ -18,13 +18,15 @@ const lure = express.Router();
 const v1 = express.Router();
 const v2 = express.Router();
 
+const middleware = require('./middleware');
+
 const middlewareStack = [
-	require('./middleware/handle-options'),
-	require('./middleware/construct-query-lengths'),
-	require('./middleware/cache'),
-	require('./middleware/get-content'),
-	require('./middleware/get-recommendations'),
-	require('./middleware/respond')
+	middleware.handleOptions,
+	middleware.constructQueryLengths,
+	middleware.cache,
+	middleware.getContent,
+	middleware.getRecommendations,
+	middleware.respond
 ];
 
 v1.get('/content/:contentId', (req, res, next) => {
@@ -49,4 +51,8 @@ lure.use('/v1', v1);
 lure.use('/v2', v2);
 app.use('/lure', lure);
 
-app.listen(process.env.PORT || 3002);
+if (process.env.NODE_ENV !== 'test') {
+	app.listen(process.env.PORT || 3002);
+}
+
+module.exports = app;
