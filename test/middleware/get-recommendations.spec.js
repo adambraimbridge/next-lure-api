@@ -98,5 +98,4 @@ describe('get recommendations', () => {
 			expect(signalStubs.timeRelevantRecommendations.calledOnce).to.be.true;
 		});
 	});
-
 });

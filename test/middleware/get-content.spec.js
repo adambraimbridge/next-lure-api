@@ -46,7 +46,6 @@ describe('get content', () => {
 		expect(es.get).calledWith('content-id');
 	});
 
-	// hard to test, and not 100% it's the behaviour we want anyway
 	it('respond with 404 if no content found', async () => {
 		const mocks = getMockArgs(sandbox);
 		es.get.throws({status: 404});

@@ -23,17 +23,19 @@ module.exports = async (content, {locals: {slots, q1Length, q2Length}}) => {
 	}
 
 	const [curated, related1, related2] = await Promise.all([
-		getCuratedContent(content.curatedRelatedContent.map(content => content.id)),
+		content.curatedRelatedContent ? getCuratedContent(content.curatedRelatedContent.map(content => content.id)): Promise.resolve([]),
 		getRelatedContent(concepts[0], q1Length, content.id), // get enough for the right hand rail
 		slots.onward ? getRelatedContent(concepts[1], q2Length, content.id) : Promise.resolve({})
 	])
 
 	const response = {};
 
-	response.rhr = {
-		concept: related1.concept,
-		items: dedupeById(curated.concat(related1.items)).slice(0, q1Length)
-	};
+	if (curated.length || related1.items.length) {
+		response.rhr = {
+			concept: related1.concept,
+			items: dedupeById(curated.concat(related1.items)).slice(0, q1Length)
+		};
+	}
 
 	if (slots.onward) {
 		const onward = [];

@@ -40,7 +40,7 @@ describe('related-content signal', () => {
 			return subject({
 				id: 'parent-id',
 				curatedRelatedContent: []
-			}, {slots: {onward: true}})
+			}, {locals: {slots: {onward: true}}})
 				.then(() => {
 					expect(stubs.getMostRelatedConcepts).calledWith({
 						id: 'parent-id',
@@ -54,7 +54,7 @@ describe('related-content signal', () => {
 			return subject({
 				id: 'parent-id',
 				curatedRelatedContent: []
-			}, {slots: {onward: true}})
+			}, {locals: {slots: {onward: true}}})
 				.then(result => {
 					expect(result).to.eql({});
 				});
@@ -69,13 +69,16 @@ describe('related-content signal', () => {
 					predicate: 'http://www.ft.com/ontology/annotation/about',
 					id: 0
 				}]
-			}, {slots: {onward: true}})
+			}, {locals: {slots: {onward: true}}})
 				.then(result => {
-					expect(result.onward[0].recommendations).to.eql([{id: 2}]);
+					expect(result.onward[0].items).to.eql([{
+						id: 2,
+						originator: 'isPrimarilyClassifiedBy'
+					}]);
 				});
 		});
 
-		it('maximum of 3 teasers per concept', () => {
+		it('get enough content', () => {
 			let calls = 0;
 			es.search.restore(); // remove the default stub
 			sinon.stub(es, 'search').callsFake(() => {
@@ -94,36 +97,10 @@ describe('related-content signal', () => {
 					predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
 					id: 1
 				}]
-			}, {slots: {onward: true}})
+			}, {locals: {slots: {onward: true}, q1Length: 5, q2Length: 6}})
 				.then(result => {
-					expect(result.onward[0].recommendations.length).to.equal(3);
-					expect(result.onward[1].recommendations.length).to.equal(3);
-				});
-		});
-
-		it('dedupe teasers in second onward section', () => {
-			let calls = 0;
-			es.search.restore(); // remove the default stub
-			sinon.stub(es, 'search').callsFake(() => {
-				return Promise.resolve(
-					[...Array(6)]
-						.map((v, i) => ({id: i + (1 * calls)}))
-				);
-			});
-			return subject({
-				id: 'parent-id',
-				curatedRelatedContent: [],
-				annotations: [{
-					predicate: 'http://www.ft.com/ontology/annotation/about',
-					id: 0
-				},{
-					predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
-					id: 1
-				}]
-			}, {slots: {onward: true}})
-				.then(({onward: [onward1, onward2]}) => {
-					expect(onward1.recommendations).to.eql([ { id: 0 }, { id: 1 }, { id: 2 } ]);
-					expect(onward2.recommendations).to.eql([ { id: 3 }, { id: 4 }, { id: 5 } ]);
+					expect(es.search.args[0][0].size).to.equal(6);
+					expect(es.search.args[1][0].size).to.equal(7);
 				});
 		});
 
@@ -139,7 +116,7 @@ describe('related-content signal', () => {
 					predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
 					id: 1
 				}]
-			}, {slots: {onward: true}})
+			}, {locals: {slots: {onward: true}}})
 				.then(result => {
 					expect(result).to.eql({});
 				});
@@ -147,19 +124,6 @@ describe('related-content signal', () => {
 	});
 
 	context('rhr slot', () => {
-
-		it('use get-most-related-concepts to pick concepts', () => {
-			return subject({
-				id: 'parent-id',
-				curatedRelatedContent: []
-			}, {slots: {onward: true}})
-				.then(() => {
-					expect(stubs.getMostRelatedConcepts).calledWith({
-						id: 'parent-id',
-						curatedRelatedContent: []
-					});
-				});
-		});
 
 		it('prefer curated related content and dedupe', () => {
 			results.esSearch = [ { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 } ];
@@ -171,9 +135,9 @@ describe('related-content signal', () => {
 					predicate: 'http://www.ft.com/ontology/annotation/about',
 					id: 0
 				}]
-			}, {slots: {rhr: true}})
+			}, {locals: {slots: {rhr: true}}})
 				.then(result => {
-					expect(result.rhr.recommendations).to.eql([ { id: 3 }, { id: 6 }, { id: 1 }, { id: 2 }, { id: 4 } ]);
+					expect(result.rhr.items.map(obj => obj.id)).to.eql([ 3, 6, 1, 2, 4, 5 ]);
 					es.mget.restore();
 				});
 		});
@@ -186,9 +150,9 @@ describe('related-content signal', () => {
 					predicate: 'http://www.ft.com/ontology/annotation/about',
 					id: 0
 				}]
-			}, {slots: {rhr: true}})
+			}, {locals: {slots: {rhr: true}}})
 				.then(result => {
-					expect(result.rhr.recommendations).to.eql([ { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 } ]);
+					expect(result.rhr.items.map(obj => obj.id)).to.eql([ 1, 2, 3, 4, 5 ]);
 				});
 		});
 	});

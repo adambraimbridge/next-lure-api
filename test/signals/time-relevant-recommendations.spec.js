@@ -45,7 +45,7 @@ describe('time relevant recommendations signal', () => {
 		await subject({
 			id: 'parent-id',
 			curatedRelatedContent: []
-		}, {slots: {onward: true}, localTimeHour: 10, edition: 'uk'});
+		}, {locals: {slots: {onward: true}, edition: 'uk'}, query: {localTimeHour: 10}});
 		expect(topStoriesPoller.get).calledWith('uk');
 	});
 
@@ -53,7 +53,7 @@ describe('time relevant recommendations signal', () => {
 		await subject({
 			id: 'parent-id',
 			curatedRelatedContent: []
-		}, {slots: {onward: true}, localTimeHour: 10, edition: 'international'});
+		}, {locals: {slots: {onward: true}, edition: 'international'}, query: {localTimeHour: 10}});
 		expect(topStoriesPoller.get).calledWith('international');
 	});
 
@@ -61,7 +61,7 @@ describe('time relevant recommendations signal', () => {
 		const result = await subject({
 			id: 'parent-id',
 			curatedRelatedContent: []
-		}, {slots: {onward: true}, localTimeHour: 10});
+		}, {locals: {slots: {onward: true}}, query: {localTimeHour: 10}});
 		expect(result).to.be.undefined;
 	});
 
@@ -69,7 +69,7 @@ describe('time relevant recommendations signal', () => {
 		const result = await subject({
 			id: 'parent-id',
 			curatedRelatedContent: []
-		}, {slots: {onward: true}, edition: 'uk'});
+		}, {locals: {slots: {onward: true}, edition: 'uk'}, query: {}});
 		expect(result).to.be.undefined;
 	});
 
@@ -77,7 +77,7 @@ describe('time relevant recommendations signal', () => {
 		const result = await subject({
 			id: 'parent-id',
 			curatedRelatedContent: []
-		}, {slots: {onward: true}, edition: 'uk', localTimeHour: 12});
+		}, {locals: {slots: {onward: true}, edition: 'uk'}, query: {localTimeHour: 4}});
 		expect(result).to.be.undefined;
 	});
 
@@ -88,28 +88,26 @@ describe('time relevant recommendations signal', () => {
 			return subject({
 				id: 'parent-id',
 				curatedRelatedContent: []
-			}, {slots: {onward: true, rhr: true}, edition: 'uk', localTimeHour: 9})
+			}, {locals: {slots: {onward: true, rhr: true}, edition: 'uk'}, query: {localTimeHour: 9}})
 				.then(res => result = res);
 		});
 
 		it('use top stories news, excluding parent id, for first slot', () => {
 			const onward = result.onward[0];
-			expect(onward.recommendations).to.eql([{id: 1, genreConcept: {id: NEWS_CONCEPT_ID}}]);
+			expect(onward.items.map(obj => obj.id)).to.eql([1]);
 			expect(onward.title).to.equal('Top stories this morning');
 			expect(onward.titleHref).to.equal('/');
-			expect(onward.tracking).to.equal('morning-reads');
 		});
 
-		it('use most related concept news, deduped, in second onward section', () => {
+		it('use most related concept news in second onward section', () => {
 			expect(stubs.getRelatedContent.args[0][3]).to.equal(true);
-			expect(result.onward[1].recommendations).to.eql([{id: 2}, {id: 6}, {id: 7}]);
+			expect(result.onward[1].items.map(obj => obj.id)).to.eql([1, 2, 6, 7]);
 		});
 
 		it('use top stories news, excluding parent id for rhr', () => {
-			expect(result.rhr.recommendations).to.eql([{id: 1, genreConcept: {id: NEWS_CONCEPT_ID}}]);
+			expect(result.rhr.items.map(obj => obj.id)).to.eql([1]);
 			expect(result.rhr.title).to.equal('Top stories this morning');
 			expect(result.rhr.titleHref).to.equal('/');
-			expect(result.rhr.tracking).to.equal('morning-reads');
 		});
 	});
 
@@ -120,7 +118,7 @@ describe('time relevant recommendations signal', () => {
 			return subject({
 				id: 'parent-id',
 				curatedRelatedContent: []
-			}, {slots: {onward: true, rhr: true}, edition: 'uk', localTimeHour: 19})
+			}, {locals: {slots: {onward: true, rhr: true}, edition: 'uk'}, query: {localTimeHour: 19}})
 				.then(res => result = res);
 		});
 
@@ -130,22 +128,20 @@ describe('time relevant recommendations signal', () => {
 
 		it('use top stories news, excluding parent id, for first slot', () => {
 			const onward = result.onward[0];
-			expect(onward.recommendations).to.eql([{id: 2, genreConcept: {id: 'not news'}}]);
+			expect(onward.items.map(obj => obj.id)).to.eql([2]);
 			expect(onward.title).to.equal('In-depth insight for the evening');
 			expect(onward.titleHref).to.equal('/');
-			expect(onward.tracking).to.equal('evening-reads');
 		});
 
-		it('use most related concept news, deduped, in second onward section', () => {
+		it('use most related concept news in second onward section', () => {
 			expect(stubs.getRelatedContent.args[0][3]).to.equal(false);
-			expect(result.onward[1].recommendations).to.eql([{id: 1}, {id: 6}, {id: 7}]);
+			expect(result.onward[1].items.map(obj => obj.id)).to.eql([1, 2, 6, 7]);
 		});
 
 		it('use top stories news, excluding parent id for rhr', () => {
-			expect(result.rhr.recommendations).to.eql([{id: 2, genreConcept: {id: 'not news'}}]);
+			expect(result.rhr.items.map(obj => obj.id)).to.eql([2]);
 			expect(result.rhr.title).to.equal('In-depth insight for the evening');
 			expect(result.rhr.titleHref).to.equal('/');
-			expect(result.rhr.tracking).to.equal('evening-reads');
 		});
 	});
 });
