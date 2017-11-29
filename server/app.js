@@ -1,10 +1,7 @@
 const express = require('@financial-times/n-express');
 
 const topStoriesPoller = require('./data-sources/top-stories-poller');
-topStoriesPoller.init();
-
 const healthchecks = require('./healthchecks');
-healthchecks.init();
 
 const app = express({
 	systemCode: 'next-lure-api',
@@ -30,9 +27,10 @@ const middlewareStack = [
 ];
 
 v1.get('/content/:contentId', (req, res, next) => {
+	const count = req.query.onwardRowItemCount || 3;
 	res.locals.modelTemplate = {
 		rhr: 5,
-		onward: [3, 3],
+		onward: [count, count],
 		listName: 'recommendations'
 	};
 	next();
@@ -52,6 +50,8 @@ lure.use('/v2', v2);
 app.use('/lure', lure);
 
 if (process.env.NODE_ENV !== 'test') {
+	topStoriesPoller.init();
+	healthchecks.init();
 	app.listen(process.env.PORT || 3002);
 }
 

@@ -98,7 +98,7 @@ describe('related-content signal', () => {
 					id: 1
 				}]
 			}, {locals: {slots: {onward: true}, q1Length: 5, q2Length: 6}})
-				.then(result => {
+				.then(() => {
 					expect(es.search.args[0][0].size).to.equal(6);
 					expect(es.search.args[1][0].size).to.equal(7);
 				});

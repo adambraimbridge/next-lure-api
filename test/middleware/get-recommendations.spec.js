@@ -4,7 +4,6 @@ chai.use(require('sinon-chai'));
 const proxyquire = require('proxyquire');
 
 const sinon = require('sinon');
-const es = require('@financial-times/n-es-client');
 
 const getMockArgs = (sandbox, headers = {}) => {
 	return [{

@@ -2,13 +2,16 @@ const dedupeById = require('../lib/dedupe-by-id');
 const send404 = require('../lib/send-404');
 
 const finishModel = (model, listName, count) => {
-	if (!model.concept) {
-		return model;
-	}
-
 	const listObj = {};
 
 	listObj[listName] = model.items.slice(0, count);
+
+	if (!model.concept) {
+		return Object.assign({}, {
+			title: model.title,
+			titleHref: model.titleHref
+		}, listObj);
+	}
 
 	return Object.assign({}, {
 		title: `Latest ${model.concept.preposition} ${model.concept.prefLabel}`,
@@ -25,7 +28,6 @@ module.exports = (req, res) => {
 	const response = {};
 
 	const rhrModel = finishModel(recommendations.rhr, listName, rhr || ribbon);
-
 	if (ribbon) {
 		response.ribbon = rhrModel;
 	} else {
@@ -37,12 +39,12 @@ module.exports = (req, res) => {
 
 		if (Array.isArray(onward)) {
 			response.onward = [
-				finishModel(recommendations.onward[0], listName, onward[0])
+				finishModel(onwardAsArray[0], listName, onward[0])
 			];
 			let secondOnward;
 			if (onwardAsArray[1]) {
 				secondOnward = Object.assign({}, onwardAsArray[1], {
-					items: dedupeById(onwardAsArray[1].items, onwardAsArray[0].items)
+					items: dedupeById(onwardAsArray[1].items, response.onward[0][listName])
 				})
 			} else {
 				// deliberately no title

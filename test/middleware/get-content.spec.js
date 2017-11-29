@@ -1,7 +1,6 @@
 const chai = require('chai');
 const expect = chai.expect;
 chai.use(require('sinon-chai'));
-const proxyquire = require('proxyquire');
 
 const sinon = require('sinon');
 const es = require('@financial-times/n-es-client');
@@ -29,7 +28,6 @@ const getMockArgs = (sandbox, headers = {}) => {
 describe('get content', () => {
 	let middleware;
 	let sandbox;
-	let signalStubs;
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
 		sandbox.stub(es, 'get').returns(Promise.resolve({
