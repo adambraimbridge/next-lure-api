@@ -38,7 +38,7 @@ module.exports = async (req, res, next) => {
 		if (signalStackForOverwrite.length > 0) {
 			const recommendationsForOverwrite = await getRecommendataions(req, res, signalStack);
 			if (recommendationsForOverwrite) {
-				break;
+				return recommendations;
 			}
 			if (recommendationsForOverwrite.rhr) {
 				recommendations.rhr = recommendationsForOverwrite.rhr
