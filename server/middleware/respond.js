@@ -27,11 +27,13 @@ module.exports = (req, res) => {
 	const { recommendations, modelTemplate: {listName, onward, ribbon, rhr} } = res.locals;
 	const response = {};
 
-	const ribbonModel = finishModel(recommendations.ribbon, listName, rhr || ribbon);
-	if (ribbon) {
-		response.ribbon = ribbonModel;
-	} else {
-		response.rhr = ribbonModel;
+	if (recommendations.ribbon) {
+		const ribbonModel = finishModel(recommendations.ribbon, listName, rhr || ribbon);
+		if (ribbon) {
+			response.ribbon = ribbonModel;
+		} else {
+			response.rhr = ribbonModel;
+		}
 	}
 
 	if (recommendations.onward) {

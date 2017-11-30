@@ -88,7 +88,7 @@ describe('time relevant recommendations signal', () => {
 			return subject({
 				id: 'parent-id',
 				curatedRelatedContent: []
-			}, {locals: {slots: {onward: true, rhr: true}, edition: 'uk'}, query: {localTimeHour: 9}})
+			}, {locals: {slots: {onward: true, ribbon: true}, edition: 'uk'}, query: {localTimeHour: 9}})
 				.then(res => result = res);
 		});
 
