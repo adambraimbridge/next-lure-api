@@ -25,7 +25,7 @@ module.exports = async (content, {locals: {slots, q1Length, q2Length}}) => {
 	const [curated, related1, related2] = await Promise.all([
 		content.curatedRelatedContent ? getCuratedContent(content.curatedRelatedContent.map(content => content.id)): Promise.resolve([]),
 		getRelatedContent(concepts[0], q1Length, content.id), // get enough for the right hand rail
-		slots.onward ? getRelatedContent(concepts[1], q2Length, content.id) : Promise.resolve({})
+		(slots.onward && concepts[1]) ? getRelatedContent(concepts[1], q2Length, content.id) : Promise.resolve({})
 	])
 
 	const response = {};
@@ -43,7 +43,7 @@ module.exports = async (content, {locals: {slots, q1Length, q2Length}}) => {
 		if (related1.items.length) {
 			onward.push(related1);
 		}
-		if (related2.items.length) {
+		if (related2.items && related2.items.length) {
 			onward.push(related2);
 		}
 		if (onward.length) {
