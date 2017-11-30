@@ -21,17 +21,17 @@ const finishModel = (model, listName, count) => {
 };
 
 module.exports = (req, res) => {
-	if (!res.locals.recommendations || !res.locals.recommendations.rhr) {
+	if (!res.locals.recommendations || !res.locals.recommendations.ribbon) {
 		return send404(res);
 	}
 	const { recommendations, modelTemplate: {listName, onward, ribbon, rhr} } = res.locals;
 	const response = {};
 
-	const rhrModel = finishModel(recommendations.rhr, listName, rhr || ribbon);
+	const ribbonModel = finishModel(recommendations.ribbon, listName, rhr || ribbon);
 	if (ribbon) {
-		response.ribbon = rhrModel;
+		response.ribbon = ribbonModel;
 	} else {
-		response.rhr = rhrModel;
+		response.rhr = ribbonModel;
 	}
 
 	if (recommendations.onward) {

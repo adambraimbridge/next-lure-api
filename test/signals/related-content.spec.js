@@ -123,7 +123,7 @@ describe('related-content signal', () => {
 		});
 	});
 
-	context('rhr slot', () => {
+	context('ribbon slot', () => {
 
 		it('prefer curated related content and dedupe', () => {
 			results.esSearch = [ { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 } ];
@@ -135,9 +135,9 @@ describe('related-content signal', () => {
 					predicate: 'http://www.ft.com/ontology/annotation/about',
 					id: 0
 				}]
-			}, {locals: {slots: {rhr: true}}})
+			}, {locals: {slots: {ribbon: true}}})
 				.then(result => {
-					expect(result.rhr.items.map(obj => obj.id)).to.eql([ 3, 6, 1, 2, 4, 5 ]);
+					expect(result.ribbon.items.map(obj => obj.id)).to.eql([ 3, 6, 1, 2, 4, 5 ]);
 					es.mget.restore();
 				});
 		});
@@ -150,9 +150,9 @@ describe('related-content signal', () => {
 					predicate: 'http://www.ft.com/ontology/annotation/about',
 					id: 0
 				}]
-			}, {locals: {slots: {rhr: true}}})
+			}, {locals: {slots: {ribbon: true}}})
 				.then(result => {
-					expect(result.rhr.items.map(obj => obj.id)).to.eql([ 1, 2, 3, 4, 5 ]);
+					expect(result.ribbon.items.map(obj => obj.id)).to.eql([ 1, 2, 3, 4, 5 ]);
 				});
 		});
 	});

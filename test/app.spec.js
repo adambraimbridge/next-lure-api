@@ -52,7 +52,8 @@ describe('lure e2e', () => {
 
 	context('success', () => {
 
-		before(() => rawData = {rhr: {}})
+		before(() => rawData = {ribbon: {}})
+
 		it('sets appropriate cache headers', async () => {
 			return request(app)
 				.get('/lure/v1/content/uuid')
@@ -62,7 +63,7 @@ describe('lure e2e', () => {
 
 		it('converts concepts to headings and links', () => {
 			rawData = {
-				rhr: {
+				ribbon: {
 					items: getItems(5),
 					concept: {
 						prefLabel: 'Stuff',
@@ -83,7 +84,7 @@ describe('lure e2e', () => {
 		context('when fetching v1 style data', () => {
 			before(() => {
 				rawData = {
-					rhr: {
+					ribbon: {
 						items: getItems(5)
 					},
 					onward: [{
@@ -134,7 +135,7 @@ describe('lure e2e', () => {
 		context('when fetching v2 style data', () => {
 			before(() => {
 				rawData = {
-					rhr: {
+					ribbon: {
 						items: getItems(5)
 					},
 					onward: {

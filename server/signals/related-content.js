@@ -31,7 +31,7 @@ module.exports = async (content, {locals: {slots, q1Length, q2Length}}) => {
 	const response = {};
 
 	if (curated.length || related1.items.length) {
-		response.rhr = {
+		response.ribbon = {
 			concept: related1.concept,
 			items: dedupeById(curated.concat(related1.items)).slice(0, q1Length)
 		};
