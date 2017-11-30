@@ -24,7 +24,7 @@ smoke-test-local:
 test:
 	make verify
 
-ifeq ($(CIRCLE_BRANCH),master)
+ifeq ($(CIRCLE_BRANCH_DISABLE_FOR_NOW),master)
 	make coverage-report && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
 else
 	make unit-test
