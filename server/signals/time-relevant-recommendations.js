@@ -69,15 +69,16 @@ module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}, 
 
 	topStories = topStoriesSlice(topStories, content.id);
 
-	response.rhr = Object.assign({
-		items: topStories.slice(0, q1Length)
-	}, model);
+	if (slots.ribbon) {
+		response.ribbon = Object.assign({
+			items: topStories.slice(0, q1Length)
+		}, model);
+	}
 
 	if (slots.onward) {
 		const secondaryOnward = await getRelatedContent(concepts[0], q2Length, content.id, timeSlot === 'am' ? true : false);
-
 		response.onward = [
-			Object.assign({}, response.rhr),
+			Object.assign({}, response.ribbon),
 			secondaryOnward
 		];
 	}

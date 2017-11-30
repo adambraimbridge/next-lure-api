@@ -88,7 +88,7 @@ describe('time relevant recommendations signal', () => {
 			return subject({
 				id: 'parent-id',
 				curatedRelatedContent: []
-			}, {locals: {slots: {onward: true, rhr: true}, edition: 'uk'}, query: {localTimeHour: 9}})
+			}, {locals: {slots: {onward: true, ribbon: true}, edition: 'uk'}, query: {localTimeHour: 9}})
 				.then(res => result = res);
 		});
 
@@ -104,10 +104,10 @@ describe('time relevant recommendations signal', () => {
 			expect(result.onward[1].items.map(obj => obj.id)).to.eql([1, 2, 6, 7]);
 		});
 
-		it('use top stories news, excluding parent id for rhr', () => {
-			expect(result.rhr.items.map(obj => obj.id)).to.eql([1]);
-			expect(result.rhr.title).to.equal('Top stories this morning');
-			expect(result.rhr.titleHref).to.equal('/');
+		it('use top stories news, excluding parent id for ribbon', () => {
+			expect(result.ribbon.items.map(obj => obj.id)).to.eql([1]);
+			expect(result.ribbon.title).to.equal('Top stories this morning');
+			expect(result.ribbon.titleHref).to.equal('/');
 		});
 	});
 
@@ -118,7 +118,7 @@ describe('time relevant recommendations signal', () => {
 			return subject({
 				id: 'parent-id',
 				curatedRelatedContent: []
-			}, {locals: {slots: {onward: true, rhr: true}, edition: 'uk'}, query: {localTimeHour: 19}})
+			}, {locals: {slots: {onward: true, ribbon: true}, edition: 'uk'}, query: {localTimeHour: 19}})
 				.then(res => result = res);
 		});
 
@@ -138,10 +138,10 @@ describe('time relevant recommendations signal', () => {
 			expect(result.onward[1].items.map(obj => obj.id)).to.eql([1, 2, 6, 7]);
 		});
 
-		it('use top stories news, excluding parent id for rhr', () => {
-			expect(result.rhr.items.map(obj => obj.id)).to.eql([2]);
-			expect(result.rhr.title).to.equal('In-depth insight for the evening');
-			expect(result.rhr.titleHref).to.equal('/');
+		it('use top stories news, excluding parent id for ribbon', () => {
+			expect(result.ribbon.items.map(obj => obj.id)).to.eql([2]);
+			expect(result.ribbon.title).to.equal('In-depth insight for the evening');
+			expect(result.ribbon.titleHref).to.equal('/');
 		});
 	});
 });
