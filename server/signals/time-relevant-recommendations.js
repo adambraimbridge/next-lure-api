@@ -1,28 +1,8 @@
 const topStoriesPoller = require('../data-sources/top-stories-poller');
 const getMostRelatedConcepts = require('../lib/get-most-related-concepts');
 const getRelatedContent = require('../lib/get-related-content');
-const toViewModel = require('../lib/related-teasers-to-view-model');
 const dedupeById = require('../lib/dedupe-by-id');
 const { NEWS_CONCEPT_ID } = require('../constants');
-
-const constructRHR = (stories, model) => Object.assign({
-	recommendations: stories.slice(0, 5)
-}, model);
-
-const constructOnward = (primary, secondary, model, onwardRowItemCount) => {
-	const primaryItems = primary.slice(0, onwardRowItemCount);
-
-	return [
-		Object.assign({
-			recommendations: primaryItems
-		}, model),
-		toViewModel({
-			concept:secondary.concept,
-			teasers: dedupeById(secondary.teasers, primaryItems).slice(0, onwardRowItemCount)
-		})
-	];
-}
-
 
 // get a slice of stories which excludes the current story, but also (to some degree)
 // avoids looping through the same small number of stories
@@ -42,7 +22,7 @@ const topStoriesSlice = (stories, thisId) => {
 }
 
 
-module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCount = 3}) => {
+module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}, query: {localTimeHour}}) => {
 
 	if (!(edition && localTimeHour)) {
 		return
@@ -53,62 +33,55 @@ module.exports = async (content, {localTimeHour, edition, slots, onwardRowItemCo
 	const concepts = getMostRelatedConcepts(content);
 	let topStories = topStoriesPoller.get(edition);
 
-	// am slant towards news
+	let timeSlot;
+
 	if (localTimeHour > 4 && localTimeHour < 12) {
-		const model = {
-			title: 'Top stories this morning',
-			titleHref: '/',
-			tracking: 'morning-reads'
-		};
-
-		topStories = topStories
-			.filter(teaser => teaser.genreConcept && teaser.genreConcept.id === NEWS_CONCEPT_ID );
-
-		topStories = topStoriesSlice(topStories, content.id);
-
-		if (slots.rhr) {
-			response.rhr = constructRHR(topStories, model);
-		}
-
-		if (slots.onward) {
-			const secondaryOnward = await getRelatedContent(concepts[0], onwardRowItemCount * 2, content.id, true);
-			response.onward = constructOnward(topStories, secondaryOnward, model, onwardRowItemCount);
-		}
-
-		return response;
+		timeSlot = 'am';
+	} else if (localTimeHour > 14 && localTimeHour < 20) {
+		timeSlot = 'pm';
+	} else {
+		return;
 	}
 
-	// pm slant towards non news
-	if (localTimeHour > 14 && localTimeHour < 20) {
+	const model = {
+		title: timeSlot === 'am' ? 'Top stories this morning' : 'In-depth insight for the evening',
+		titleHref: '/'
+	};
 
-		const model = {
-			title: 'In-depth insight for the evening',
-			titleHref: '/',
-			tracking: 'evening-reads'
-		};
+	if (timeSlot === 'am') {
+		topStories = topStories
+			.filter(item => item.genreConcept && item.genreConcept.id === NEWS_CONCEPT_ID )
+			.map(item => {
+				return Object.assign({}, item, {originator: 'morning-reads'});
+			});
 
+	} else {
 		topStories = topStories
 			.concat(topStoriesPoller.get(`${edition}Opinion`))
 			.filter(story => !!story)
-			.filter(teaser => teaser.genreConcept && teaser.genreConcept.id !== NEWS_CONCEPT_ID);
+			.filter(item => item.genreConcept && item.genreConcept.id !== NEWS_CONCEPT_ID)
+			.map(item => {
+				return Object.assign({}, item, {originator: 'evening-reads'});
+			});
 
 		topStories = dedupeById(topStories);
-		topStories = topStoriesSlice(topStories, content.id);
-
-		if (slots.rhr) {
-			response.rhr = constructRHR(topStories, model);
-		}
-
-		if (slots.onward) {
-
-			const secondaryOnward = await getRelatedContent(concepts[0], onwardRowItemCount * 2, content.id, false);
-
-			response.onward = constructOnward(topStories, secondaryOnward, model, onwardRowItemCount);
-		}
-
-		return response;
 	}
 
-	// otherwise return undefined to fall through to next thing in the stack
+	topStories = topStoriesSlice(topStories, content.id);
+
+	response.rhr = Object.assign({
+		items: topStories.slice(0, q1Length)
+	}, model);
+
+	if (slots.onward) {
+		const secondaryOnward = await getRelatedContent(concepts[0], q2Length, content.id, timeSlot === 'am' ? true : false);
+
+		response.onward = [
+			Object.assign({}, response.rhr),
+			secondaryOnward
+		];
+	}
+
+	return response;
 
 };

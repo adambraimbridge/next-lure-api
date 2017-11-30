@@ -7,10 +7,16 @@ node_modules/@financial-times/n-gage/index.mk:
 TEST_HOST := "ft-next-lure-api-branch-${CIRCLE_BUILD_NUM}"
 
 coverage-report:
-	export NODE_ENV=test; export AWS_SIGNED_FETCH_DISABLE_DNS_RESOLUTION=true; istanbul cover node_modules/.bin/_mocha --report=$(if $(CIRCLECI),lcovonly,lcov) 'test/**/*.spec.js'
+	export NODE_ENV=test; \
+	export AWS_SIGNED_FETCH_DISABLE_DNS_RESOLUTION=true; \
+	export FT_GRAPHITE_KEY=dummy-graphite-key; \
+	istanbul cover node_modules/.bin/_mocha --report=$(if $(CIRCLECI),lcovonly,lcov) --exit 'test/**/*.spec.js'
 
 unit-test:
-	export NODE_ENV=test; export AWS_SIGNED_FETCH_DISABLE_DNS_RESOLUTION=true; mocha 'test/**/*.spec.js'
+	export NODE_ENV=test; \
+	export AWS_SIGNED_FETCH_DISABLE_DNS_RESOLUTION=true; \
+	export FT_GRAPHITE_KEY=dummy-graphite-key; \
+	mocha --exit 'test/**/*.spec.js'
 
 smoke-test-local:
 	nht smoke local.ft.com:5050

@@ -1,6 +1,5 @@
 const getMostRelatedConcepts = require('../lib/get-most-related-concepts');
 const getRelatedContent = require('../lib/get-related-content');
-const toViewModel = require('../lib/related-teasers-to-view-model');
 const es = require('@financial-times/n-es-client');
 const TEASER_PROPS = require('@financial-times/n-teaser').esQuery;
 const dedupeById = require('../lib/dedupe-by-id');
@@ -10,9 +9,13 @@ const getCuratedContent = ids => ids.length ? es.mget({
 		_id: id.replace('http://api.ft.com/things/', ''),
 		_source: TEASER_PROPS
 	}))
-}) : Promise.resolve([]);
+}) : Promise.resolve([])
+	.then(items => items.map(item => {
+		item.originator = 'curated-related';
+		return item;
+	}));
 
-module.exports = async (content, {slots, onwardRowItemCount = 3}) => {
+module.exports = async (content, {locals: {slots, q1Length, q2Length}}) => {
 	const concepts = getMostRelatedConcepts(content);
 
 	if (!concepts) {
@@ -20,41 +23,33 @@ module.exports = async (content, {slots, onwardRowItemCount = 3}) => {
 	}
 
 	const [curated, related1, related2] = await Promise.all([
-		( slots.rhr && content.curatedRelatedContent ) ? getCuratedContent(content.curatedRelatedContent.map(content => content.id)) : Promise.resolve([]),
-		getRelatedContent(concepts[0], Math.max(5, onwardRowItemCount), content.id), // get enough for the right hand rail
-		( slots.onward && concepts[1] ) ? getRelatedContent(concepts[1], onwardRowItemCount * 2, content.id) : Promise.resolve({teasers: []}) // get enough so that if there is an overlap pf 3 with concepts[0], there will still be some left
-	]);
+		content.curatedRelatedContent ? getCuratedContent(content.curatedRelatedContent.map(content => content.id)): Promise.resolve([]),
+		getRelatedContent(concepts[0], q1Length, content.id), // get enough for the right hand rail
+		slots.onward ? getRelatedContent(concepts[1], q2Length, content.id) : Promise.resolve({})
+	])
 
 	const response = {};
 
-	if (slots.onward) {
-		const onward = [];
-		if (related1.teasers.length) {
-			onward.push({
-				concept: related1.concept,
-				teasers: related1.teasers.slice(0, onwardRowItemCount)
-			});
-		}
-		if (related2.teasers.length) {
-			onward.push({
-				concept: related2.concept,
-				teasers: dedupeById(related2.teasers, related1.teasers.slice(0, onwardRowItemCount)).slice(0, onwardRowItemCount)
-			});
-		}
-		if (onward.length) {
-			response.onward = onward.map(data => toViewModel(data));
-		}
+	if (curated.length || related1.items.length) {
+		response.rhr = {
+			concept: related1.concept,
+			items: dedupeById(curated.concat(related1.items)).slice(0, q1Length)
+		};
 	}
 
-	if (slots.rhr) {
-		// TODO differentiate in the tracking when there are curated links as well
-		// as related
-		response.rhr = toViewModel({
-			concept: related1.concept,
-			teasers: dedupeById(curated.concat(related1.teasers)).slice(0, 5)
-		});
+	if (slots.onward) {
+		const onward = [];
+
+		if (related1.items.length) {
+			onward.push(related1);
+		}
+		if (related2.items.length) {
+			onward.push(related2);
+		}
+		if (onward.length) {
+			response.onward = onward;
+		}
 	}
 
 	return response;
-
 };
