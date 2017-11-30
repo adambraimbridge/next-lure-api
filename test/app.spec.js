@@ -181,5 +181,3 @@ describe('lure e2e', () => {
 		})
 	})
 })
-// calls middleware in order
-// fetches content
