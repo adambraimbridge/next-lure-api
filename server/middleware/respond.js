@@ -21,7 +21,7 @@ const finishModel = (model, listName, count) => {
 };
 
 module.exports = (req, res) => {
-	if (!res.locals.recommendations || !res.locals.recommendations.ribbon) {
+	if (!res.locals.recommendations || !Object.keys(res.locals.recommendations).length) {
 		return send404(res);
 	}
 	const { recommendations, modelTemplate: {listName, onward, ribbon, rhr} } = res.locals;
