@@ -1,5 +1,5 @@
 const logger = require('@financial-times/n-logger').default;
-const { relatedContent, topStories, timeRelevantRecommendations } = require('../signals');
+const { relatedContent, topStories, timeRelevantRecommendations, essentialStories } = require('../signals');
 
 const modelIsFulfilled = (slots, model) => {
 	return !Object.keys(excludeCompletedSlots(slots, model)).length
@@ -28,6 +28,13 @@ module.exports = async (req, res, next) => {
 			signalStack.unshift(timeRelevantRecommendations);
 		}
 
+		if (res.locals.flags.refererCohort === 'search'
+			&& res.locals.flags.cleanOnwardJourney
+			&& res.locals.content._editorialComponents.length > 0
+		) {
+			signalStack.unshift(essentialStories);
+		}
+
 		let signal;
 
 		while ((signal = signalStack.shift()) && !modelIsFulfilled(res.locals.slots, recommendations)) {
@@ -35,7 +42,6 @@ module.exports = async (req, res, next) => {
 			const newRecommendations = await signal(res.locals.content, { locals: Object.assign({}, res.locals, {
 				slots: excludeCompletedSlots(res.locals.slots, recommendations)
 			}), query: req.query});
-
 			recommendations = Object.assign(recommendations, newRecommendations);
 		}
 

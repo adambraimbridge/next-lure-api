@@ -15,7 +15,7 @@ const getMockArgs = (sandbox, headers = {}) => {
 	}, {
 		locals: {
 			flags: {},
-			slots: {rhr: true},
+			slots: { ribbon: true },
 			edition: 'uk',
 			content: {
 				id: 'content-id'
@@ -39,7 +39,8 @@ describe('get recommendations', () => {
 		signalStubs = {
 			topStories: sandbox.stub().callsFake(async (content, {locals: {slots}}) => slots),
 			relatedContent: sandbox.stub().callsFake(async (content, {locals: {slots}}) => slots),
-			timeRelevantRecommendations: sandbox.stub().callsFake(async (content, {locals: {slots}}) => slots)
+			timeRelevantRecommendations: sandbox.stub().callsFake(async (content, {locals: {slots}}) => slots),
+			essentialStories: sandbox.stub().callsFake(async (content, {locals: {slots}}) => slots)
 		};
 		middleware = proxyquire('../../server/middleware/get-recommendations', {
 			'../signals': signalStubs
@@ -97,4 +98,50 @@ describe('get recommendations', () => {
 			expect(signalStubs.timeRelevantRecommendations.calledOnce).to.be.true;
 		});
 	});
+
+	context('essential stories', () => {
+
+		it('use essential stories when cleanOnwardJourney flag is on, refererCohort flag is search, and content._editorialComponents is defined', async () => {
+			const mocks = getMockArgs(sandbox);
+			mocks[1].locals.flags.cleanOnwardJourney = true;
+			mocks[1].locals.flags.refererCohort = 'search';
+			mocks[1].locals.content._editorialComponents = ['editorial component'];
+			await middleware(...mocks);
+			expect(signalStubs.essentialStories.calledOnce).to.be.true;
+		});
+
+		it('move next signal to get data for onward slot', async () => {
+			const mocks = getMockArgs(sandbox);
+			mocks[1].locals.flags.cleanOnwardJourney = true;
+			mocks[1].locals.flags.refererCohort = 'search';
+			mocks[1].locals.content._editorialComponents = ['editorial component'];
+			mocks[1].locals.slots= { ribbon: true, onward: true };
+			signalStubs.essentialStories.returns(Promise.resolve({ ribbon: 'from Essential Stories' }));
+			signalStubs.relatedContent.returns(Promise.resolve({ onward: 'from Related Content' }));
+			await middleware(...mocks);
+			expect(mocks[1].locals.recommendations).to.eql({ ribbon: 'from Essential Stories', onward: 'from Related Content' });
+			expect(signalStubs.essentialStories.calledOnce).to.be.true;
+			expect(signalStubs.relatedContent.calledOnce).to.be.true;
+			expect(signalStubs.topStories.notCalled).to.be.true;
+			expect(signalStubs.timeRelevantRecommendations.notCalled).to.be.true;
+		});
+
+		it('fallback to next signal when no essentialStories results', async () => {
+			const mocks = getMockArgs(sandbox);
+			mocks[1].locals.flags.cleanOnwardJourney = true;
+			mocks[1].locals.flags.refererCohort = 'search';
+			mocks[1].locals.content._editorialComponents = ['editorial component'];
+			mocks[1].locals.slots= { ribbon: true, onward: true };
+			signalStubs.essentialStories.returns(Promise.resolve(null));
+			signalStubs.relatedContent.returns(Promise.resolve({ ribbon: 'from Related Content', onward: 'from Related Content' }));
+			await middleware(...mocks);
+			expect(mocks[1].locals.recommendations).to.eql({ ribbon: 'from Related Content', onward: 'from Related Content' });
+			expect(signalStubs.essentialStories.calledOnce).to.be.true;
+			expect(signalStubs.relatedContent.calledOnce).to.be.true;
+			expect(signalStubs.topStories.notCalled).to.be.true;
+			expect(signalStubs.timeRelevantRecommendations.notCalled).to.be.true;
+		});
+
+	});
+
 });
