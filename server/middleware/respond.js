@@ -66,7 +66,7 @@ module.exports = (req, res) => {
 					).slice(0, onward)
 				}), listName, onward);
 			} else {
-				response.onward = finishModel(recommendations.onward, listName, onward)
+				response.onward = finishModel(onwardAsArray[0], listName, onward)
 			}
 		}
 	}
