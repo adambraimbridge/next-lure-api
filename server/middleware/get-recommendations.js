@@ -1,9 +1,22 @@
 const logger = require('@financial-times/n-logger').default;
 const { relatedContent, topStories, timeRelevantRecommendations } = require('../signals');
 
+const modelIsFulfilled = (slots, model) => {
+	return !Object.keys(excludeCompletedSlots(slots, model)).length
+}
+
+const excludeCompletedSlots = (slots, model) => {
+	return Object.keys(slots).reduce((obj, slotName) => {
+		if (!model[slotName]) {
+			obj[slotName] = true;
+		}
+		return obj;
+	}, {})
+}
+
 module.exports = async (req, res, next) => {
 	try {
-		let recommendations;
+		let recommendations = {};
 
 		const signalStack = [relatedContent];
 
@@ -17,12 +30,15 @@ module.exports = async (req, res, next) => {
 
 		let signal;
 
-		while (signal = signalStack.shift()) {
-			recommendations = await signal(res.locals.content, { locals: res.locals, query: req.query});
-			if (recommendations) {
-				break;
-			}
+		while ((signal = signalStack.shift()) && !modelIsFulfilled(res.locals.slots, recommendations)) {
+
+			const newRecommendations = await signal(res.locals.content, { locals: Object.assign({}, res.locals, {
+				slots: excludeCompletedSlots(res.locals.slots, recommendations)
+			}), query: req.query});
+
+			recommendations = Object.assign(recommendations, newRecommendations);
 		}
+
 		res.locals.recommendations = recommendations;
 		next();
 	} catch (err) {
