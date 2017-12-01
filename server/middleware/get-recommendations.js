@@ -30,6 +30,7 @@ module.exports = async (req, res, next) => {
 
 		if (res.locals.flags.refererCohort === 'search'
 			&& res.locals.flags.cleanOnwardJourney
+			&& res.locals.content._editorialComponents
 			&& res.locals.content._editorialComponents.length > 0
 		) {
 			signalStack.unshift(essentialStories);
