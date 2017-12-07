@@ -9,7 +9,7 @@ const { NEWS_CONCEPT_ID } = require('../constants');
 const topStoriesSlice = (stories, thisId) => {
 	const thisStoryIndex = stories.indexOf(stories.find(teaser => teaser.id === thisId));
 	let newStories;
-	if (thisStoryIndex) {
+	if (thisStoryIndex > -1) {
 		// avoid cycling through the top few stories
 		if (thisStoryIndex < 9) {
 			newStories = stories.slice(thisStoryIndex + 1)
@@ -18,7 +18,7 @@ const topStoriesSlice = (stories, thisId) => {
 				.filter(teaser => teaser.id !== thisId);
 		}
 	}
-	return (newStories && newStories.length >= 5) ? newStories : stories;
+	return (newStories && newStories.length >= 5) ? newStories : stories.filter(teaser => teaser.id !== thisId);
 }
 
 
