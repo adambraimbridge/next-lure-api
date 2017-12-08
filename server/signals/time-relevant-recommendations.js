@@ -76,11 +76,14 @@ module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}, 
 	}
 
 	if (slots.onward) {
-		const secondaryOnward = await getRelatedContent(concepts[0], q2Length, content.id, timeSlot === 'am' ? true : false);
 		response.onward = [
 			Object.assign({}, response.ribbon),
-			secondaryOnward
 		];
+
+		if (concepts[0]) {
+			const secondaryOnward = await getRelatedContent(concepts[0], q2Length, content.id, timeSlot === 'am' ? true : false);
+			response.onward.push(secondaryOnward)
+		}
 	}
 
 	return response;
