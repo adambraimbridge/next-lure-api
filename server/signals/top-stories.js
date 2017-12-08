@@ -32,7 +32,7 @@ module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}})
 		response.onward = [
 			Object.assign({}, response.ribbon),
 		];
-		if (concepts[0]) {
+		if (concepts && concepts[0]) {
 			const secondaryOnward = await getRelatedContent(concepts[0], q2Length, content.id);
 
 			response.onward.push(secondaryOnward)
