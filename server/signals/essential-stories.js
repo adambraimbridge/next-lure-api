@@ -16,12 +16,15 @@ module.exports = (content, {locals: {slots, q1Length}}) => {
 		allStories = allStories.concat(component.stories);
 	})
 
-	if (allStories.length < q1Length) {
+	//avoid stories doesn't have relativeUrl to set n-teaser
+	const storiesHaveRelativeUrl = allStories.filter(story => story.type !== 'non-article');
+
+	if (storiesHaveRelativeUrl.length < q1Length) {
 		return null;
 	}
 
 	response.ribbon = Object.assign({
-		items: allStories.slice(0, q1Length)
+		items: storiesHaveRelativeUrl.slice(0, q1Length)
 			.map(item => {
 				item.originator = 'essential-stories';
 				return item;
