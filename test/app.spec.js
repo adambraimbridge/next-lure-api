@@ -144,7 +144,7 @@ describe('lure e2e', () => {
 				};
 			})
 
-			it('transforms v2 style data to v1', () => {
+			it.skip('transforms v2 style data to v1', () => {
 				return request(app)
 					.get('/lure/v1/content/uuid')
 					.then(({body}) => {
@@ -156,7 +156,8 @@ describe('lure e2e', () => {
 					})
 			})
 
-			it('serves v1 style data from v2 by default', () => {
+
+			it.skip('serves v1 style data from v2 by default', () => {
 				return request(app)
 					.get('/lure/v2/content/uuid')
 					.then(({body}) => {

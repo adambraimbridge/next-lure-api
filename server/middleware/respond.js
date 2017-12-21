@@ -43,19 +43,21 @@ module.exports = (req, res) => {
 			response.onward = [
 				finishModel(onwardAsArray[0], listName, onward[0])
 			];
+
 			let secondOnward;
 			if (onwardAsArray[1]) {
 				secondOnward = Object.assign({}, onwardAsArray[1], {
 					items: dedupeById(onwardAsArray[1].items, response.onward[0][listName])
 				})
-			} else {
-				// deliberately no title
-				secondOnward = Object.assign({}, {
-					items: onwardAsArray[0].items.slice(onward[0])
-				})
+				response.onward.push(finishModel(secondOnward, listName, onward[1]));
+			// } else {
+			// 	// deliberately no title
+			// 	secondOnward = Object.assign({}, {
+			// 		items: onwardAsArray[0].items.slice(onward[0])
+			// 	})
 			}
 
-			response.onward.push(finishModel(secondOnward, listName, onward[1]));
+			// response.onward.push(finishModel(secondOnward, listName, onward[1]));
 		} else {
 			// todo merge with onward[1]
 			if (onwardAsArray[1]) {
