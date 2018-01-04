@@ -1,6 +1,4 @@
 const topStoriesPoller = require('../data-sources/top-stories-poller');
-const getMostRelatedConcepts = require('../lib/get-most-related-concepts');
-const getRelatedContent = require('../lib/get-related-content');
 const dedupeById = require('../lib/dedupe-by-id');
 const {NEWS_CONCEPT_ID, RIBBON_COUNT, ONWARD_COUNT} = require('../constants');
 // get a slice of stories which excludes the current story, but also (to some degree)

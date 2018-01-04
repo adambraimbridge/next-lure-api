@@ -1,4 +1,3 @@
-const dedupeById = require('../lib/dedupe-by-id');
 const send404 = require('../lib/send-404');
 
 const finishModel = (model) => {

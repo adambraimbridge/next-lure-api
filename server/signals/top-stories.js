@@ -1,6 +1,4 @@
 const topStoriesPoller = require('../data-sources/top-stories-poller');
-const getMostRelatedConcepts = require('../lib/get-most-related-concepts');
-const getRelatedContent = require('../lib/get-related-content');
 const {RIBBON_COUNT, ONWARD_COUNT} = require('../constants');
 
 module.exports = async (content, {locals: {edition, slots}}) => {
@@ -9,7 +7,6 @@ module.exports = async (content, {locals: {edition, slots}}) => {
 		return;
 	}
 
-	const concepts = getMostRelatedConcepts(content);
 	const topStories = topStoriesPoller.get(edition)
 		.map(item => {
 			return Object.assign({}, item, {originator: 'top-stories'});

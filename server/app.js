@@ -12,7 +12,6 @@ const app = express({
 app.get('/__gtg', (req, res) => res.sendStatus(200));
 
 const lure = express.Router();
-const v1 = express.Router();
 const v2 = express.Router();
 
 const middleware = require('./middleware');
