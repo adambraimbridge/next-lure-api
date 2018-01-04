@@ -1,6 +1,7 @@
 const fetchres = require('fetchres');
 const es = require('@financial-times/n-es-client');
 const TEASER_PROPS = require('@financial-times/n-teaser').esQuery;
+const {ONWARD_COUNT} = require('../constants');
 
 module.exports = async (content, {locals: {slots}}) => {
 
@@ -14,14 +15,14 @@ module.exports = async (content, {locals: {slots}}) => {
 		.then(fetchres.json)
 		.then(async articleIds => {
 
-			if (articleIds.length < 7) {
+			if (articleIds.length < ONWARD_COUNT) {
 				return null;
 			}
 
 			const options = articleIds.map(id => ({ _id: id, _source: TEASER_PROPS }));
 			const articles = await es.mget({ docs: options });
 
-			if (!articles || articles.length < 7) {
+			if (!articles || articles.length < ONWARD_COUNT) {
 				return null;
 			}
 
@@ -31,7 +32,7 @@ module.exports = async (content, {locals: {slots}}) => {
 				titleHref: '/'
 			};
 
-			const items = articles.slice(0, 7);
+			const items = articles.slice(0, ONWARD_COUNT);
 			items.forEach(item => item.originator = 'ft-rex-recommendations');
 
 			response.onward = Object.assign({

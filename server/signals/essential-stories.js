@@ -1,3 +1,5 @@
+const {RIBBON_COUNT} = require('../constants');
+
 module.exports = (content, {locals: {slots}}) => {
 
 	if (!slots.ribbon) {
@@ -19,12 +21,12 @@ module.exports = (content, {locals: {slots}}) => {
 	//avoid stories doesn't have relativeUrl to set n-teaser
 	const storiesHaveRelativeUrl = allStories.filter(story => story.type !== 'non-article');
 
-	if (storiesHaveRelativeUrl.length < 4) {
+	if (storiesHaveRelativeUrl.length < RIBBON_COUNT) {
 		return null;
 	}
 
 	response.ribbon = Object.assign({
-		items: storiesHaveRelativeUrl.slice(0, 4)
+		items: storiesHaveRelativeUrl.slice(0, RIBBON_COUNT)
 			.map(item => {
 				item.originator = 'essential-stories';
 				return item;

@@ -3,6 +3,7 @@ const slimQuery = query => encodeURIComponent(query.replace(/\s+/g, ' ')); // co
 const { extractArticlesFromConcepts, doesUserFollowConcepts } = require('../lib/transform-myft-data');
 
 const fragments = require('@financial-times/n-teaser').fragments;
+const {ONWARD_COUNT} = require('../constants');
 
 const basicConceptWithArticles = `
 	fragment BasicConceptWithArticles on Concept {
@@ -55,7 +56,7 @@ module.exports = async (content, {locals: {slots, userId}}) => {
 		.then(extractArticlesFromConcepts)
 		.then(async ({ articles } = {}) => {
 
-			if (!articles || articles.length < 7) {
+			if (!articles || articles.length < ONWARD_COUNT) {
 				return null;
 			}
 
@@ -65,7 +66,7 @@ module.exports = async (content, {locals: {slots, userId}}) => {
 				titleHref: `/myft/${userId}`
 			};
 
-			const items = articles.slice(0, 7);
+			const items = articles.slice(0, ONWARD_COUNT);
 			items.forEach(item => item.originator = 'myft-recommendations');
 
 			response.onward = Object.assign({

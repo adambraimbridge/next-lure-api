@@ -3,6 +3,7 @@ const getRelatedContent = require('../lib/get-related-content');
 const es = require('@financial-times/n-es-client');
 const TEASER_PROPS = require('@financial-times/n-teaser').esQuery;
 const dedupeById = require('../lib/dedupe-by-id');
+const {RIBBON_COUNT, ONWARD_COUNT} = require('../constants');
 
 const getCuratedContent = ids => ids.length ? es.mget({
 	docs: ids.map(id => ({
@@ -22,7 +23,7 @@ module.exports = async (content, {locals: {slots}}) => {
 		return {};
 	}
 
-	const related = await getRelatedContent(concepts[0], 7, content.id);
+	const related = await getRelatedContent(concepts[0], ONWARD_COUNT, content.id);
 
 	const response = {};
 
@@ -32,14 +33,14 @@ module.exports = async (content, {locals: {slots}}) => {
 	if (slots.ribbon) {
 		response.ribbon = {
 			concept: related.concept,
-			items: related.items.slice(0, 4)
+			items: related.items.slice(0, RIBBON_COUNT)
 		};
 	}
 
 	if (slots.onward) {
 		response.onward = {
 			concept: related.concept,
-			items: related.items.slice(0, 7)
+			items: related.items.slice(0, ONWARD_COUNT)
 		};
 	}
 

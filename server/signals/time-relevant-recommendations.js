@@ -2,8 +2,7 @@ const topStoriesPoller = require('../data-sources/top-stories-poller');
 const getMostRelatedConcepts = require('../lib/get-most-related-concepts');
 const getRelatedContent = require('../lib/get-related-content');
 const dedupeById = require('../lib/dedupe-by-id');
-const { NEWS_CONCEPT_ID } = require('../constants');
-
+const {NEWS_CONCEPT_ID, RIBBON_COUNT, ONWARD_COUNT} = require('../constants');
 // get a slice of stories which excludes the current story, but also (to some degree)
 // avoids looping through the same small number of stories
 const topStoriesSlice = (stories, thisId) => {
@@ -18,7 +17,7 @@ const topStoriesSlice = (stories, thisId) => {
 				.filter(teaser => teaser.id !== thisId);
 		}
 	}
-	return (newStories && newStories.length >= 5) ? newStories : stories.filter(teaser => teaser.id !== thisId);
+	return (newStories && newStories.length >= ONWARD_COUNT) ? newStories : stories.filter(teaser => teaser.id !== thisId);
 }
 
 
@@ -70,13 +69,13 @@ module.exports = async (content, {locals: {edition, slots}, query: {localTimeHou
 
 	if (slots.ribbon) {
 		response.ribbon = Object.assign({
-			items: topStories.slice(0, 4)
+			items: topStories.slice(0, RIBBON_COUNT)
 		}, model);
 	}
 
 	if (slots.onward) {
 		response.onward = Object.assign({
-			items: topStories.slice(0, 7)
+			items: topStories.slice(0, ONWARD_COUNT)
 		}, model);
 	}
 

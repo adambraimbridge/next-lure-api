@@ -23,8 +23,7 @@ describe('myFT Recommendations', () => {
 		params = {
 			locals: {
 				slots: { onward: true },
-				userId:'00000000-0000-0000-0000-000000000000',
-				q2Length: 8
+				userId:'00000000-0000-0000-0000-000000000000'
 			}
 		};
 		eightArticles = [{ id: '1'}, { id: '2'}, { id: '3'}, { id: '4'}, { id: '5'}, { id: '6'}, { id: '7'}, { id: '8'}];
