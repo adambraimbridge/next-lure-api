@@ -40,7 +40,7 @@ const query = `
 	}
 `;
 
-module.exports = async (content, {locals: {slots, userId, q2Length}}) => {
+module.exports = async (content, {locals: {slots, userId}}) => {
 
 	if (!userId || !slots.onward) {
 		return null;
@@ -55,7 +55,7 @@ module.exports = async (content, {locals: {slots, userId, q2Length}}) => {
 		.then(extractArticlesFromConcepts)
 		.then(async ({ articles } = {}) => {
 
-			if (!articles || articles.length < q2Length) {
+			if (!articles || articles.length < 7) {
 				return null;
 			}
 
@@ -65,7 +65,7 @@ module.exports = async (content, {locals: {slots, userId, q2Length}}) => {
 				titleHref: `/myft/${userId}`
 			};
 
-			const items = articles.slice(0, q2Length);
+			const items = articles.slice(0, 7);
 			items.forEach(item => item.originator = 'myft-recommendations');
 
 			response.onward = Object.assign({

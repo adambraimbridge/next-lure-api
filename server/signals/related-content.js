@@ -15,40 +15,32 @@ const getCuratedContent = ids => ids.length ? es.mget({
 		return item;
 	}));
 
-module.exports = async (content, {locals: {slots, q1Length, q2Length}}) => {
+module.exports = async (content, {locals: {slots}}) => {
 	const concepts = getMostRelatedConcepts(content);
 
 	if (!concepts) {
 		return {};
 	}
 
-	const [curated, related1, related2] = await Promise.all([
-		(slots.ribbon && content.curatedRelatedContent) ? getCuratedContent(content.curatedRelatedContent.map(content => content.id)): Promise.resolve([]),
-		getRelatedContent(concepts[0], q1Length, content.id), // get enough for the right hand rail
-		(slots.onward && concepts[1]) ? getRelatedContent(concepts[1], q2Length, content.id) : Promise.resolve({})
-	])
+	const related = await getRelatedContent(concepts[0], 7, content.id);
 
 	const response = {};
 
-	if (slots.ribbon && (curated.length || related1.items.length)) {
+	if (!related.items.length) {
+		return response;
+	}
+	if (slots.ribbon) {
 		response.ribbon = {
-			concept: related1.concept,
-			items: dedupeById(curated.concat(related1.items)).slice(0, q1Length)
+			concept: related.concept,
+			items: related.items.slice(0, 4)
 		};
 	}
 
 	if (slots.onward) {
-		const onward = [];
-
-		if (related1.items.length) {
-			onward.push(related1);
-		}
-		if (related2.items && related2.items.length) {
-			onward.push(related2);
-		}
-		if (onward.length) {
-			response.onward = onward;
-		}
+		response.onward = {
+			concept: related.concept,
+			items: related.items.slice(0, 7)
+		};
 	}
 
 	return response;

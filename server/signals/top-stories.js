@@ -2,7 +2,7 @@ const topStoriesPoller = require('../data-sources/top-stories-poller');
 const getMostRelatedConcepts = require('../lib/get-most-related-concepts');
 const getRelatedContent = require('../lib/get-related-content');
 
-module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}}) => {
+module.exports = async (content, {locals: {edition, slots}}) => {
 
 	if (!edition) {
 		return;
@@ -24,16 +24,16 @@ module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}})
 
 	const response = {};
 
-	const commonPart = Object.assign({
-		items: topStories.slice(0, 8)
-	}, topStoriesModel);
-
 	if (slots.ribbon) {
-		response.ribbon = commonPart;
+		response.ribbon = Object.assign({
+			items: topStories.slice(0, 4)
+		}, topStoriesModel);
 	}
 
 	if (slots.onward) {
-		response.onward = Object.assign({}, commonPart);
+		response.onward = Object.assign({
+			items: topStories.slice(0, 7)
+		}, topStoriesModel)
 	}
 
 	return response;

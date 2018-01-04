@@ -19,7 +19,6 @@ const middleware = require('./middleware');
 
 const middlewareStack = [
 	middleware.handleOptions,
-	middleware.constructQueryLengths,
 	middleware.cache,
 	middleware.getContent,
 	middleware.getRecommendations,

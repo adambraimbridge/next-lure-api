@@ -37,7 +37,7 @@ describe('essential-stories signal', () => {
 
 	it('should set all stories from editorialComponents property in content to ribbon', () => {
 		const result = subject(content, params);
-		expect(result.ribbon.items).to.eql(['story1', 'story2', 'story3', 'story4', 'story5']);
+		expect(result.ribbon.items).to.eql(['story1', 'story2', 'story3', 'story4']);
 	});
 
 	it('should set correct number of stories', () => {
@@ -48,22 +48,21 @@ describe('essential-stories signal', () => {
 			]
 		}
 		const result = subject(content, params);
-		expect(result.ribbon.items).to.eql(['story1', 'story2', 'story3', 'story4', 'story5']);
+		expect(result.ribbon.items).to.eql(['story1', 'story2', 'story3', 'story4']);
 	});
 
 	it('should not pass stories which the type is non-article', () => {
-		const fiveArticles = [
+		const fourArticles = [
 			{ type: 'article', id: 1 },
 			{ type: 'article', id: 2 },
 			{ type: 'article', id: 3 },
-			{ type: 'article', id: 4 },
-			{ type: 'article', id: 5 }
+			{ type: 'article', id: 4 }
 		];
 		content._editorialComponents = [{
-			stories: [ { type: 'non-article' } ].concat(fiveArticles)
+			stories: [ { type: 'non-article' } ].concat(fourArticles)
 		}];
 		const result = subject(content, params);
-		expect(result.ribbon.items).to.eql(fiveArticles);
+		expect(result.ribbon.items).to.eql(fourArticles);
 	})
 
 });

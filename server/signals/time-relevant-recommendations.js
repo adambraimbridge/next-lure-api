@@ -22,7 +22,7 @@ const topStoriesSlice = (stories, thisId) => {
 }
 
 
-module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}, query: {localTimeHour}}) => {
+module.exports = async (content, {locals: {edition, slots}, query: {localTimeHour}}) => {
 
 	if (!(edition && localTimeHour)) {
 		return
@@ -68,16 +68,16 @@ module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}, 
 
 	topStories = topStoriesSlice(topStories, content.id);
 
-	const commonPart = Object.assign({
-		items: topStories.slice(0, 8)
-	}, model);
-
 	if (slots.ribbon) {
-		response.ribbon = commonPart;
+		response.ribbon = Object.assign({
+			items: topStories.slice(0, 4)
+		}, model);
 	}
 
 	if (slots.onward) {
-		response.onward = Object.assign({}, commonPart);
+		response.onward = Object.assign({
+			items: topStories.slice(0, 7)
+		}, model);
 	}
 
 	return response;
