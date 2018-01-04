@@ -81,51 +81,25 @@ describe('lure e2e', () => {
 				});
 		})
 
-		context('when fetching v1 style data', () => {
-			before(() => {
-				rawData = {
-					ribbon: {
-						items: getItems(5)
-					},
-					onward: [{
-						items: getItems(5),
-					}, {
-						items: getItems(6)
-					}]
-				};
-			})
-
-			it('transforms v1 style data to v2', () => {
-				rawData.onward[1].items = getItems(8);
-				return request(app)
-					.get('/lure/v2/content/uuid')
-					.then(({body}) => {
-						expect(body.ribbon.items.length).to.equal(4);
-						expect(Array.isArray(body.onward)).to.be.false;
-						expect(body.onward.items.length).to.equal(8);
-						expect(uniqueIds('items', [body.onward])).to.be.true;
-					})
-			})
-		})
 		context('when fetching v2 style data', () => {
 			before(() => {
 				rawData = {
 					ribbon: {
-						items: getItems(5)
+						items: getItems(4)
 					},
 					onward: {
-						items: getItems(8),
+						items: getItems(7),
 					}
 				};
 			})
 
-			it('transforms v2 style data to v2 if flag on', () => {
+			it('transforms v2 style data to v2', () => {
 				return request(app)
 					.get('/lure/v2/content/uuid')
 					.then(({body}) => {
 						expect(body.ribbon.items.length).to.equal(4);
 						expect(Array.isArray(body.onward)).to.be.false;
-						expect(body.onward.items.length).to.equal(8);
+						expect(body.onward.items.length).to.equal(7);
 						expect(uniqueIds('items', [body.onward])).to.be.true;
 					})
 			})

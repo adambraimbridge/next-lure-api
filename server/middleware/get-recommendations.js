@@ -25,35 +25,36 @@ module.exports = async (req, res, next) => {
 	try {
 		let recommendations = {};
 
-		const signalStack = [relatedContent];
-
-		//TODO place correctly following the recommendations' priority
-		if (res.locals.flags.myFtApi
-			&& res.locals.flags.lureMyFtRecommendations
-		) {
-			signalStack.unshift(myFtRecommendations);
-		}
-
-		if (res.locals.flags.lureFtRexRecommendations) {
-			signalStack.unshift(ftRexRecommendations);
-		}
-
-		if (res.locals.flags.lureTopStories) {
-			signalStack.unshift(topStories);
-		}
-
-		if (res.locals.flags.lureTimeRelevantRecommendations) {
-			signalStack.unshift(timeRelevantRecommendations);
-		}
+		const signalStack = [];
 
 		if (res.locals.flags.refererCohort === 'search'
 			&& res.locals.flags.cleanOnwardJourney
 			&& res.locals.content._editorialComponents
 			&& res.locals.content._editorialComponents.length > 0
 		) {
-			signalStack.unshift(essentialStories);
+			signalStack.push(essentialStories);
 		}
 
+		if (res.locals.flags.lureTimeRelevantRecommendations) {
+			signalStack.push(timeRelevantRecommendations);
+		}
+
+		if (res.locals.flags.lureTopStories) {
+			signalStack.push(topStories);
+		}
+
+		if (res.locals.flags.lureFtRexRecommendations) {
+			signalStack.push(ftRexRecommendations);
+		}
+
+		//TODO place correctly following the recommendations' priority
+		if (res.locals.flags.myFtApi
+			&& res.locals.flags.lureMyFtRecommendations
+		) {
+			signalStack.push(myFtRecommendations);
+		}
+
+		signalStack.push(relatedContent);
 
 		let signal;
 

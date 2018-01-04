@@ -1,6 +1,5 @@
 module.exports = (req, res, next) => {
 	res.locals.slots = req.query.slots ? req.query.slots.split(',')
-		.map(key => key === 'rhr' ? 'ribbon' : key)
 		.reduce((map, key) => {
 			map[key] = true;
 			return map;

@@ -12,7 +12,7 @@ describe('essential-stories signal', () => {
 				{ stories: [ 'story3', 'story4', 'story5'] }
 			]
 		};
-		params = { locals: { slots: { ribbon: true }, q1Length: 5 }};
+		params = { locals: { slots: { ribbon: true }}};
 	});
 
 	it('should return null when ribbon property is not set in locals.slots', () => {

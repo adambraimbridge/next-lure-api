@@ -1,6 +1,7 @@
 const topStoriesPoller = require('../data-sources/top-stories-poller');
 const getMostRelatedConcepts = require('../lib/get-most-related-concepts');
 const getRelatedContent = require('../lib/get-related-content');
+const {RIBBON_COUNT, ONWARD_COUNT} = require('../constants');
 
 module.exports = async (content, {locals: {edition, slots}}) => {
 
@@ -26,13 +27,13 @@ module.exports = async (content, {locals: {edition, slots}}) => {
 
 	if (slots.ribbon) {
 		response.ribbon = Object.assign({
-			items: topStories.slice(0, 4)
+			items: topStories.slice(0, RIBBON_COUNT)
 		}, topStoriesModel);
 	}
 
 	if (slots.onward) {
 		response.onward = Object.assign({
-			items: topStories.slice(0, 7)
+			items: topStories.slice(0, ONWARD_COUNT)
 		}, topStoriesModel)
 	}
 

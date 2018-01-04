@@ -25,15 +25,7 @@ const middlewareStack = [
 	middleware.respond
 ];
 
-v2.get('/content/:contentId', (req, res, next) => {
-	res.locals.modelTemplate = {
-		ribbon: 4,
-		onward: 8
-	};
-	res.locals.modelTemplate.ribbon = 4;
-	res.locals.modelTemplate.onward = 8;
-	next();
-}, middlewareStack);
+v2.get('/content/:contentId', middlewareStack);
 
 lure.use('/v2', v2);
 app.use('/lure', lure);
