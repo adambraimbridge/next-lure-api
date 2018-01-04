@@ -30,7 +30,6 @@ module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}, 
 
 	const response = {};
 
-	const concepts = getMostRelatedConcepts(content);
 	let topStories = topStoriesPoller.get(edition);
 
 	let timeSlot;
@@ -70,7 +69,7 @@ module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}, 
 	topStories = topStoriesSlice(topStories, content.id);
 
 	const commonPart = Object.assign({
-		items: topStories.slice(0, q1Length)
+		items: topStories.slice(0, 8)
 	}, model);
 
 	if (slots.ribbon) {
@@ -78,14 +77,7 @@ module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}, 
 	}
 
 	if (slots.onward) {
-		response.onward = [
-			Object.assign({}, commonPart),
-		];
-
-		if (concepts && concepts[0]) {
-			const secondaryOnward = await getRelatedContent(concepts[0], q2Length, content.id, timeSlot === 'am' ? true : false);
-			response.onward.push(secondaryOnward)
-		}
+		response.onward = Object.assign({}, commonPart);
 	}
 
 	return response;
