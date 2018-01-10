@@ -16,15 +16,14 @@ let eightArticleIds;
 let eightArticles;
 let params;
 
-describe('myFT Recommendations', () => {
+describe('ft-rex Recommendations', () => {
 
 	beforeEach(() => {
 		stubs.fetchres.json.returns(eightArticleIds);
 		stubs.es.mget.returns( Promise.resolve(eightArticles) );
 		params = {
 			locals: {
-				slots: { onward: true },
-				q2Length: 8
+				slots: { onward: true }
 			}
 		};
 		eightArticleIds = ['id-1','id-2','id-3','id-4','id-5','id-6','id-7','id-8'];
@@ -74,7 +73,7 @@ describe('myFT Recommendations', () => {
 	});
 
 	it('should return response with correct properties', () => {
-		const correctItems = [].concat(eightArticles);
+		const correctItems = eightArticles.slice(0, 7);
 		correctItems.forEach(item => item.originator = 'ft-rex-recommendations');
 		const correctResponse = {
 			onward: {
@@ -94,7 +93,7 @@ describe('myFT Recommendations', () => {
 		const nineArticles = [{ id: '1'}, { id: '2'}, { id: '3'}, { id: '4'}, { id: '5'}, { id: '6'}, { id: '7'}, { id: '8'}, { id: '9'}];
 		stubs.es.mget.returns( Promise.resolve(nineArticles) );
 
-		const correctItems = [].concat(eightArticles);
+		const correctItems = eightArticles.slice(0, 7);
 		correctItems.forEach(item => item.originator = 'ft-rex-recommendations');
 		const correctResponse = {
 			onward: {

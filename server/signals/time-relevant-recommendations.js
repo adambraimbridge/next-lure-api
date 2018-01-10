@@ -1,9 +1,6 @@
 const topStoriesPoller = require('../data-sources/top-stories-poller');
-const getMostRelatedConcepts = require('../lib/get-most-related-concepts');
-const getRelatedContent = require('../lib/get-related-content');
 const dedupeById = require('../lib/dedupe-by-id');
-const { NEWS_CONCEPT_ID } = require('../constants');
-
+const {NEWS_CONCEPT_ID, RIBBON_COUNT, ONWARD_COUNT} = require('../constants');
 // get a slice of stories which excludes the current story, but also (to some degree)
 // avoids looping through the same small number of stories
 const topStoriesSlice = (stories, thisId) => {
@@ -18,11 +15,11 @@ const topStoriesSlice = (stories, thisId) => {
 				.filter(teaser => teaser.id !== thisId);
 		}
 	}
-	return (newStories && newStories.length >= 5) ? newStories : stories.filter(teaser => teaser.id !== thisId);
+	return (newStories && newStories.length >= ONWARD_COUNT) ? newStories : stories.filter(teaser => teaser.id !== thisId);
 }
 
 
-module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}, query: {localTimeHour}}) => {
+module.exports = async (content, {locals: {edition, slots}, query: {localTimeHour}}) => {
 
 	if (!(edition && localTimeHour)) {
 		return
@@ -30,7 +27,6 @@ module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}, 
 
 	const response = {};
 
-	const concepts = getMostRelatedConcepts(content);
 	let topStories = topStoriesPoller.get(edition);
 
 	let timeSlot;
@@ -69,23 +65,16 @@ module.exports = async (content, {locals: {edition, slots, q1Length, q2Length}, 
 
 	topStories = topStoriesSlice(topStories, content.id);
 
-	const commonPart = Object.assign({
-		items: topStories.slice(0, q1Length)
-	}, model);
-
 	if (slots.ribbon) {
-		response.ribbon = commonPart;
+		response.ribbon = Object.assign({
+			items: topStories.slice(0, RIBBON_COUNT)
+		}, model);
 	}
 
 	if (slots.onward) {
-		response.onward = [
-			Object.assign({}, commonPart),
-		];
-
-		if (concepts && concepts[0]) {
-			const secondaryOnward = await getRelatedContent(concepts[0], q2Length, content.id, timeSlot === 'am' ? true : false);
-			response.onward.push(secondaryOnward)
-		}
+		response.onward = Object.assign({
+			items: topStories.slice(0, ONWARD_COUNT)
+		}, model);
 	}
 
 	return response;

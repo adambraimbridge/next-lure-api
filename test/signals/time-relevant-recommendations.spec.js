@@ -93,15 +93,10 @@ describe('time relevant recommendations signal', () => {
 		});
 
 		it('use top stories news, excluding parent id, for first slot', () => {
-			const onward = result.onward[0];
+			const onward = result.onward;
 			expect(onward.items.map(obj => obj.id)).to.eql([1]);
 			expect(onward.title).to.equal('Top stories this morning');
 			expect(onward.titleHref).to.equal('/');
-		});
-
-		it('use most related concept news in second onward section', () => {
-			expect(stubs.getRelatedContent.args[0][3]).to.equal(true);
-			expect(result.onward[1].items.map(obj => obj.id)).to.eql([1, 2, 6, 7]);
 		});
 
 		it('use top stories news, excluding parent id for ribbon', () => {
@@ -127,15 +122,10 @@ describe('time relevant recommendations signal', () => {
 		});
 
 		it('use top stories news, excluding parent id, for first slot', () => {
-			const onward = result.onward[0];
+			const onward = result.onward;
 			expect(onward.items.map(obj => obj.id)).to.eql([2]);
 			expect(onward.title).to.equal('In-depth insight for the evening');
 			expect(onward.titleHref).to.equal('/');
-		});
-
-		it('use most related concept news in second onward section', () => {
-			expect(stubs.getRelatedContent.args[0][3]).to.equal(false);
-			expect(result.onward[1].items.map(obj => obj.id)).to.eql([1, 2, 6, 7]);
 		});
 
 		it('use top stories news, excluding parent id for ribbon', () => {

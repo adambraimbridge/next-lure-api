@@ -71,10 +71,7 @@ describe('related-content signal', () => {
 				}]
 			}, {locals: {slots: {onward: true}}})
 				.then(result => {
-					expect(result.onward[0].items).to.eql([{
-						id: 2,
-						originator: 'isPrimarilyClassifiedBy'
-					}]);
+					expect(result.onward.items.map(item => item.id)).to.eql([2]);
 				});
 		});
 
@@ -93,14 +90,10 @@ describe('related-content signal', () => {
 				annotations: [{
 					predicate: 'http://www.ft.com/ontology/annotation/about',
 					id: 0
-				},{
-					predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
-					id: 1
 				}]
-			}, {locals: {slots: {onward: true}, q1Length: 5, q2Length: 6}})
+			}, {locals: {slots: {onward: true}}})
 				.then(() => {
-					expect(es.search.args[0][0].size).to.equal(6);
-					expect(es.search.args[1][0].size).to.equal(7);
+					expect(es.search.args[0][0].size).to.equal(8);
 				});
 		});
 
@@ -112,9 +105,6 @@ describe('related-content signal', () => {
 				annotations: [{
 					predicate: 'http://www.ft.com/ontology/annotation/about',
 					id: 0
-				},{
-					predicate: 'http://www.ft.com/ontology/classification/isPrimarilyClassifiedBy',
-					id: 1
 				}]
 			}, {locals: {slots: {onward: true}}})
 				.then(result => {
@@ -125,24 +115,8 @@ describe('related-content signal', () => {
 
 	context('ribbon slot', () => {
 
-		it('prefer curated related content and dedupe', () => {
-			results.esSearch = [ { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 } ];
-			sinon.stub(es, 'mget').returns([{id: 3}, {id: 6}]);
-			return subject({
-				id: 'parent-id',
-				curatedRelatedContent: [{id: '3'}, {id: '6'}],
-				annotations: [{
-					predicate: 'http://www.ft.com/ontology/annotation/about',
-					id: 0
-				}]
-			}, {locals: {slots: {ribbon: true}}})
-				.then(result => {
-					expect(result.ribbon.items.map(obj => obj.id)).to.eql([ 3, 6, 1, 2, 4, 5 ]);
-					es.mget.restore();
-				});
-		});
 
-		it('handle case where no curatedRelatedContent', () => {
+		it('show correct number of stories', () => {
 			results.esSearch = [ { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 } ];
 			return subject({
 				id: 'parent-id',
@@ -152,7 +126,7 @@ describe('related-content signal', () => {
 				}]
 			}, {locals: {slots: {ribbon: true}}})
 				.then(result => {
-					expect(result.ribbon.items.map(obj => obj.id)).to.eql([ 1, 2, 3, 4, 5 ]);
+					expect(result.ribbon.items.map(obj => obj.id)).to.eql([ 1, 2, 3, 4, ]);
 				});
 		});
 	});
