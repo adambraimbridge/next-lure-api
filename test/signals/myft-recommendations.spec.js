@@ -4,12 +4,14 @@ const sandbox = sinon.sandbox.create();
 const stubs = {
 	fetch: sandbox.stub(),
 	fetchres: { json: sandbox.stub() },
-	transformMyftData: { extractArticlesFromConcepts: sandbox.stub() }
-}
+	transformMyftData: { extractArticlesFromConcepts: sandbox.stub() },
+	getSession: sandbox.stub(),
+};
 const proxyquire = require('proxyquire');
 const subject = proxyquire('../../server/signals/myft-recommendations', {
 	'fetchres': stubs.fetchres,
-	'../lib/transform-myft-data': stubs.transformMyftData
+	'../lib/transform-myft-data': stubs.transformMyftData,
+	'../lib/get-session': stubs.getSession,
 });
 let eightArticles;
 let params;
@@ -20,10 +22,12 @@ describe('myFT Recommendations', () => {
 	beforeEach(() => {
 		stubs.fetchres.json.returns({ data: {user: {followed: []}}});
 		stubs.transformMyftData.extractArticlesFromConcepts.returns(Promise.resolve({ followsConcepts: true, articles: eightArticles }));
+		stubs.getSession.returns(Promise.resolve({ uuid: '00000000-0000-0000-0000-000000000000' }));
 		params = {
 			locals: {
 				slots: { onward: true },
-				userId:'00000000-0000-0000-0000-000000000000'
+				userId: '00000000-0000-0000-0000-000000000000',
+				secureSessionToken: 'ffffffff-ffff-ffff-ffff-ffffffffffff',
 			}
 		};
 		eightArticles = [{ id: '1'}, { id: '2'}, { id: '3'}, { id: '4'}, { id: '5'}, { id: '6'}, { id: '7'}, { id: '8'}];
@@ -34,15 +38,15 @@ describe('myFT Recommendations', () => {
 		return subject({}, params)
 			.then(result => {
 				expect(result).to.eql(null);
-			})
+			});
 	});
 
 	it('should return null if article data after transformation is undefined', () => {
-		stubs.transformMyftData.extractArticlesFromConcepts.returns(Promise.resolve({}));
+			stubs.transformMyftData.extractArticlesFromConcepts.returns(Promise.resolve({}));
 		return subject({}, params)
 			.then(result => {
 				expect(result).to.eql(null);
-			})
+			});
 	});
 
 	it('should return null if article data after transformation is less than q2Length', () => {
@@ -50,7 +54,7 @@ describe('myFT Recommendations', () => {
 		return subject({}, params)
 			.then(result => {
 				expect(result).to.eql(null);
-			})
+			});
 	});
 
 	it('should return response with correct properties', () => {
@@ -67,7 +71,7 @@ describe('myFT Recommendations', () => {
 		return subject({}, params)
 			.then(result => {
 				expect(result).to.eql(correctResponse);
-			})
+			});
 	});
 
 	it('should return correct number(= q2Length) of article data', () => {
@@ -87,7 +91,15 @@ describe('myFT Recommendations', () => {
 		return subject({}, params)
 			.then(result => {
 				expect(result).to.eql(correctResponse);
-			})
+			});
+	});
+
+	it('should return null if user ID is not valid', () => {
+		stubs.getSession.returns(Promise.resolve({ uuid: 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee' }));
+		return subject({}, params)
+			.then(result => {
+				expect(result).to.eql(null);
+			});
 	});
 
 });
