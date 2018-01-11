@@ -1,4 +1,5 @@
 const express = require('@financial-times/n-express');
+const cookieParser = require('cookie-parser');
 
 const topStoriesPoller = require('./data-sources/top-stories-poller');
 const healthchecks = require('./healthchecks');
@@ -8,6 +9,7 @@ const app = express({
 	withFlags: true,
 	healthChecks: healthchecks.checks
 });
+app.use(cookieParser());
 
 app.get('/__gtg', (req, res) => res.sendStatus(200));
 

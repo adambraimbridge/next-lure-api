@@ -1,6 +1,8 @@
 const fetchres = require('fetchres');
+const logger = require('@financial-times/n-logger').default;
 const slimQuery = query => encodeURIComponent(query.replace(/\s+/g, ' ')); // condense multiple spaces to one
 const { extractArticlesFromConcepts, doesUserFollowConcepts } = require('../lib/transform-myft-data');
+const getSession = require('../lib/get-session');
 
 const fragments = require('@financial-times/n-teaser').fragments;
 const {ONWARD_COUNT} = require('../constants');
@@ -41,7 +43,12 @@ const query = `
 	}
 `;
 
-module.exports = async (content, {locals: {slots, userId}}) => {
+module.exports = async (content, {locals: {slots, userId, secureSessionToken}}) => {
+
+	if (!secureSessionToken) {
+		logger.warn({ event: 'MISSING_SESSION_TOKEN' });
+		throw Object.assign(new Error('Missing session token.'), { httpStatus: 401 });
+	}
 
 	if (!userId || !slots.onward) {
 		return null;
@@ -49,7 +56,20 @@ module.exports = async (content, {locals: {slots, userId}}) => {
 	const variables = { uuid: userId };
 	const url = `https://next-api.ft.com/v2/query?query=${slimQuery(query)}&variables=${JSON.stringify(variables)}&source=next-front-page-myft`;
 
-	return fetch(url, { headers: {'X-Api-Key': process.env.NEXT_API_KEY }, timeout: 5000 })
+	const getSessionPromise = getSession(secureSessionToken)
+		.then(result => {
+			if (!result || !result.uuid) {
+				logger.warn({ event: 'USER_SESSION_NOT_FOUND' });
+				throw Object.assign(new Error('User session not found'), { httpStatus: 404 });
+			}
+			//if (result.uuid !== userId) {
+			if (true) {
+				logger.warn({ event: 'INVALID_USER_ID' });
+				throw Object.assign(new Error('Invalid user ID'), { httpStatus: 403 });
+			}
+		});
+
+	const fetchPromise = fetch(url, { headers: {'X-Api-Key': process.env.NEXT_API_KEY }, timeout: 5000 })
 		.then(fetchres.json)
 		.then(({ data: {user: {followed = []}}} = {}) => followed )
 		.then(doesUserFollowConcepts)
@@ -75,9 +95,9 @@ module.exports = async (content, {locals: {slots, userId}}) => {
 
 			return response;
 
-		})
-		.catch(() => {
-			return null;
 		});
 
+	return Promise
+		.all([ getSessionPromise, fetchPromise ])
+		.then(([ , response ]) => response);
 };

@@ -7,6 +7,7 @@ module.exports = (req, res, next) => {
 
 	res.locals.edition = ['uk', 'international'].includes(req.get('ft-edition')) ? req.get('ft-edition') : undefined;
 	res.locals.userId = req.query.userId;
+	res.locals.secureSessionToken = req.get('FT-Session-s-Token') || req.cookies.FTSession_s;
 
 	next();
 };
