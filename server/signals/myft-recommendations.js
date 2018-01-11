@@ -45,11 +45,6 @@ const query = `
 
 module.exports = async (content, {locals: {slots, userId, secureSessionToken}}) => {
 
-	if (!secureSessionToken) {
-		logger.warn({ event: 'MISSING_SESSION_TOKEN' });
-		throw Object.assign(new Error('Missing session token.'), { httpStatus: 401 });
-	}
-
 	if (!userId || !slots.onward) {
 		return null;
 	}
@@ -60,11 +55,11 @@ module.exports = async (content, {locals: {slots, userId, secureSessionToken}}) 
 		.then(result => {
 			if (!result || !result.uuid) {
 				logger.warn({ event: 'USER_SESSION_NOT_FOUND' });
-				throw Object.assign(new Error('User session not found'), { httpStatus: 404 });
+				throw new Error('User session not found');
 			}
 			if (result.uuid !== userId) {
 				logger.warn({ event: 'INVALID_USER_ID' });
-				throw Object.assign(new Error('Invalid user ID'), { httpStatus: 403 });
+				throw new Error('Invalid user ID');
 			}
 		});
 
@@ -98,5 +93,6 @@ module.exports = async (content, {locals: {slots, userId, secureSessionToken}}) 
 
 	return Promise
 		.all([ getSessionPromise, fetchPromise ])
-		.then(([ , response ]) => response);
+		.then(([ , response ]) => response)
+		.catch(() => null);
 };
