@@ -1,8 +1,6 @@
 const logger = require('@financial-times/n-logger').default;
 const {
 	relatedContent,
-	topStories,
-	timeRelevantRecommendations,
 	essentialStories,
 	myFtRecommendations,
 	ftRexRecommendations
@@ -33,14 +31,6 @@ module.exports = async (req, res, next) => {
 			&& res.locals.content._editorialComponents.length > 0
 		) {
 			signalStack.push(essentialStories);
-		}
-
-		if (res.locals.flags.lureTimeRelevantRecommendations) {
-			signalStack.push(timeRelevantRecommendations);
-		}
-
-		if (res.locals.flags.lureTopStories) {
-			signalStack.push(topStories);
 		}
 
 		if (res.locals.flags.lureFtRexRecommendations) {

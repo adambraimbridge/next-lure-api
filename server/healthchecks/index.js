@@ -22,20 +22,6 @@ function pingServices () {
 		.then((json) => { statuses.elastic = Boolean(json.hits && json.hits.total); })
 		.catch(() => { statuses.elastic = false; });
 
-	fetch('https://api.ft.com/lists/520ddb76-e43d-11e4-9e89-00144feab7de', {
-		headers: {
-			'X-Api-Key': process.env.API_KEY
-		}
-	})
-		.then((response) => {
-			if (response.ok) {
-				return response.json();
-			} else {
-				throw new Error(`api.ft.com/lists returned a ${response.statusCode}`);
-			}
-		})
-		.then((json) => { statuses.lists = true; })
-		.catch(() => { statuses.lists = false; });
 }
 
 function elasticStatus () {
@@ -51,19 +37,6 @@ function elasticStatus () {
 	};
 }
 
-function listsStatus () {
-	return {
-		getStatus: () => ({
-			name: 'api.ft.com/lists responded successfuly with JSON for a top stories list',
-			ok: statuses.lists,
-			businessImpact: 'Users may not see recommendations based on curated lists',
-			severity: 2,
-			technicalSummary: 'Fetches a top stories list from api.ft.com/lists',
-			panicGuide: 'Info on what to do in case of elastic search failure is in the next-front-page and next-api runbook'
-		})
-	};
-};
-
 
 module.exports = {
 	init: function () {
@@ -71,7 +44,6 @@ module.exports = {
 		setInterval(pingServices, INTERVAL);
 	},
 	checks: [
-		elasticStatus(),
-		listsStatus()
+		elasticStatus()
 	]
 };

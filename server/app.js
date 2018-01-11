@@ -1,6 +1,5 @@
 const express = require('@financial-times/n-express');
 
-const topStoriesPoller = require('./data-sources/top-stories-poller');
 const healthchecks = require('./healthchecks');
 
 const app = express({
