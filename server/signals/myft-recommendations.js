@@ -42,7 +42,6 @@ const query = `
 `;
 
 module.exports = async (content, {locals: {slots, userId}}) => {
-
 	if (!userId || !slots.onward) {
 		return null;
 	}
