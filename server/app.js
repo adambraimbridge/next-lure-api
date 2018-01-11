@@ -1,7 +1,6 @@
 const express = require('@financial-times/n-express');
 const cookieParser = require('cookie-parser');
 
-const topStoriesPoller = require('./data-sources/top-stories-poller');
 const healthchecks = require('./healthchecks');
 
 const app = express({
@@ -32,7 +31,6 @@ lure.use('/v2', v2);
 app.use('/lure', lure);
 
 if (process.env.NODE_ENV !== 'test') {
-	topStoriesPoller.init();
 	healthchecks.init();
 	app.listen(process.env.PORT || 3002);
 }

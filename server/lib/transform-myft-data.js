@@ -20,6 +20,15 @@ const removeDuplicateArticles = (articles, article) => {
 
 const orderByDate = (articleOne, articleTwo) => new Date(articleTwo.publishedDate) - new Date(articleOne.publishedDate);
 
+const removeHeadshots = article => {
+	(article.authors || []).forEach(author => {
+		if (author.headshot) {
+			delete author.headshot;
+		}
+	})
+	return article
+}
+
 const extractArticlesFromConcepts = (data) => {
 
 	if (!data.followsConcepts) {
@@ -36,7 +45,9 @@ const extractArticlesFromConcepts = (data) => {
 		.filter(removeEmptyConcepts)
 		.reduce(flattenConceptsToArticles, [])
 		.reduce(removeDuplicateArticles, [])
-		.sort(orderByDate);
+		.sort(orderByDate)
+		.slice(0, 7)
+		.map(removeHeadshots)
 
 	delete data.followedConcepts;
 

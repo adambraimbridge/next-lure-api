@@ -62,8 +62,7 @@ module.exports = async (content, {locals: {slots, userId, secureSessionToken}}) 
 				logger.warn({ event: 'USER_SESSION_NOT_FOUND' });
 				throw Object.assign(new Error('User session not found'), { httpStatus: 404 });
 			}
-			//if (result.uuid !== userId) {
-			if (true) {
+			if (result.uuid !== userId) {
 				logger.warn({ event: 'INVALID_USER_ID' });
 				throw Object.assign(new Error('Invalid user ID'), { httpStatus: 403 });
 			}

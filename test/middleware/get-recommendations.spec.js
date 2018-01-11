@@ -37,9 +37,7 @@ describe('get recommendations', () => {
 	beforeEach(() => {
 		sandbox = sinon.sandbox.create();
 		signalStubs = {
-			topStories: sandbox.stub().callsFake(async (content, {locals: {slots}}) => slots),
 			relatedContent: sandbox.stub().callsFake(async (content, {locals: {slots}}) => slots),
-			timeRelevantRecommendations: sandbox.stub().callsFake(async (content, {locals: {slots}}) => slots),
 			essentialStories: sandbox.stub().callsFake(async (content, {locals: {slots}}) => slots)
 		};
 		middleware = proxyquire('../../server/middleware/get-recommendations', {
@@ -54,48 +52,6 @@ describe('get recommendations', () => {
 			const mocks = getMockArgs(sandbox);
 			await middleware(...mocks);
 			expect(signalStubs.relatedContent.calledOnce).to.be.true;
-			expect(signalStubs.topStories.notCalled).to.be.true;
-		});
-	});
-
-	context('top stories', () => {
-		it('use top stories when lureTopStories flag is on', async () => {
-			const mocks = getMockArgs(sandbox);
-			mocks[1].locals.flags.lureTopStories = true;
-			await middleware(...mocks);
-			expect(signalStubs.relatedContent.notCalled).to.be.true;
-			expect(signalStubs.topStories.calledOnce).to.be.true;
-		});
-	});
-
-	context('Time relevant recommendations', () => {
-		it('call time relevant recommendations when lureTimeRelevantRecommendations flag is on', async () => {
-			const mocks = getMockArgs(sandbox);
-			mocks[1].locals.flags.lureTimeRelevantRecommendations = true;
-			await middleware(...mocks);
-			expect(signalStubs.relatedContent.notCalled).to.be.true;
-			expect(signalStubs.topStories.notCalled).to.be.true;
-			expect(signalStubs.timeRelevantRecommendations.calledOnce).to.be.true;
-		});
-
-		it('fallback to top stories when lureTopStories flag also on and no time specific results', async () => {
-			const mocks = getMockArgs(sandbox);
-			mocks[1].locals.flags.lureTimeRelevantRecommendations = true;
-			mocks[1].locals.flags.lureTopStories = true;
-			signalStubs.timeRelevantRecommendations.callsFake(async () => null);
-			await middleware(...mocks);
-			expect(signalStubs.relatedContent.notCalled).to.be.true;
-			expect(signalStubs.topStories.calledOnce).to.be.true;
-			expect(signalStubs.timeRelevantRecommendations.calledOnce).to.be.true;
-		});
-
-		it('fallback to top stories when no time specific results', async () => {
-			const mocks = getMockArgs(sandbox);
-			mocks[1].locals.flags.lureTimeRelevantRecommendations = true;
-			signalStubs.timeRelevantRecommendations.callsFake(async () => null);
-			await middleware(...mocks);
-			expect(signalStubs.relatedContent.calledOnce).to.be.true;
-			expect(signalStubs.timeRelevantRecommendations.calledOnce).to.be.true;
 		});
 	});
 
@@ -122,8 +78,6 @@ describe('get recommendations', () => {
 			expect(mocks[1].locals.recommendations).to.eql({ ribbon: 'from Essential Stories', onward: 'from Related Content' });
 			expect(signalStubs.essentialStories.calledOnce).to.be.true;
 			expect(signalStubs.relatedContent.calledOnce).to.be.true;
-			expect(signalStubs.topStories.notCalled).to.be.true;
-			expect(signalStubs.timeRelevantRecommendations.notCalled).to.be.true;
 		});
 
 		it('fallback to next signal when no essentialStories results', async () => {
@@ -138,8 +92,6 @@ describe('get recommendations', () => {
 			expect(mocks[1].locals.recommendations).to.eql({ ribbon: 'from Related Content', onward: 'from Related Content' });
 			expect(signalStubs.essentialStories.calledOnce).to.be.true;
 			expect(signalStubs.relatedContent.calledOnce).to.be.true;
-			expect(signalStubs.topStories.notCalled).to.be.true;
-			expect(signalStubs.timeRelevantRecommendations.notCalled).to.be.true;
 		});
 
 	});
