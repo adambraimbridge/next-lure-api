@@ -4,7 +4,7 @@ const sandbox = sinon.sandbox.create();
 const stubs = {
 	fetchres: { json: sandbox.stub() },
 	es: { mget: sandbox.stub() }
-}
+};
 const proxyquire = require('proxyquire');
 const subject = proxyquire('../../server/signals/ft-rex-recommendations', {
 	'fetchres': stubs.fetchres,
@@ -35,7 +35,7 @@ describe('ft-rex Recommendations', () => {
 		return subject({}, params)
 			.then(result => {
 				expect(result).to.equal(null);
-			})
+			});
 	});
 
 	it('should return null if article ids from ft-rex is less than q2Length', () => {
@@ -43,7 +43,7 @@ describe('ft-rex Recommendations', () => {
 		return subject({}, params)
 			.then(result => {
 				expect(result).to.equal(null);
-			})
+			});
 	});
 
 	it('should return null if article data from es is not fetched', () => {
@@ -51,7 +51,7 @@ describe('ft-rex Recommendations', () => {
 		return subject({}, params)
 			.then(result => {
 				expect(result).to.equal(null);
-			})
+			});
 	});
 
 	it('should return null if article data from es is less than q2Length', () => {
@@ -59,7 +59,7 @@ describe('ft-rex Recommendations', () => {
 		return subject({}, params)
 			.then(result => {
 				expect(result).to.equal(null);
-			})
+			});
 	});
 
 	it('should call es client with correct arguments', () => {
@@ -69,7 +69,7 @@ describe('ft-rex Recommendations', () => {
 		return subject({}, params)
 			.then(() => {
 				expect(stubs.es.mget.calledWith(correctArg)).to.be.true;
-			})
+			});
 	});
 
 	it('should return response with correct properties', () => {
@@ -86,7 +86,7 @@ describe('ft-rex Recommendations', () => {
 		return subject({}, params)
 			.then(result => {
 				expect(result).to.eql(correctResponse);
-			})
+			});
 	});
 
 	it('should return correct number(= q2Length) of article data', () => {
@@ -106,6 +106,6 @@ describe('ft-rex Recommendations', () => {
 		return subject({}, params)
 			.then(result => {
 				expect(result).to.eql(correctResponse);
-			})
+			});
 	});
 });

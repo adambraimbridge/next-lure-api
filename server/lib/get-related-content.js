@@ -54,7 +54,7 @@ module.exports = (concept, count, parentContentId, news) => {
 			items: items
 				.filter(item => item.id !== parentContentId)
 				.map(item => {
-					item.originator = getTrackablePredicate(concept)
+					item.originator = getTrackablePredicate(concept);
 					return item;
 				})
 				.slice(0, count)

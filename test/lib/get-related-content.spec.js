@@ -9,7 +9,7 @@ describe('get related content', () => {
 	});
 	afterEach(() => {
 		es.search.restore();
-	})
+	});
 	it('request count + 1 articles', async () => {
 		await subject({id: 'concept-id', predicate: 'about'}, 3, 'parent-id');
 		expect(es.search.args[0][0].size).to.equal(4);

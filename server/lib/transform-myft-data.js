@@ -25,9 +25,9 @@ const removeHeadshots = article => {
 		if (author.headshot) {
 			delete author.headshot;
 		}
-	})
-	return article
-}
+	});
+	return article;
+};
 
 const extractArticlesFromConcepts = (data) => {
 
@@ -47,7 +47,7 @@ const extractArticlesFromConcepts = (data) => {
 		.reduce(removeDuplicateArticles, [])
 		.sort(orderByDate)
 		.slice(0, 7)
-		.map(removeHeadshots)
+		.map(removeHeadshots);
 
 	delete data.followedConcepts;
 

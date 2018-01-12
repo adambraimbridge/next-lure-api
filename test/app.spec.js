@@ -3,15 +3,15 @@ const request = require('supertest-as-promised');
 const sinon = require('sinon');
 const middleware = require('../server/middleware');
 
-const getItems = n => [...Array(n)].map((n, i) => ({id: i}))
+const getItems = n => [...Array(n)].map((n, i) => ({id: i}));
 
 const uniqueIds = (listName, [...arrays]) => {
 	const set = new Set();
 	arrays.forEach(obj => {
-		obj[listName].forEach(({id}) => set.add(id))
+		obj[listName].forEach(({id}) => set.add(id));
 	});
-	return [...set].length === arrays.reduce((tot, obj) => tot + obj[listName].length, 0)
-}
+	return [...set].length === arrays.reduce((tot, obj) => tot + obj[listName].length, 0);
+};
 
 describe('lure e2e', () => {
 	let app;
@@ -29,12 +29,12 @@ describe('lure e2e', () => {
 	after(() => {
 		middleware.getContent.restore();
 		middleware.getRecommendations.restore();
-	})
+	});
 
 	it('vary on flags and ft-edition header', () => {
 		return request(app)
 			.get('/lure/v2/content/uuid')
-			.expect('Vary', 'ft-flags, ft-edition')
+			.expect('Vary', 'ft-flags, ft-edition');
 	});
 
 	it('404 for no recommendations', async () => {
@@ -52,7 +52,7 @@ describe('lure e2e', () => {
 
 	context('success', () => {
 
-		before(() => rawData = {ribbon: {}})
+		before(() => rawData = {ribbon: {}});
 
 		it('sets appropriate cache headers', async () => {
 			return request(app)
@@ -79,7 +79,7 @@ describe('lure e2e', () => {
 					expect(body.ribbon.title).to.equal('Latest apropos Stuff');
 					expect(body.ribbon.titleHref).to.equal('/adskjasdk');
 				});
-		})
+		});
 
 		context('when fetching v2 style data', () => {
 			before(() => {
@@ -91,7 +91,7 @@ describe('lure e2e', () => {
 						items: getItems(7),
 					}
 				};
-			})
+			});
 
 			it('transforms v2 style data to v2', () => {
 				return request(app)
@@ -101,8 +101,8 @@ describe('lure e2e', () => {
 						expect(Array.isArray(body.onward)).to.be.false;
 						expect(body.onward.items.length).to.equal(7);
 						expect(uniqueIds('items', [body.onward])).to.be.true;
-					})
-			})
-		})
-	})
-})
+					});
+			});
+		});
+	});
+});
