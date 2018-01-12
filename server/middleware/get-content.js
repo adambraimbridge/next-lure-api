@@ -14,4 +14,4 @@ module.exports = async (req, res, next) => {
 		}
 		throw err;
 	}
-}
+};

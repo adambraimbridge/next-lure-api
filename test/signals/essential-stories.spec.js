@@ -22,7 +22,7 @@ describe('essential-stories signal', () => {
 	});
 
 	it('should return null when there is not enough stories', () => {
-		content = { _editorialComponents: [{ stories: [ 'story1', 'story2'] }] }
+		content = { _editorialComponents: [{ stories: [ 'story1', 'story2'] }] };
 		const result = subject(content, params);
 		expect(result).to.eql(null);
 	});
@@ -46,7 +46,7 @@ describe('essential-stories signal', () => {
 				{ stories: [ 'story1', 'story2', 'story3'] },
 				{ stories: [ 'story4', 'story5', 'story6'] }
 			]
-		}
+		};
 		const result = subject(content, params);
 		expect(result.ribbon.items).to.eql(['story1', 'story2', 'story3', 'story4']);
 	});
@@ -63,6 +63,6 @@ describe('essential-stories signal', () => {
 		}];
 		const result = subject(content, params);
 		expect(result.ribbon.items).to.eql(fourArticles);
-	})
+	});
 
 });

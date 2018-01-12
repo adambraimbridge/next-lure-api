@@ -16,7 +16,7 @@ module.exports = (content, {locals: {slots}}) => {
 
 	content._editorialComponents.forEach(component => {
 		allStories = allStories.concat(component.stories);
-	})
+	});
 
 	//avoid stories doesn't have relativeUrl to set n-teaser
 	const storiesHaveRelativeUrl = allStories.filter(story => story.type !== 'non-article');
