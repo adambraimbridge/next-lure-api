@@ -19,7 +19,7 @@ unit-test:
 	mocha --exit 'test/**/*.spec.js'
 
 smoke-test-local:
-	nht smoke local.ft.com:5050
+	nht smoke https://local.ft.com:5050
 
 test:
 	make verify
