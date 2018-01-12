@@ -43,10 +43,10 @@ describe('myFT Recommendations', () => {
 
 	it('should return null if article data after transformation is undefined', () => {
 			stubs.transformMyftData.extractArticlesFromConcepts.returns(Promise.resolve({}));
-		return subject({}, params)
-			.then(result => {
-				expect(result).to.eql(null);
-			});
+			return subject({}, params)
+				.then(result => {
+					expect(result).to.eql(null);
+				});
 	});
 
 	it('should return null if article data after transformation is less than q2Length', () => {
@@ -65,7 +65,8 @@ describe('myFT Recommendations', () => {
 				title: 'Your latest myFT stories',
 				titleHref: '/myft/00000000-0000-0000-0000-000000000000',
 				items: correctItems
-			}
+			},
+			_noCache: true,
 		};
 
 		return subject({}, params)
@@ -85,7 +86,8 @@ describe('myFT Recommendations', () => {
 				title: 'Your latest myFT stories',
 				titleHref: '/myft/00000000-0000-0000-0000-000000000000',
 				items: correctItems
-			}
+			},
+			_noCache: true,
 		};
 
 		return subject({}, params)
@@ -99,6 +101,13 @@ describe('myFT Recommendations', () => {
 		return subject({}, params)
 			.then(result => {
 				expect(result).to.eql(null);
+			});
+	});
+
+	it('should flag the response to not be cached', () => {
+		return subject({}, params)
+			.then(result => {
+				expect(result._noCache).to.be.true;
 			});
 	});
 

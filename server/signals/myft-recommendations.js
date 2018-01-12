@@ -87,6 +87,8 @@ module.exports = async (content, {locals: {slots, userId, secureSessionToken}}) 
 				items: items
 			}, model);
 
+			response._noCache = true;
+
 			return response;
 
 		});
