@@ -3,7 +3,7 @@ const logger = require('@financial-times/n-logger').default;
 module.exports = secureSessionToken => {
 	if (!secureSessionToken) {
 		logger.warn({ event: 'MISSING_SESSION_TOKEN' });
-		throw Object.assign(new Error('Missing session token'));
+		throw new Error('Missing session token');
 	}
 	const options = { 'headers': { 'X-Api-Key': process.env.SESSION_SERVICE_API_KEY }};
 	return fetch(`https://api.ft.com/sessions/s/${secureSessionToken}`, options)
