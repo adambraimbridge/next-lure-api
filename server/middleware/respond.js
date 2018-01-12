@@ -32,7 +32,11 @@ module.exports = (req, res) => {
 	}
 
 	if (recommendations.onward) {
-		response.onward = finishModel(recommendations.onward)
+		response.onward = finishModel(recommendations.onward);
+	}
+
+	if (recommendations._noCache) {
+		res.set('Surrogate-Control', res.FT_NO_CACHE);
 	}
 
 	res.json(response);

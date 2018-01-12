@@ -7,8 +7,8 @@ const {
 } = require('../signals');
 
 const modelIsFulfilled = (slots, model) => {
-	return !Object.keys(excludeCompletedSlots(slots, model)).length
-}
+	return !Object.keys(excludeCompletedSlots(slots, model)).length;
+};
 
 const excludeCompletedSlots = (slots, model) => {
 	return Object.keys(slots).reduce((obj, slotName) => {
@@ -16,8 +16,8 @@ const excludeCompletedSlots = (slots, model) => {
 			obj[slotName] = true;
 		}
 		return obj;
-	}, {})
-}
+	}, {});
+};
 
 module.exports = async (req, res, next) => {
 	try {
@@ -61,9 +61,13 @@ module.exports = async (req, res, next) => {
 	} catch (err) {
 		logger.error({event: 'RECOMMENDATION_FAILURE', contentId: req.params.contentId}, err);
 
+		if (err.httpStatus) {
+			return res.status(err.httpStatus).json({ message: err.message }).end();
+		}
+
 		if (/(network|response) timeout at: https:\/\/search-next-elasticsearch/.test(err.message)) {
 			return res.status(504).end();
 		}
 		next(err);
 	}
-}
+};
