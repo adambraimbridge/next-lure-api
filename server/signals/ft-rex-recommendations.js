@@ -14,7 +14,6 @@ module.exports = async (content, {locals: {slots}}) => {
 	return fetch(url, { timeout: 5000 })
 		.then(fetchres.json)
 		.then(async articleIds => {
-
 			if (articleIds.length < ONWARD_COUNT) {
 				return null;
 			}
@@ -26,21 +25,14 @@ module.exports = async (content, {locals: {slots}}) => {
 				return null;
 			}
 
-			const response = {};
-			const model = {
-				title: 'ft rex recommendations', //TODO set proper title
-				titleHref: '/'
-			};
-
 			const items = articles.slice(0, ONWARD_COUNT);
-			items.forEach(item => item.originator = 'ft-rex-recommendations');
+			items.forEach(item => item.originator = 'ft-rex');
 
-			response.onward = Object.assign({
-				items: items
-			}, model);
-
-			return response;
-
+			return {
+				onward: {
+					items: items
+				}
+			};
 		})
 		.catch(() => {
 			return null;
