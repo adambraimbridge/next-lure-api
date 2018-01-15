@@ -25,9 +25,6 @@ module.exports = async (content, {locals: {slots}}) => {
 				return null;
 			}
 
-			const response = {};
-			const model = {};
-
 			const items = articles.slice(0, ONWARD_COUNT);
 			items.forEach(item => item.originator = 'ft-rex');
 
