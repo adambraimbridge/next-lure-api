@@ -81,7 +81,7 @@ module.exports = async (content, {locals: {slots, userId, secureSessionToken}}) 
 			};
 
 			const items = articles.slice(0, ONWARD_COUNT);
-			items.forEach(item => item.originator = 'myft-recommendations');
+			items.forEach(item => item.originator = 'myft');
 
 			response.onward = Object.assign({
 				items: items
