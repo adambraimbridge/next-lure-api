@@ -32,7 +32,9 @@ module.exports = async (content, {locals: {slots}}) => {
 			items.forEach(item => item.originator = 'ft-rex');
 
 			return {
-				items: items
+				onward: {
+					items: items
+				}
 			};
 		})
 		.catch(() => {

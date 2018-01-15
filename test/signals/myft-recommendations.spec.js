@@ -59,7 +59,7 @@ describe('myFT Recommendations', () => {
 
 	it('should return response with correct properties', () => {
 		const correctItems = eightArticles.slice(0, 7);
-		correctItems.forEach(item => item.originator = 'myft-recommendations');
+		correctItems.forEach(item => item.originator = 'myft');
 		const correctResponse = {
 			onward: {
 				title: 'Your latest myFT stories',
@@ -80,7 +80,7 @@ describe('myFT Recommendations', () => {
 		stubs.transformMyftData.extractArticlesFromConcepts.returns(Promise.resolve({ followsConcepts: true, articles: nineArticles }));
 
 		const correctItems = eightArticles.slice(0, 7);
-		correctItems.forEach(item => item.originator = 'myft-recommendations');
+		correctItems.forEach(item => item.originator = 'myft');
 		const correctResponse = {
 			onward: {
 				title: 'Your latest myFT stories',

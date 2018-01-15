@@ -74,11 +74,9 @@ describe('ft-rex Recommendations', () => {
 
 	it('should return response with correct properties', () => {
 		const correctItems = eightArticles.slice(0, 7);
-		correctItems.forEach(item => item.originator = 'ft-rex-recommendations');
+		correctItems.forEach(item => item.originator = 'ft-rex');
 		const correctResponse = {
 			onward: {
-				title: 'ft rex recommendations',
-				titleHref: '/',
 				items: correctItems
 			}
 		};
@@ -94,11 +92,9 @@ describe('ft-rex Recommendations', () => {
 		stubs.es.mget.returns( Promise.resolve(nineArticles) );
 
 		const correctItems = eightArticles.slice(0, 7);
-		correctItems.forEach(item => item.originator = 'ft-rex-recommendations');
+		correctItems.forEach(item => item.originator = 'ft-rex');
 		const correctResponse = {
 			onward: {
-				title: 'ft rex recommendations',
-				titleHref: '/',
 				items: correctItems
 			}
 		};
