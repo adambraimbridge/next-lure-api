@@ -80,6 +80,6 @@ const doesUserFollowConcepts = (followedConcepts) => {
 module.exports = {
 	doesUserFollowConcepts,
 	extractArticlesFromConcepts,
-	removeOldArticles, // FIXME - This is exported only for the sake of being unit tested. The unit under test should
-	                   // instead be `extractArticlesFromConcepts()` and this export should be removed.
+	removeOldArticles, /* FIXME - This is exported only for the sake of being unit tested. The unit under test should
+	                      instead be `extractArticlesFromConcepts()` and this export should be removed. */
 };
