@@ -18,6 +18,19 @@ const removeDuplicateArticles = (articles, article) => {
 	return alreadyContainsArticle ? articles : articles.concat(article);
 };
 
+const removeOldArticles = (article) => {
+	const ONE_HOUR = 3600000;
+	if (!article.firstPublishedDate) {
+		return false;
+	}
+	const firstPublishedDate = new Date(article.firstPublishedDate);
+	if (Number.isNaN(firstPublishedDate.getTime())) {
+		return false; // invalid date
+	}
+	const notBefore = new Date(Date.now() - 48 * ONE_HOUR);
+	return firstPublishedDate > notBefore;
+};
+
 const orderByDate = (articleOne, articleTwo) => new Date(articleTwo.publishedDate) - new Date(articleOne.publishedDate);
 
 const removeHeadshots = article => {
@@ -44,6 +57,7 @@ const extractArticlesFromConcepts = (data) => {
 	data.articles = data.followedConcepts
 		.filter(removeEmptyConcepts)
 		.reduce(flattenConceptsToArticles, [])
+		.filter(removeOldArticles)
 		.reduce(removeDuplicateArticles, [])
 		.sort(orderByDate)
 		.slice(0, 7)
@@ -65,5 +79,7 @@ const doesUserFollowConcepts = (followedConcepts) => {
 
 module.exports = {
 	doesUserFollowConcepts,
-	extractArticlesFromConcepts
+	extractArticlesFromConcepts,
+	removeOldArticles, // FIXME - This is exported only for the sake of being unit tested. The unit under test should
+	                   // instead be `extractArticlesFromConcepts()` and this export should be removed.
 };
