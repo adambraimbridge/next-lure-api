@@ -21,10 +21,10 @@ describe('transformMyFTData', () => {
 		it('should return TRUE if an article was published less than 48 hours ago', () => {
 			const fakeNow = new Date('2018-01-15');
 			const recentArticles = [
-				{ firstPublishedDate: (new Date(fakeNow.getTime())) },
-				{ firstPublishedDate: (new Date(fakeNow.getTime() - 1 * ONE_HOUR)) },
-				{ firstPublishedDate: (new Date(fakeNow.getTime() - 10 * ONE_HOUR)) },
-				{ firstPublishedDate: (new Date(fakeNow.getTime() - 47 * ONE_HOUR)) },
+				{ firstPublishedDate: fakeNow.toISOString() },
+				{ firstPublishedDate: (new Date(fakeNow.getTime() - 1 * ONE_HOUR)).toISOString() },
+				{ firstPublishedDate: (new Date(fakeNow.getTime() - 10 * ONE_HOUR)).toISOString() },
+				{ firstPublishedDate: (new Date(fakeNow.getTime() - 47 * ONE_HOUR)).toISOString() },
 			];
 			const clock = sinon.useFakeTimers(fakeNow.getTime());
 			recentArticles.forEach(article => expect(subject(article)).to.be.true);
@@ -34,9 +34,9 @@ describe('transformMyFTData', () => {
 		it('should return FALSE if an article was published more than 48 hours ago', () => {
 			const fakeNow = new Date('2018-01-15');
 			const oldArticles = [
-				{ firstPublishedDate: (new Date(fakeNow.getTime() - 49 * ONE_HOUR)) },
-				{ firstPublishedDate: (new Date(fakeNow.getTime() - 100 * ONE_HOUR)) },
-				{ firstPublishedDate: (new Date(fakeNow.getTime() - 200 * ONE_HOUR)) },
+				{ firstPublishedDate: (new Date(fakeNow.getTime() - 49 * ONE_HOUR)).toISOString() },
+				{ firstPublishedDate: (new Date(fakeNow.getTime() - 100 * ONE_HOUR)).toISOString() },
+				{ firstPublishedDate: (new Date(fakeNow.getTime() - 200 * ONE_HOUR)).toISOString() },
 			];
 			const clock = sinon.useFakeTimers(fakeNow.getTime());
 			oldArticles.forEach(article => expect(subject(article)).to.be.false);
