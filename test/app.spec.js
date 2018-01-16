@@ -13,19 +13,15 @@ const uniqueIds = (listName, [...arrays]) => {
 	return [...set].length === arrays.reduce((tot, obj) => tot + obj[listName].length, 0);
 };
 
+let rawData = {};
+sinon.stub(middleware, 'getContent').callsFake((req, res, next) => next());
+sinon.stub(middleware, 'getRecommendations').callsFake((req, res, next) => {
+	res.locals.recommendations = rawData;
+	next();
+});
+const app = require('../server/app');
+
 describe('lure e2e', () => {
-	let app;
-	let rawData = {};
-	before(() => {
-		sinon.stub(middleware, 'getContent').callsFake((req, res, next) => next());
-		sinon.stub(middleware, 'getRecommendations').callsFake((req, res, next) => {
-			res.locals.recommendations = rawData;
-			next();
-		});
-		app = require('../server/app');
-
-	});
-
 	after(() => {
 		middleware.getContent.restore();
 		middleware.getRecommendations.restore();

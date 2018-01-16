@@ -1,5 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
+const fetchMock = require('fetch-mock');
+
 const sandbox = sinon.sandbox.create();
 const stubs = {
 	fetch: sandbox.stub(),
@@ -18,6 +20,10 @@ let params;
 
 
 describe('myFT Recommendations', () => {
+
+	before(() => fetchMock.get('*', { data: { user: {}}}));
+
+	after(() => fetchMock.restore());
 
 	beforeEach(() => {
 		stubs.fetchres.json.returns({ data: {user: {followed: []}}});
