@@ -49,7 +49,7 @@ module.exports = async (content, {locals: {slots, userId, secureSessionToken}}) 
 		return null;
 	}
 	const variables = { uuid: userId };
-	const url = `https://next-api.ft.com/v2/query?query=${slimQuery(query)}&variables=${JSON.stringify(variables)}&source=next-front-page-myft`;
+	const url = `https://next-api.ft.com/v2/query?query=${slimQuery(query)}&variables=${JSON.stringify(variables)}&source=next-lure-api`;
 
 	const getSessionPromise = getSession(secureSessionToken)
 		.then(result => {
