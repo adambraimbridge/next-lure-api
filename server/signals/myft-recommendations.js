@@ -1,8 +1,6 @@
 const fetchres = require('fetchres');
-const logger = require('@financial-times/n-logger').default;
 const slimQuery = query => encodeURIComponent(query.replace(/\s+/g, ' ')); // condense multiple spaces to one
 const { extractArticlesFromConcepts, doesUserFollowConcepts } = require('../lib/transform-myft-data');
-const getSession = require('../lib/get-session');
 
 const fragments = require('@financial-times/n-teaser').fragments;
 const {ONWARD_COUNT} = require('../constants');
@@ -51,19 +49,13 @@ module.exports = async (content, {locals: {slots, userId, secureSessionToken}}) 
 	const variables = { uuid: userId };
 	const url = `https://next-api.ft.com/v2/query?query=${slimQuery(query)}&variables=${JSON.stringify(variables)}&source=next-lure-api`;
 
-	const getSessionPromise = getSession(secureSessionToken)
-		.then(result => {
-			if (!result || !result.uuid) {
-				logger.warn({ event: 'USER_SESSION_NOT_FOUND' });
-				throw new Error('User session not found');
-			}
-			if (result.uuid !== userId) {
-				logger.warn({ event: 'INVALID_USER_ID' });
-				throw new Error('Invalid user ID');
-			}
-		});
-
-	const fetchPromise = fetch(url, { headers: {'X-Api-Key': process.env.NEXT_API_KEY }, timeout: 5000 })
+	const fetchPromise = fetch(url, {
+		headers: {
+			'X-Api-Key': process.env.NEXT_API_KEY,
+			'Cookie': `FTSession_s=${secureSessionToken}`
+		},
+		timeout: 5000
+	})
 		.then(fetchres.json)
 		.then(({ data: {user: {followed = []}}} = {}) => followed )
 		.then(doesUserFollowConcepts)
@@ -92,9 +84,7 @@ module.exports = async (content, {locals: {slots, userId, secureSessionToken}}) 
 			return response;
 
 		});
-
-	return Promise
-		.all([ getSessionPromise, fetchPromise ])
-		.then(([ , response ]) => response)
+	return fetchPromise
+		.then((response) => response)
 		.catch(() => null);
 };
