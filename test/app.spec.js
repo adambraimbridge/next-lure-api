@@ -42,7 +42,7 @@ describe('lure e2e', () => {
 	it('sets appropriate cache headers for 404', async () => {
 		return request(app)
 			.get('/lure/v2/content/uuid')
-			.expect('Cache-Control', 'max-age=0, no-cache, no-store, must-revalidate')
+			.expect('Cache-Control', 'max-age=0, no-cache, must-revalidate')
 			.expect('Surrogate-Control', 'max-age=600, stale-while-revalidate=60, stale-if-error=86400');
 	});
 
@@ -53,7 +53,7 @@ describe('lure e2e', () => {
 		it('sets appropriate cache headers', async () => {
 			return request(app)
 				.get('/lure/v2/content/uuid')
-				.expect('Cache-Control', 'max-age=0, no-cache, no-store, must-revalidate')
+				.expect('Cache-Control', 'max-age=0, no-cache, must-revalidate')
 				.expect('Surrogate-Control', 'max-age=3600, stale-while-revalidate=60, stale-if-error=86400');
 		});
 
