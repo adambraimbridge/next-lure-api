@@ -55,6 +55,7 @@ module.exports = (concept, count, parentContentId, news) => {
 				.filter(item => item.id !== parentContentId)
 				.map(item => {
 					item.originator = getTrackablePredicate(concept);
+					item.isPremium = item.accessLevel === 'premium'; // elasticsearch -> next-api field mapping
 					return item;
 				})
 				.slice(0, count)
