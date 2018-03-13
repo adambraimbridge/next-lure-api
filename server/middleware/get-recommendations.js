@@ -4,6 +4,7 @@ const {
 	essentialStories,
 	ftRexRecommendations
 } = require('../signals');
+
 const { RIBBON_COUNT, ONWARD_COUNT } = require('../constants');
 const slotsCount = { ribbon: RIBBON_COUNT, onward: ONWARD_COUNT };
 const dedupeById = require('../lib/dedupe-by-id');
