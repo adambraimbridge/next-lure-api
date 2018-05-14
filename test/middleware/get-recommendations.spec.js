@@ -40,8 +40,7 @@ describe('get recommendations', () => {
 		sandbox = sinon.sandbox.create();
 		signalStubs = {
 			relatedContent: sandbox.stub().callsFake(async (content, {locals: {slots}}) => slots),
-			essentialStories: sandbox.stub().callsFake(async (content, {locals: {slots}}) => slots),
-			ftRexRecommendations: sandbox.stub().callsFake(async (content, {locals: {slots}}) => slots)
+			essentialStories: sandbox.stub().callsFake(async (content, {locals: {slots}}) => slots)
 		};
 		middleware = proxyquire('../../server/middleware/get-recommendations', {
 			'../signals': signalStubs
@@ -157,41 +156,20 @@ describe('get recommendations', () => {
 			});
 		});
 
-		// TODO rewrite these tests with a signal which is not experimental one
-		// ftRexRecommendations is an experimental signal at the moment
 		context('[ onward ]', () => {
-
-			let responseFromFtRexRecommendations;
-
 			beforeEach(() => {
 				mocks = getMockArgs(sandbox);
-				mocks[1].locals.flags.lureFtRexRecommendations = true;
 				mocks[1].locals.slots = { onward: true };
-				responseFromFtRexRecommendations = {
-					onward: {
-						title: 'From FT Rex Recommendations',
-						titleHref: '/ft-rex-recommendations',
-						concept: 'concept from FT Rex Recommendations',
-						items: [{id:'rex-5'},{id:'rex-6'},{id:'rex-7'},{id:'rex-8'}]
-					}
-				};
 			});
 
 			it('should be padded items from Related Content when a slot is short of items', async () => {
-				const correctOnwardItems = Object.assign({}, responseFromFtRexRecommendations.onward, {
-					items: [{id:'rex-5'},{id:'rex-6'},{id:'rex-7'},{id:'rex-8'},{id:'rc-5'},{id:'rc-6'},{id:'rc-7'},{id:'rc-8'}]
-				});
-				signalStubs.ftRexRecommendations.returns(Promise.resolve(responseFromFtRexRecommendations));
 				signalStubs.relatedContent.returns(Promise.resolve(responseFromRelatedContent));
 				await middleware(...mocks);
-				expect(mocks[1].locals.recommendations).to.eql({ onward: correctOnwardItems });
-				expect(signalStubs.ftRexRecommendations.calledOnce).to.be.true;
+				expect(mocks[1].locals.recommendations.onward).to.eql(responseFromRelatedContent.onward);
 				expect(signalStubs.relatedContent.calledOnce).to.be.true;
 			});
 
 			it('should be set title/titleHref/concept from Related Content when recommendation items is less than the half of the slot', async () => {
-				responseFromFtRexRecommendations.onward.items = [{id:'rex-5'},{id:'rex-6'},{id:'rex-7'}];
-				signalStubs.ftRexRecommendations.returns(Promise.resolve(responseFromFtRexRecommendations));
 				signalStubs.relatedContent.returns(Promise.resolve(responseFromRelatedContent));
 				await middleware(...mocks);
 				expect(mocks[1].locals.recommendations.onward.title).to.eql('From Related Content');
