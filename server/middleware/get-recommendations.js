@@ -1,8 +1,7 @@
 const logger = require('@financial-times/n-logger').default;
 const {
 	relatedContent,
-	essentialStories,
-	ftRexRecommendations
+	essentialStories
 } = require('../signals');
 const { RIBBON_COUNT, ONWARD_COUNT } = require('../constants');
 const slotsCount = { ribbon: RIBBON_COUNT, onward: ONWARD_COUNT };
@@ -51,10 +50,6 @@ module.exports = async (req, res, next) => {
 			&& res.locals.content._editorialComponents.length > 0
 		) {
 			signalStack.push(essentialStories);
-		}
-
-		if (res.locals.flags.lureFtRexRecommendations) {
-			signalStack.push(ftRexRecommendations);
 		}
 
 		let signal;
