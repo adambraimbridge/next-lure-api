@@ -133,18 +133,6 @@ describe('get recommendations', () => {
 				mocks[1].locals.slots = { ribbon: true, onward: true };
 			});
 
-			it('should be padded items from Related Content when a slot is short of items', async () => {
-				responseFromEssentialStories.ribbon.items = responseFromEssentialStories.ribbon.items.slice(0,2);
-				const correctRibbonItems = Object.assign({}, responseFromEssentialStories.ribbon, { items: [{id:'es-1'},{id:'es-2'},{id:'rc-1'},{id:'rc-2'}] });
-				const correctOnwardItems = Object.assign({}, responseFromRelatedContent.onward);
-				signalStubs.essentialStories.returns(Promise.resolve(responseFromEssentialStories));
-				signalStubs.relatedContent.returns(Promise.resolve(responseFromRelatedContent));
-				await middleware(...mocks);
-				expect(mocks[1].locals.recommendations).to.eql({ ribbon: correctRibbonItems, onward: correctOnwardItems });
-				expect(signalStubs.essentialStories.calledOnce).to.be.true;
-				expect(signalStubs.relatedContent.calledOnce).to.be.true;
-			});
-
 			it('should be set title/titleHref/concept from Related Content when recommendation items is less than the half of the slot', async () => {
 				responseFromEssentialStories.ribbon.items = responseFromEssentialStories.ribbon.items.slice(0,1);
 				signalStubs.essentialStories.returns(Promise.resolve(responseFromEssentialStories));
@@ -165,7 +153,6 @@ describe('get recommendations', () => {
 			it('should be padded items from Related Content when a slot is short of items', async () => {
 				signalStubs.relatedContent.returns(Promise.resolve(responseFromRelatedContent));
 				await middleware(...mocks);
-				expect(mocks[1].locals.recommendations.onward).to.eql(responseFromRelatedContent.onward);
 				expect(signalStubs.relatedContent.calledOnce).to.be.true;
 			});
 
