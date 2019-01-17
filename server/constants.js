@@ -1,5 +1,7 @@
+const {genre} = require('@financial-times/n-concept-ids');
+
 module.exports = {
-	NEWS_CONCEPT_ID: '9b40e89c-e87b-3d4f-b72c-2cf7511d2146',
+	NEWS_CONCEPT_ID: genre.news,
 	RIBBON_COUNT: 4,
 	ONWARD_COUNT: 8
 };
