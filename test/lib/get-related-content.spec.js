@@ -1,5 +1,6 @@
 const { expect } = require('chai');
 const es = require('@financial-times/n-es-client');
+const constants = require('../../server/constants');
 const subject = require('../../server/lib/get-related-content');
 const sinon = require('sinon');
 
@@ -39,7 +40,7 @@ describe('get related content', () => {
 				'must_not': [
 					{
 						'term': {
-							'genreConcept.id': '9b40e89c-e87b-3d4f-b72c-2cf7511d2146'
+							'genreConcept.id': constants.NEWS_CONCEPT_ID
 						}
 					}
 				]
@@ -59,7 +60,7 @@ describe('get related content', () => {
 					},
 					{
 						'term': {
-							'genreConcept.id': '9b40e89c-e87b-3d4f-b72c-2cf7511d2146'
+							'genreConcept.id': constants.NEWS_CONCEPT_ID
 						}
 					}
 				]
