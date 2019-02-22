@@ -73,6 +73,7 @@ describe('related-content signal', () => {
 				});
 		});
 
+		it('requests teasers in x-format if specified', () => {
 			return subject({
 				id: 'parent-id',
 				curatedRelatedContent: [],
@@ -80,9 +81,9 @@ describe('related-content signal', () => {
 					predicate: 'http://www.ft.com/ontology/annotation/about',
 					id: 0
 				}]
-			}, {locals: {slots: {onward: true}}})
+			}, {locals: {slots: {onward: true}, teaserFormat: 'x'}})
 				.then(() => {
-					expect(stubs.getRelatedContent.args[0][3]).to.eql('x');
+					expect(stubs.getRelatedContent.args[0][4]).to.eql('x');
 				});
 		});
 	});
