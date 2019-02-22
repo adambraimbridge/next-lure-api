@@ -4,13 +4,12 @@ chai.use(require('sinon-chai'));
 const proxyquire = require('proxyquire');
 
 const sinon = require('sinon');
-const es = require('@financial-times/n-es-client');
 
 describe('related-content signal', () => {
 	let subject;
 	let stubs;
 	const defaultResults = {
-		esSearch: [{id: 1}],
+		items: [{id: 1}],
 		concepts: [{
 			predicate: 'http://www.ft.com/ontology/annotation/about',
 			id: 0
@@ -23,16 +22,15 @@ describe('related-content signal', () => {
 
 	beforeEach(() => {
 		results = Object.assign({}, defaultResults);
-		sinon.stub(es, 'search').callsFake(() => Promise.resolve(results.esSearch));
 		stubs = {
-			getMostRelatedConcepts: sinon.stub().callsFake(() => results.concepts)
+			getMostRelatedConcepts: sinon.stub().callsFake(() => results.concepts),
+			getRelatedContent: sinon.stub().callsFake(() => results)
 		};
 		subject = proxyquire('../../server/signals/related-content', {
-			'../lib/get-most-related-concepts': stubs.getMostRelatedConcepts
+			'../lib/get-most-related-concepts': stubs.getMostRelatedConcepts,
+			'../lib/get-related-content': stubs.getRelatedContent
 		});
 	});
-
-	afterEach(() => es.search.restore());
 
 	context('onward slot', () => {
 
@@ -60,45 +58,8 @@ describe('related-content signal', () => {
 				});
 		});
 
-		it('avoid recommending the current article!', () => {
-			results.esSearch = [{id: 1}, {id: 2}];
-			return subject({
-				id: 1,
-				curatedRelatedContent: [],
-				annotations: [{
-					predicate: 'http://www.ft.com/ontology/annotation/about',
-					id: 0
-				}]
-			}, {locals: {slots: {onward: true}}})
-				.then(result => {
-					expect(result.onward.items.map(item => item.id)).to.eql([2]);
-				});
-		});
-
-		it('get enough content', () => {
-			let calls = 0;
-			es.search.restore(); // remove the default stub
-			sinon.stub(es, 'search').callsFake(() => {
-				return Promise.resolve(
-					[...Array(6)]
-						.map((v, i) => ({id: i + (6 * calls)}))
-				);
-			});
-			return subject({
-				id: 'parent-id',
-				curatedRelatedContent: [],
-				annotations: [{
-					predicate: 'http://www.ft.com/ontology/annotation/about',
-					id: 0
-				}]
-			}, {locals: {slots: {onward: true}}})
-				.then(() => {
-					expect(es.search.args[0][0].size).to.equal(9);
-				});
-		});
-
 		it('don\'t show if no teasers', () => {
-			results.esSearch = [];
+			results.items = [];
 			return subject({
 				id: 'parent-id',
 				curatedRelatedContent: [],
@@ -111,13 +72,26 @@ describe('related-content signal', () => {
 					expect(result).to.eql({});
 				});
 		});
+
+			return subject({
+				id: 'parent-id',
+				curatedRelatedContent: [],
+				annotations: [{
+					predicate: 'http://www.ft.com/ontology/annotation/about',
+					id: 0
+				}]
+			}, {locals: {slots: {onward: true}}})
+				.then(() => {
+					expect(stubs.getRelatedContent.args[0][3]).to.eql('x');
+				});
+		});
 	});
 
 	context('ribbon slot', () => {
 
 
 		it('show correct number of stories', () => {
-			results.esSearch = [ { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 } ];
+			results.items = [ { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 } ];
 			return subject({
 				id: 'parent-id',
 				annotations: [{
