@@ -8,8 +8,9 @@ const getTrackablePredicate = concept => {
 	return ['about', 'isPrimarilyClassifiedBy'].includes(predicate) ? predicate : 'brand';
 };
 
-module.exports = (concept, count, parentContentId, news) => {
+module.exports = (concept, count, parentContentId, news, teaserFormat = 'n') => {
 
+	const teaserProps = teaserFormat === 'x' ? ['id', 'teaser.*'] : TEASER_PROPS;
 	let query;
 
 	if (typeof news === 'boolean') {
@@ -41,7 +42,7 @@ module.exports = (concept, count, parentContentId, news) => {
 	}
 
 	return es.search({
-		_source: TEASER_PROPS,
+		_source: teaserProps,
 		query,
 		size: count + 1
 	}, 500)
