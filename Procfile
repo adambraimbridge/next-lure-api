@@ -1,1 +1,1 @@
-web: node server/app.js
+web: node --max-http-header-size=80000 server/app.js
