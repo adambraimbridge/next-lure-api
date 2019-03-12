@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "precommit": "node_modules/.bin/secret-squirrel",
     "commitmsg": "node_modules/.bin/secret-squirrel-commitmsg",
-    "prepush": "make verify -j3"
+    "prepush": "make verify -j3",
+    "heroku-postbuild": "make heroku-postbuild"
   },
   "repository": {
     "type": "git",
