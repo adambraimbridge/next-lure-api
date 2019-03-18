@@ -4,7 +4,10 @@ node_modules/@financial-times/n-gage/index.mk:
 
 -include node_modules/@financial-times/n-gage/index.mk
 
-TEST_HOST := "ft-next-lure-api-branch-${CIRCLE_BUILD_NUM}"
+VAULT_NAME=ft-next-lure-api
+HEROKU_APP_STAGING=ft-next-lure-api-staging
+HEROKU_APP_EU=ft-next-lure-api-eu
+HEROKU_APP_US=ft-next-lure-api-us
 
 coverage-report:
 	export NODE_ENV=test; \
@@ -18,9 +21,6 @@ unit-test:
 	export FT_GRAPHITE_KEY=dummy-graphite-key; \
 	mocha --exit 'test/**/*.spec.js'
 
-smoke-test-local:
-	nht smoke https://local.ft.com:5050
-
 test:
 	make verify
 
@@ -32,12 +32,3 @@ endif
 
 run:
 	nht run --https --inspect
-
-deploy:
-	nht ship -m --vault
-
-provision:
-	nht float -md --testapp ${TEST_HOST} --vault
-
-tidy:
-	nht destroy ${TEST_HOST}
