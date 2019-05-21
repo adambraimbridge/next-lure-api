@@ -7,7 +7,8 @@
     "precommit": "node_modules/.bin/secret-squirrel",
     "commitmsg": "node_modules/.bin/secret-squirrel-commitmsg",
     "prepush": "make verify -j3",
-    "heroku-postbuild": "make heroku-postbuild"
+    "heroku-postbuild": "make heroku-postbuild",
+    "prepare": "node_modules/.bin/snyk protect"
   },
   "repository": {
     "type": "git",
@@ -31,7 +32,8 @@
     "cookie-parser": "^1.4.3",
     "fetchres": "1.7.2",
     "ft-poller": "^3.0.1",
-    "n-health": "3.3.0"
+    "n-health": "3.3.0",
+    "snyk": "^1.165.2"
   },
   "devDependencies": {
     "@financial-times/n-gage": "^3.6.0",
