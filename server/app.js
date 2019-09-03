@@ -5,6 +5,7 @@ const healthchecks = require('./healthchecks');
 
 const app = express({
 	systemCode: 'next-lure-api',
+	graphiteName: 'lure-api',
 	withFlags: true,
 	healthChecks: healthchecks.checks
 });
