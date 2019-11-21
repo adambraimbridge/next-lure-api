@@ -1,7 +1,6 @@
 /*eslint-disable*/
 
-const signedFetch = require('signed-aws-es-fetch');
-const nHealth = require('n-health');
+const esClient = require('@financial-times/n-es-client');
 
 const INTERVAL = 60 * 1000;
 
@@ -11,17 +10,9 @@ const statuses = {
 };
 
 function pingServices () {
-	signedFetch('https://next-elastic.ft.com/content/item/_search?size=0')
-		.then((response) => {
-			if (response.ok) {
-				return response.json();
-			} else {
-				throw new Error(`Elasticsearch returned a ${response.statusCode}`);
-			}
-		})
-		.then((json) => { statuses.elastic = Boolean(json.hits && json.hits.total); })
+	esClient.search({ size: 0 })
+		.then((docs) => { statuses.elastic = Boolean(docs); })
 		.catch(() => { statuses.elastic = false; });
-
 }
 
 function elasticStatus () {
