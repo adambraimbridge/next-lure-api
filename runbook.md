@@ -5,10 +5,10 @@ This api is used to power the onward journey components at the top and bottom of
 https://www.ft.com/lure
 
 ## Delivered By
-myftteam
+customer-products-content-discovery
 
 ## Supported By
-next
+customer-products-content-discovery
 
 ## Service Tier
 Bronze
@@ -18,7 +18,6 @@ Production
 
 ## Known About By
 - thurston.tye
-- ben.barnett
 
 ## Host Platform
 heroku
